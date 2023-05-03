@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 1960px;
+  justify-content: space-evenly;
+  min-height: 1000px;
+}
+.container, .Bcontainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.Bcontainer {
+  min-height: 200px;
+  justify-content: space-evenly;
+}
+.B1 {
+  display: flex;
+  margin-bottom: 15px;
+}
