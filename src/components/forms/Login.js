@@ -3,6 +3,12 @@ import Modal from "../UI/Modal";
 import "bootstrap/dist/css/bootstrap.css";
 
 const Login = (props) => {
+
+  const logIn = () => {
+    props.btnLogIn(true);
+    console.log("Login Component");
+  }
+
   return (
     <Modal dal onClose={ props.onClose }>
       <form>
@@ -33,7 +39,7 @@ const Login = (props) => {
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+        <button onClick={ logIn } type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
 
         <div class="text-center">
           <p>Not a member? <a href="#!">Register</a></p>

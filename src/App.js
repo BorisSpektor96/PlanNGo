@@ -8,6 +8,7 @@ import Welcome from "./components/forms/Welcome"
 import Review from "./components/review/Review"
 import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
+import Calendar from './components/Calendar/Calendar'
 
 const routes = [
   {
@@ -23,14 +24,26 @@ const routes = [
     componentName: Welcome
   },
   {
+    path: '/Calendar',
+    componentName: Calendar
+  },
+  {
     path: '/BusinessesMenu',
     componentName: BusinessesMenu
   },
 ]
 
 function App() {
-  const [ loggedIn, isLoggedIn ] = useState(false);
-  // const isLoggedIn = true;
+  const [ loginStatus, setLogIn ] = useState(true);
+
+  const logOut = (value) => {
+    setLogIn(value)
+    console.log('app log out')
+  }
+  const logIn = value => {
+    setLogIn(value)
+    console.log('app log in')
+  }
 
   const routeOfComponents = routes.map(({ path, componentName }, key) => (
     <Route exact path={ path } Component={ componentName } key={ key } />
@@ -38,19 +51,19 @@ function App() {
   ));
 
   return (
-    <Fragment class="main" loggedIn={ false }>
+    <div class="main" loginStatus={ false }>
 
-      { loggedIn ?
+      { loginStatus ?
         <BrowserRouter BrowserRouter class="Routes BrowserRouter">
           <Routes>
-            <Route element={ <Layout /> }>
+            <Route element={ <Layout setToLogout={ logOut } /> }>
               { routeOfComponents }
             </Route>
           </Routes>
         </BrowserRouter>
-        : <Welcome />
+        : <Welcome setToLogin={ logIn } />
       }
-    </Fragment >
+    </div >
   );
 }
 {/* <Routes>

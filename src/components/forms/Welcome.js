@@ -16,9 +16,15 @@ const Welcome = (props) => {
     setRegisterIsShown(false);
     setLoginIsShown(false);
   };
+
+  const setToLoggedIn = (value) => {
+    props.setToLogin(value);
+    console.log("Welcome Component");
+  }
+
   return (
     <Fragment>
-      { loginIsShown && <Login onClose={ hideFormHandler } /> }
+      { loginIsShown && <Login btnLogIn={ setToLoggedIn } onClose={ hideFormHandler } /> }
       { RegisterIsShown && <Register onClose={ hideFormHandler } /> }
 
       <div className={ styles.container }>

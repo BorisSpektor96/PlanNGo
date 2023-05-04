@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 
-const Navbar = () => {
+
+const Navbar = (props) => {
+
+  const logOff3 = () => {
+    props.setLogOut2(false)
+    console.log("Navbar Component");
+  }
+
   return (
     <nav class="d-flex navbar navbar-expand-lg navbar-dark bg-success display-7">
       <div class="collapse navbar-collapse d-flex justify-content-lg-between" id="navbarSupportedContent">
@@ -12,7 +19,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li class="nav-item">
-            <Link class="nav-link" to="/Review">
+            <Link class="nav-link" to="/Calendar">
               Schedule
             </Link>
           </li>
@@ -22,7 +29,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li class="nav-item">
-            <Link class="nav-link" to="/Main">
+            <Link class="nav-link" to="/">
               Massages
             </Link>
           </li>
@@ -30,14 +37,14 @@ const Navbar = () => {
         <form class="form-inline my-2 my-lg-0">
           <ul class="navbar-nav mr-auto mr-4  ">
             <li class="nav-item">
-              <Link class="nav-link" to="/Main">
+              <Link class="nav-link" to="/">
                 Profile
               </Link>
             </li>
             <li class="nav-item">
-              <Link class="nav-link" to="/Main">
+              <button onClick={ logOff3 } type="button" class="btn btn-danger">
                 Logout
-              </Link>
+              </button>
             </li>
           </ul>
         </form>

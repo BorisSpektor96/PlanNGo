@@ -3,10 +3,16 @@ import Navbar from './Navbar';
 import { Outlet } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
 
-const Layout = () => {
+const Layout = (props) => {
+
+  const logOff2 = (value) => {
+    props.setToLogout(value)
+    console.log("Layout Component");
+  }
+
   return (
     <main>
-      <Navbar />
+      <Navbar setLogOut2={ logOff2 } />
       <div class='min-vh-100'>
 
         <Outlet />
@@ -14,7 +20,7 @@ const Layout = () => {
       </div>
       <Footer />
 
-    </main>
+    </main >
   );
 
 }

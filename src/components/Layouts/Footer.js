@@ -22,7 +22,7 @@ function Copyright() {
 
 const Footer = () => {
   return (
-    <footer className={ styles.footer } class='d-flex navbar-dark bg-success display-7'>
+    <footer class='d-flex navbar-dark bg-success display-7'>
       <CssBaseline />
 
       <Box class="bg-success" component="footer" >
