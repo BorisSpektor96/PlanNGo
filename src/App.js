@@ -1,14 +1,13 @@
 import './App.css';
 import "bootstrap/dist/css/bootstrap.css";
-import { BrowserRouter, Routes, Route, redirect, Switch } from "react-router-dom";
-import Navbar from "./components/Layouts/Navbar";
-import Footer from "./components/Layouts/Footer"
-import { Fragment, useState } from 'react';
-import Welcome from "./components/forms/Welcome"
-import Review from "./components/review/Review"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from 'react';
+import Welcome from "./components/forms/Welcome";
+import Review from "./components/review/Review";
 import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
 import Calendar from './components/Calendar/Calendar'
+import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
 
 const routes = [
   {
@@ -30,6 +29,10 @@ const routes = [
   {
     path: '/BusinessesMenu',
     componentName: BusinessesMenu
+  },
+  {
+    path: '/BusinessPage',
+    componentName: BusinessPage
   },
 ]
 
