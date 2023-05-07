@@ -2,6 +2,10 @@ import "bootstrap/dist/css/bootstrap.css";
 import styles from "./BusinessPage.module.css"
 import Review from "../../review/Review";
 import { Fragment } from "react";
+import { Messages } from 'primereact/messages';
+import { Message } from 'primereact/message';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 const BusinessPage = () => {
 
   return (
@@ -48,7 +52,7 @@ const BusinessPage = () => {
         </div>
       </div>
     </Fragment>
-  );
+  )
 }
 
-export default BusinessPage;
+export default BusinessPage; 
