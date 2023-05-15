@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import "bootstrap/dist/css/bootstrap.css";
-import styles from './Footer.module.css'
 
 function Copyright() {
   return (
@@ -22,10 +21,10 @@ function Copyright() {
 
 const Footer = () => {
   return (
-    <footer class='d-flex navbar-dark bg-success display-7'>
+    <footer className='d-flex navbar-dark bg-success display-7'>
       <CssBaseline />
 
-      <Box class="bg-success" component="footer" >
+      <Box className="bg-success" component="footer" >
         <Container maxWidth="sm">
 
           <p>

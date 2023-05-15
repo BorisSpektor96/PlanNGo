@@ -1,19 +1,20 @@
 import { Fragment } from "react";
-import Rating from "./Rating";
 import "./Review.css";
+import StarRating from "./StarRating";
 
 const Review = () => {
+
   const reviewContainer = (
-    <div class="container">
-      <div class="Rname">keren shnaider</div>
-      <div class="Rating_date">
-        <div class="rating">
+    <div className="container">
+      <div className="Rname">keren shnaider</div>
+      <div className="Rating_date">
+        <div className="rating">
           { " " }
-          <Rating />
+          <StarRating />
         </div>
-        <div class="date">20/09/2021</div>
+        <div className="date">20/09/2021</div>
       </div>
-      <div class="Rcontent">
+      <div className="Rcontent">
         <p>
           It was a simple tip of the hat. Grace didn't think that anyone else
           besides her had even noticed it. It wasn't anything that the average

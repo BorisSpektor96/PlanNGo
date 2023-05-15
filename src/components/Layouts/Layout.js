@@ -13,7 +13,7 @@ const Layout = (props) => {
   return (
     <main>
       <Navbar setLogOut2={ logOff2 } />
-      <div class='min-vh-100'>
+      <div className='min-vh-100'>
 
         <Outlet />
 

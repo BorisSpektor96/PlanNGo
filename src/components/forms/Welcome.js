@@ -29,8 +29,8 @@ const Welcome = (props) => {
 
       <div className={ styles.container }>
 
-        <div class="header">
-          <h1 class="display-4 text-center">Welcome </h1>
+        <div className="header">
+          <h1 className="display-4 text-center">Welcome </h1>
         </div>
 
         <div className={ styles.Bcontainer }>
@@ -38,7 +38,7 @@ const Welcome = (props) => {
           <div className={ styles.B1 }>
             <button
               type="button"
-              class="btn btn-outline-primary"
+              className="btn btn-outline-primary"
               onClick={ showLoginHandler }
             >
               Login
@@ -48,7 +48,7 @@ const Welcome = (props) => {
           <div className={ styles.B2 }>
             <button
               type="button"
-              class="btn btn-outline-primary"
+              className="btn btn-outline-primary"
               onClick={ showRegisterHandler }
             >
               Register

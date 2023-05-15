@@ -1,14 +1,14 @@
 import "./Rating.css"
-const Rating =()=>{
-return(
-    <div class="rating">
-    <button class="rating__star">★</button>
-    <button class="rating__star">★</button>
-    <button class="rating__star">★</button>
-    <button class="rating__star">★</button>
-    <button class="rating__star">★</button>
-</div>
-);
-
+const Rating = () => {
+    return (
+        <div class="rating">
+            <button className="rating__star">★</button>
+            <button className="rating__star">★</button>
+            <button className="rating__star">★</button>
+            <button className="rating__star">★</button>
+            <button className="rating__star">★</button>
+        </div>
+    );
 };
+
 export default Rating;

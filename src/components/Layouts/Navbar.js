@@ -1,10 +1,8 @@
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from "react-router-dom";
-
 const OffcanvasExample = (props) => {
 
 
@@ -13,7 +11,40 @@ const OffcanvasExample = (props) => {
     console.log("Navbar Component");
   }
 
+  const NavTabs = [
+    {
+      tabName: 'Home',
+      pathName: '/businessesMenu'
+    },
+    {
+      tabName: 'Favorites',
+      pathName: '/Welcome'
+    },
+    {
+      tabName: 'Massages',
+      pathName: '/'
+    },
+    {
+      tabName: 'Appointment',
+      pathName: '/AppointmentCalendar'
+    },
+  ];
+
+  const listOfNavTabs = (
+    <ul className="navbar-nav">
+      { NavTabs.map(({ tabName, pathName }, key) => (
+        <li key={ key } className="nav-item">
+          <Link className="nav-item nav-link" to={ pathName } key={ key }>
+            { tabName }
+          </Link>
+        </li>
+      )) }
+    </ul>
+  );
+
+
   const expand = 'lg'
+
   return (
     <Navbar key={ expand } bg="dark" expand={ expand } className="navbar-dark">
       <Container fluid>
@@ -29,55 +60,21 @@ const OffcanvasExample = (props) => {
               Plan&Go
             </Offcanvas.Title>
           </Offcanvas.Header>
+
           <Offcanvas.Body className='bg-dark navbar-dark'>
             <Nav className="justify-content-center">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <Link class="nav-item nav-link" to="/businessesMenu">
-                    Home
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="/Calendar">
-                    Schedule
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="/Welcome">
-                    Favorites
-                  </Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to="/">
-                    Massages
-                  </Link>
-                </li>
-              </ul>
-              {/* <NavDropdown
-                  title="Dropdown"
-                  id={ `offcanvasNavbarDropdown-expand-${expand}` }
-                >
-                  <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action5">
-                    Something else here
-                  </NavDropdown.Item>
-                </NavDropdown> */}
+              { listOfNavTabs }
             </Nav>
 
             <Nav className="justify-content-end flex-grow-1 pe-3">
-
-              <ul class="navbar-nav d-flex">
-                <li class="nav-item me-1 my-1">
-                  <button class="btn btn-outline-primary" to="/">
+              <ul className="navbar-nav d-flex">
+                <li className="nav-item me-1 my-1">
+                  <button className="btn btn-outline-primary" to="/">
                     Profile
                   </button>
                 </li>
-                <li class="nav-item me-1 my-1">
-                  <button onClick={ logOff3 } type="button" class="btn btn-outline-danger">
+                <li className="nav-item me-1 my-1">
+                  <button onClick={ logOff3 } type="button" className="btn btn-outline-danger">
                     Logout
                   </button>
                 </li>
@@ -86,6 +83,7 @@ const OffcanvasExample = (props) => {
             </Nav>
 
           </Offcanvas.Body>
+
         </Navbar.Offcanvas>
       </Container>
     </Navbar >

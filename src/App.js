@@ -6,34 +6,16 @@ import Welcome from "./components/forms/Welcome";
 import Review from "./components/review/Review";
 import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
-import Calendar from './components/Calendar/Calendar'
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
+import AppointmentCalendar from './components/Calendar/AppointmentCalendar';
 
 const routes = [
-  {
-    path: '/',
-    componentName: Review
-  },
-  {
-    path: '/Review',
-    componentName: Review
-  },
-  {
-    path: '/Welcome',
-    componentName: Welcome
-  },
-  {
-    path: '/Calendar',
-    componentName: Calendar
-  },
-  {
-    path: '/BusinessesMenu',
-    componentName: BusinessesMenu
-  },
-  {
-    path: '/BusinessPage',
-    componentName: BusinessPage
-  },
+  { path: '/', componentName: Review },
+  { path: '/Review', componentName: Review },
+  { path: '/Welcome', componentName: Welcome },
+  { path: '/BusinessesMenu', componentName: BusinessesMenu },
+  { path: '/BusinessPage', componentName: BusinessPage },
+  { path: '/AppointmentCalendar', componentName: AppointmentCalendar },
 ]
 
 function App() {
@@ -54,10 +36,9 @@ function App() {
   ));
 
   return (
-    <div class="main" loginStatus={ false }>
-
+    <div className="main">
       { loginStatus ?
-        <BrowserRouter BrowserRouter class="Routes BrowserRouter">
+        <BrowserRouter BrowserRouter className="Routes BrowserRouter">
           <Routes>
             <Route element={ <Layout setToLogout={ logOut } /> }>
               { routeOfComponents }
@@ -69,15 +50,4 @@ function App() {
     </div >
   );
 }
-{/* <Routes>
-
-          <Route exact
-            path="/"
-            element={ <Welcome /> }
-          />
-          <Route exact path="/Review" Component={ Review } />
-          <Route exact path="/Favorites" Component={ Layout } />
-          <Route exact path="/BusinessesMenu" Component={ BusinessesMenu } />
-
-        </Routes> */}
 export default App;
