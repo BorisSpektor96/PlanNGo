@@ -17,7 +17,7 @@ const BusinessRegister = (props) => {
 
         <input type="email" id="form2Example1" className="form-control" />
       </div>
-      <div class="form-outline mb-4">
+      <div className="form-outline mb-4">
         <label className="form-label" for="form2Example1">
           address
         </label>

@@ -30,7 +30,7 @@ const Welcome = (props) => {
       <div className={ styles.container }>
 
         <div className="header">
-          <h1 className="display-4 text-center">Welcome </h1>
+          <h1 className="header display-4 text-center">Welcome </h1>
         </div>
 
         <div className={ styles.Bcontainer }>

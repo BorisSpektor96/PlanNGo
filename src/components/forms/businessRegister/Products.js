@@ -1,5 +1,5 @@
 import React from "react";
-import { FormGroup, Label, Input, Button } from "reactstrap";
+import { FormGroup, Label, Input } from "reactstrap";
 const Products = (props) => {
   if (props.currentStep !== 4) {
     return null;
@@ -7,7 +7,7 @@ const Products = (props) => {
 
   return (
     <>
-      <p>Products</p>
+      <p className="display-6 text-center">Products</p>
       <FormGroup>
         <Label for="password">Password</Label>
         <Input
@@ -15,8 +15,8 @@ const Products = (props) => {
           name="password"
           id="password"
           placeholder="Enter your Password"
-          value={props.password} // Prop: The username input data
-          onChange={props.handleChange} // Prop: Puts data into the state
+          value={ props.password } // Prop: The username input data
+          onChange={ props.handleChange } // Prop: Puts data into the state
         />
       </FormGroup>
     </>

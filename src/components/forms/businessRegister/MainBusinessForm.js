@@ -153,7 +153,7 @@ class MainBusinessForm extends Component {
   render() {
     return (
       <>
-        <Form onSubmit={ this.handleSubmit }>
+        <Form className="pb-5" onSubmit={ this.handleSubmit }>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
