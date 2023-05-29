@@ -8,6 +8,7 @@
       "Rname Rname Rating_date"
       "Rcontent Rcontent Rcontent";
       width: 55%;
+      border: 2px solid #cccccca8;
 
   }
   
@@ -31,6 +32,7 @@
     justify-self: end;
     align-self: start;
     grid-area: rating;
+    padding-top: 7px;
   }
   
   .date {

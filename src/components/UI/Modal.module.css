@@ -6,8 +6,8 @@
   height: 100vh;
   z-index: 20;
   background-color: rgba(8, 0, 250, 0.45);
-  padding-bottom: 100px;
   animation: pop-up 500ms ease-in-out forwards;
+  
 }
 
 .modal {
@@ -15,14 +15,15 @@
   top: 2vh;
   left: 5%;
   background-color: white;
-  padding: 0.5rem;
+  padding: 1rem;
+  padding-bottom: 0;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 30;
   animation: slide-down 500ms ease-out forwards;
-  overflow-y: scroll;
-  height: 100vh;
+  overflow-y: auto;
   min-width: 350px;
+  height: 95vh;
 }
 
 @media (min-width: 768px) {
@@ -35,22 +36,21 @@
 @keyframes slide-down {
   from {
     opacity: 0;
-    transform: translateX(3rem);
-    width: 200vw;
+    transform: translateY(100vh);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
 @keyframes pop-up {
   from {
     opacity: 0;
-    transform: translate(0);
+    transform: translateY(50vh);
   }
   to {
     opacity: 1;
-    transform: translate(1);
+    transform: translateY(0);
   }
 }

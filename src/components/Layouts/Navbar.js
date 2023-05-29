@@ -25,8 +25,8 @@ const OffcanvasExample = (props) => {
       pathName: '/'
     },
     {
-      tabName: 'Appointment',
-      pathName: '/AppointmentCalendar'
+      tabName: 'Profile',
+      pathName: '/Profile'
     },
   ];
 
@@ -41,7 +41,6 @@ const OffcanvasExample = (props) => {
       )) }
     </ul>
   );
-
 
   const expand = 'lg'
 
@@ -69,9 +68,9 @@ const OffcanvasExample = (props) => {
             <Nav className="justify-content-end flex-grow-1 pe-3">
               <ul className="navbar-nav d-flex">
                 <li className="nav-item me-1 my-1">
-                  <button className="btn btn-outline-primary" to="/">
+                  <Link className="btn btn-outline-primary" to="/Profile">
                     Profile
-                  </button>
+                  </Link>
                 </li>
                 <li className="nav-item me-1 my-1">
                   <button onClick={ logOff3 } type="button" className="btn btn-outline-danger">

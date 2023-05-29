@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Modal from '../UI/Modal';
 
-const AppointmentCalendar = () => {
+const AppointmentCalendar = (props) => {
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
+  const [ Schedule, setSchedule ] = useState(false);
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
-    setSelectedTime(null);
+    setSelectedTime("");
   };
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
-    let newAppointment = new Date(selectedDate)
-    newAppointment.setHours(parseInt(time.slice(0, 2)));
-    newAppointment.setMinutes(parseInt(time.slice(3, 5)));
-    console.log(newAppointment);
+    setSchedule(true)
   };
+
+  const scheduleHandler = () => {
+    let newAppointment = new Date(selectedDate)
+    newAppointment.setHours(parseInt(selectedTime.slice(0, 2)));
+    newAppointment.setMinutes(parseInt(selectedTime.slice(3, 5)));
+    console.log(newAppointment);
+  }
 
   useEffect(() => {
     if (selectedTime) {
@@ -25,10 +31,6 @@ const AppointmentCalendar = () => {
   }, [ selectedTime ])
 
   const renderAvailableTimes = () => {
-    // let startTime = new Date(selectedDate);
-    // startTime.setHours(9, 0, 0); // Start at 9:00 AM
-    // const endTime = new Date(selectedDate);
-    // endTime.setHours(18, 0, 0); // End at 6:00 PM
 
     const timeList = [
       { time: "09:00", isTaken: false },
@@ -60,7 +62,7 @@ const AppointmentCalendar = () => {
         )
       }
       return (
-        <button className='btn btn-secondary m-2 disabled' key={ time } onClick={ () => handleTimeSelect(time) }>
+        <button className='btn btn-secondary m-2 disabled' key={ time }>
           { time }
         </button>
       )
@@ -76,27 +78,42 @@ const AppointmentCalendar = () => {
 
 
   return (
-    <div className='d-flex flex-wrap justify-content-center gap-4'>
-      <Calendar className="m-2 col-lg-4"
-        value={ selectedDate }
-        onChange={ handleDateSelect }
-        minDate={ new Date() }
-        maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
-      />
-      { selectedDate && (
-        <div className='m-2 col-md-6'>
-          <p className='d-flex justify-content-center fs-5 text-dark badge bg-warning'>Available times for { selectedDate.toLocaleDateString() }:</p>
-          { renderAvailableTimes() }
-          { !selectedTime && <p className='d-flex justify-content-center fs-6 badge bg-danger'>Please select a time.</p> }
-          { selectedTime && (
-            <p className='d-flex justify-content-center fs-6 badge bg-success'>
-              You have selected { selectedDate.toLocaleDateString() } at{ ' ' }
-              { selectedTime }.
-            </p>
-          ) }
-        </div>
-      ) }
-    </div>
+    <Modal onClose={ props.onClose }>
+      <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          dal
+          onClick={ props.onClose }
+        ></button>
+      </div>
+      <div className='d-flex flex-wrap justify-content-center gap-4'>
+        <Calendar className="m-2"
+          value={ selectedDate }
+          onChange={ handleDateSelect }
+          minDate={ new Date() }
+          maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
+        />
+        { selectedDate && (
+          <div className='m-2'>
+            <p className='d-flex justify-content-center fs-5 text-dark badge bg-warning'>Available times for { selectedDate.toLocaleDateString() }:</p>
+            { renderAvailableTimes() }
+            { !selectedTime && <p className='d-flex justify-content-center fs-6 badge bg-danger'>Please select a time.</p> }
+            { selectedTime && (
+              <p className='d-flex justify-content-center fs-6 badge bg-success'>
+                You have selected { selectedDate.toLocaleDateString() } at{ ' ' }
+                { selectedTime }.
+              </p>
+            ) }
+          </div>
+        ) }
+      </div>
+      <div className='d-flex justify-content-center'>
+        <button className={ !Schedule ? "btn btn-primary disabled" : 'btn btn-primary' } onClick={ () => scheduleHandler() }>Schedule</button>
+      </div>
+    </Modal>
+
   );
 };
 

@@ -14,12 +14,12 @@ const BusinessInfo = (props) => {
     <>
       <p className="text-center display-6">Business Information</p>
       <FormGroup className="form-check p-0">
-        <div className="mb-2">
-          <select onChange={ props.handleChange } className="custom-select text-center  form-control">
-            <option selected>Choose Your Business Type</option>
-            <option value={ props.type }>hair salon</option>
-            <option value={ props.type } >nails</option>
-            <option value={ props.type } >other</option>
+        <div className="mb-2 ">
+          <select  onChange={ props.handleChange } className="custom-select text-center  form-control">
+            <option >Choose Your Business Type</option>
+            <option value={ props.businessType }>hair salon</option>
+            <option value={ props.businessType }>nails</option>
+            <option value={ props.businessType }>other</option>
           </select>
         </div>
 
@@ -62,8 +62,19 @@ const BusinessInfo = (props) => {
           value={ props.business_email } // Prop: The username input data
           onChange={ props.handleChange } // Prop: Puts data into the state
         />
+                <Label className="mt-2 mb-0" for="business_description">business description</Label>
+        <Input
+          type="text"
+          name="business_description"
+          id="business_description"
+          placeholder="Enter business description"
+          value={ props.business_description } // Prop: The username input data
+          onChange={ props.handleChange } // Prop: Puts data into the state
+        />
 
-        <Label className="mt-2 mb-0" for="photo_gallery">Upload pictures</Label>
+        <Label class="custom-file-label" for="photo_gallery">Upload pictures</Label>
+
+
 
         <div className="d-flex flex-column gap-2">
           { selectedImage && (
@@ -79,6 +90,7 @@ const BusinessInfo = (props) => {
             </div>
           ) }
           <input
+          className="custom-file-input"
             type="file"
             name="myImage"
             lable="choose image"

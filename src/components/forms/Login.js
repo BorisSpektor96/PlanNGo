@@ -38,12 +38,14 @@ const Login = (props) => {
           </div>
         </div>
 
-        <button onClick={ logIn } type="button" className="btn btn-primary btn-block mb-4">Sign in</button>
+        <div className="d-flex justify-content-center">
+          <button onClick={ logIn } type="button" className="btn btn-primary btn-block mb-4">Sign in</button>
+        </div>
 
         <div className="text-center">
           <p>Not a member? <a href="#!">Register</a></p>
-
         </div>
+
       </form>
     </Modal>
   );

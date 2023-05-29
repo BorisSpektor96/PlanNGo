@@ -7,7 +7,7 @@ import Review from "./components/review/Review";
 import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
-import AppointmentCalendar from './components/Calendar/AppointmentCalendar';
+import Profile from './components/profile/profile';
 
 const routes = [
   { path: '/', componentName: Review },
@@ -15,7 +15,8 @@ const routes = [
   { path: '/Welcome', componentName: Welcome },
   { path: '/BusinessesMenu', componentName: BusinessesMenu },
   { path: '/BusinessPage', componentName: BusinessPage },
-  { path: '/AppointmentCalendar', componentName: AppointmentCalendar },
+  // { path: '/AppointmentCalendar', componentName: AppointmentCalendar },
+  { path: '/Profile', componentName: Profile },
 ]
 
 function App() {

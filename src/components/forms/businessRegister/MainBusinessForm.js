@@ -9,6 +9,7 @@ import {
   CardText,
   CardFooter,
 } from "reactstrap";
+import Modal from "../../UI/Modal";
 
 import BusinessInfo from "./BusinessInfo";
 import PersonalInfo from "./PersonalInfo";
@@ -19,43 +20,30 @@ import MultiStepProgressBar from "./MultiStepProgressBar";
 class MainBusinessForm extends Component {
   constructor(props) {
     super(props);
-
-    // Set the intiial input values
     this.state = {
       currentStep: 1,
-      type: "",
       email: "",
-      business_email: "",
+      password: "",
       fullname: "",
       personal_phone: "",
-      business_phone: "",
-      password: "",
+      userType: "B",
       address: "",
+      business_phone: "",
+      business_email: "",
       business_name: "",
-      description: "",
-      services: [
-        {
-          name: "",
-          price: "",
-          time: "",
-        },
-      ],
-      products: [
-        {
-          serial_number: "",
-          price: "",
-          description: "",
-          name: "",
-          picture: "",
-          quantity: "",
-        },
-      ],
+      business_description: "",
+      businessType: "",
+      services: [],
+      products: [],
       photo_gallery: [],
     };
 
     // Bind the submission to handleChange()
     this.handleChange = this.handleChange.bind(this);
-
+    this.handleServices = this.handleServices.bind(this);
+    this.deleteServicesHandler = this.deleteServicesHandler.bind(this);
+    this.handleProducts = this.handleProducts.bind(this);
+    this.deleteProductHandler = this.deleteProductHandler.bind(this);
     // Bind new functions for next and previous
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
@@ -64,22 +52,116 @@ class MainBusinessForm extends Component {
   // Use the submitted data to set the state
   handleChange(event) {
     const { name, value } = event.target;
+
     this.setState({
       [ name ]: value,
     });
   }
+  handleBusinessType(type) {
+    this.setState((state) => {
+      state.businessType = type;
+    });
+  }
+  handleServices(serviceType, name, price, duration, id) {
+    this.setState((state) => {
+      const services = [
+        ...state.services,
+        { serviceType, name, price, duration, id },
+      ];
+
+      return {
+        services,
+      };
+    });
+  }
+  deleteServicesHandler = (serviceId) => {
+    this.setState((state) => {
+      const services = state.services.filter(
+        (service) => service.id !== serviceId
+      );
+
+      return {
+        services,
+      };
+    });
+  };
+
+  handleProducts(productId, price, description, name, quantity, Lid) {
+    this.setState((state) => {
+      const products = [
+        ...state.products,
+        { productId, price, description, name, quantity, Lid },
+      ];
+
+      return {
+        products,
+      };
+    });
+  }
+
+  deleteProductHandler = (serialID) => {
+    this.setState((state) => {
+      const products = state.products.filter(
+        (product) => product.productId !== serialID
+      );
+
+      return {
+        products,
+      };
+    });
+  };
 
   // Trigger an alert on form submission
   handleSubmit = (event) => {
     event.preventDefault();
-    const { email, fullname, password, business_phone, address, type } = this.state;
+    const {
+      email,
+      fullname,
+      password,
+      business_phone,
+      address,
+      businessType,
+      business_name,
+      business_email,
+      services,
+      business_description,
+    } = this.state;
+    services.forEach((service, index) => {
+      let servicesString = "";
+
+      servicesString += `Service ${index + 1}: \n`;
+      servicesString += `Service Type: ${service.serviceType} \n`;
+      servicesString += `Name: ${service.name} \n`;
+      servicesString += `Price: ${service.price} \n`;
+      servicesString += `Duration: ${service.duration} \n`;
+      servicesString += `ID: ${service.id} \n`;
+      servicesString += "---------------------- \n";
+    });
+
+    console.log("Services:");
+    services.forEach((service, index) => {
+      console.log(`Service ${index + 1}:`);
+      console.log(`Service Type: ${service.serviceType}`);
+      console.log(`Name: ${service.name}`);
+      console.log(`Price: ${service.price}`);
+      console.log(`Duration: ${service.duration}`);
+      console.log(`ID: ${service.id}`);
+      console.log("----------------------");
+    });
+
     alert(`Your registration detail: \n 
+    "personal info:"\n
       Email: ${email} \n 
       fullname: ${fullname} \n
       Password: ${password}\n
+      address: ${address}\n
+
+    "business info:"\n
+    businessType: ${businessType}\n
       business_phone: ${business_phone}\n
-      type: ${type}\n
-      address: ${address}
+      business_email:${business_email}\n
+      business_name:${business_name}\n
+      description:${business_description}\n
       `);
   };
 
@@ -152,8 +234,13 @@ class MainBusinessForm extends Component {
 
   render() {
     return (
-      <>
+      <Modal >
+
         <Form className="pb-5" onSubmit={ this.handleSubmit }>
+          <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
+            <button type="button" class="btn-close" aria-label="Close" onClick={ this.props.onClose }></button>
+
+          </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
@@ -164,22 +251,23 @@ class MainBusinessForm extends Component {
               <PersonalInfo
                 currentStep={ this.state.currentStep }
                 handleChange={ this.handleChange }
-                email={ this.state.email }
               />
               <BusinessInfo
                 currentStep={ this.state.currentStep }
                 handleChange={ this.handleChange }
-                email={ this.state.username }
+                handleBusinessType={ this.handleBusinessType }
               />
               <Services
                 currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                email={ this.state.password }
+                handleServices={ this.handleServices }
+                deleteServicesHandler={ this.deleteServicesHandler }
+                services={ this.state.services }
               />
               <Products
                 currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                email={ this.state.password }
+                handleProducts={ this.handleProducts }
+                deleteProductHandler={ this.deleteProductHandler }
+                products={ this.state.products }
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
@@ -189,7 +277,7 @@ class MainBusinessForm extends Component {
             </CardFooter>
           </Card>
         </Form>
-      </>
+      </Modal>
     );
   }
 }

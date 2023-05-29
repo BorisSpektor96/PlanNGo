@@ -6,7 +6,6 @@ import BusinessFormat from "./BusinessFormat";
 
 const BusinessesMenu = () => {
 
-
   const listOfBusinesses = [
     {
       id: "123",

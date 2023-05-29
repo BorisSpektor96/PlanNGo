@@ -1,22 +1,41 @@
+import { Fragment, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import styles from "./BusinessPage.module.css"
 import Review from "../../review/Review";
-import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import Calendar from "../../Calendar/AppointmentCalendar";
+import AddReview from '../../review/AddReview'
 
 const BusinessPage = (props) => {
 
+  const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
+  const [ calendarIsShown, setCalendarIsShown ] = useState(false);
 
+  const scheduleOpenView = () => {
+    setCalendarIsShown(true)
+    console.log(calendarIsShown)
+  };
+  const hideCalendarHandler = () => {
+    setCalendarIsShown(false)
+  };
+
+  const showAddReview = () => {
+    setAddReviewIsShown(true);
+  };
+  const hideFormHandler = () => {
+    setAddReviewIsShown(false);
+  };
 
   const location = useLocation();
   const businessDetails = location.state;
-  console.log(businessDetails);
 
   const pathToBackMenu = '/BusinessesMenu';
 
   return (
     <Fragment>
+      { calendarIsShown && <Calendar onClose={ hideCalendarHandler } /> }
+
       <div className="d-flex justify-content-between p-5">
         <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
           <lord-icon
@@ -60,7 +79,9 @@ const BusinessPage = (props) => {
           </div>
 
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
-            <button className="d-flex btn btn-outline-primary align-items-center">
+            <button className="d-flex btn btn-outline-primary align-items-center"
+              onClick={ scheduleOpenView }
+            >
               <lord-icon
                 src="https://cdn.lordicon.com/kbtmbyzy.json"
                 trigger="loop"
@@ -72,7 +93,8 @@ const BusinessPage = (props) => {
                 Schedule appointment
               </p>
             </button>
-            <button className="d-flex btn btn-outline-success align-items-center">
+
+            <button onClick={ showAddReview } className="d-flex btn btn-outline-success align-items-center">
               <lord-icon
                 src="https://cdn.lordicon.com/puvaffet.json"
                 trigger="loop"
@@ -81,6 +103,7 @@ const BusinessPage = (props) => {
               </lord-icon>
               <p className="m-0 ms-2">Add Review</p>
             </button>
+
             <button className="d-flex btn btn-outline-warning align-items-center">
               <lord-icon
                 src="https://cdn.lordicon.com/ytuosppc.json"
@@ -99,11 +122,12 @@ const BusinessPage = (props) => {
           <div>
             <div className="mt-5">
               <h3>Reviews</h3>
-              <Review />
             </div>
+            <Review />
           </div>
         </div>
       </div>
+      { addReviewIsShown && <AddReview onClose={ hideFormHandler } /> }
     </Fragment>
   )
 }
