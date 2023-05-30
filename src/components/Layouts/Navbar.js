@@ -24,10 +24,6 @@ const OffcanvasExample = (props) => {
       tabName: 'Massages',
       pathName: '/'
     },
-    {
-      tabName: 'Profile',
-      pathName: '/Profile'
-    },
   ];
 
   const listOfNavTabs = (

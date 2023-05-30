@@ -15,7 +15,6 @@ const routes = [
   { path: '/Welcome', componentName: Welcome },
   { path: '/BusinessesMenu', componentName: BusinessesMenu },
   { path: '/BusinessPage', componentName: BusinessPage },
-  // { path: '/AppointmentCalendar', componentName: AppointmentCalendar },
   { path: '/Profile', componentName: Profile },
 ]
 

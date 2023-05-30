@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import {
-  Form,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  CardText,
+  Form, Button, Card, CardHeader,
+  CardBody, CardTitle, CardText,
   CardFooter,
 } from "reactstrap";
 import Modal from "../../UI/Modal";
@@ -86,11 +81,11 @@ class MainBusinessForm extends Component {
     });
   };
 
-  handleProducts(productId, price, description, name, quantity, Lid) {
+  handleProducts(productId, price, description, name, quantity) {
     this.setState((state) => {
       const products = [
         ...state.products,
-        { productId, price, description, name, quantity, Lid },
+        { productId, price, description, name, quantity },
       ];
 
       return {
@@ -127,6 +122,7 @@ class MainBusinessForm extends Component {
       business_description,
     } = this.state;
     services.forEach((service, index) => {
+
       let servicesString = "";
 
       servicesString += `Service ${index + 1}: \n`;
@@ -236,7 +232,7 @@ class MainBusinessForm extends Component {
     return (
       <Modal >
 
-        <Form className="pb-5" onSubmit={ this.handleSubmit }>
+        <form className="pb-5" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button type="button" class="btn-close" aria-label="Close" onClick={ this.props.onClose }></button>
 
@@ -276,7 +272,7 @@ class MainBusinessForm extends Component {
               { this.submitButton }
             </CardFooter>
           </Card>
-        </Form>
+        </form>
       </Modal>
     );
   }

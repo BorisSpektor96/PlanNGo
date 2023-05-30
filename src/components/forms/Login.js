@@ -9,7 +9,19 @@ const Login = (props) => {
   }
 
   return (
-    <Modal dal onClose={ props.onClose }>
+    <Modal>
+
+
+      <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          dal
+          onClick={ props.onClose }
+        ></button>
+      </div>
+
       <form>
         <h1 className="display-4 text-center">Login </h1>
 
