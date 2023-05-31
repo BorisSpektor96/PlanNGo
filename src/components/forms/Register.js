@@ -42,7 +42,7 @@ const Register = (props) => {
       type: "text",
       placeholder: "Password",
       label: "Password",
-      pattern: `(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}`,
+      pattern: `(?=.*)(?=.*[a-z])(?=.*[A-Z]).{8,}`,
       required: true,
       errorMessage:
         "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",

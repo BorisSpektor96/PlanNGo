@@ -7,7 +7,7 @@ import Review from "./components/review/Review";
 import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
-import Profile from './components/profile/profile';
+import Profile from './components/profile/Profile'
 
 const routes = [
   { path: '/', componentName: Review },

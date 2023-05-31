@@ -1,0 +1,15 @@
+tr {
+  font-size: 14px;
+}
+.hide {
+  transform: scaleY(0);
+  height: 0vh;
+}
+.show {
+  transform: scaleY(1);
+  transform-origin: bottom;
+  transition: 1s;
+}
+.curserBtn {
+  cursor: pointer;
+}

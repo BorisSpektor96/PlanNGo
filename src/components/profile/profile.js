@@ -1,14 +1,16 @@
 import { useState } from "react"
 import FormInput from "../forms/FormInput"
+import ServicesProfile from "./ServicesProfile";
+import ProductsProfile from "./ProductsProfile";
+import './profile.css'
 
 const Profile = () => {
 
-  const [ editMode, setEditMode ] = useState(false)
+  const [ editAccountMode, setEditAccountMode ] = useState(false)
 
   const editHandler = () => {
-    setEditMode(!editMode)
+    setEditAccountMode(!editAccountMode)
   }
-
 
   const [ profileInfo, setProfileInfo ] = useState({
     firstname: "Boris",
@@ -18,25 +20,28 @@ const Profile = () => {
     businessName: "Something",
     BusinessDescription: "Lorem Ipsum is simply dummy text of the printing",
     phoneNumber: "05412345678",
+    images: [],
     products: [
       {
-        Id: "1",
+        id: "1",
         name: "product name1",
         quantity: 5,
         price: 123,
         description: "lorem ipsu111111m dular lorem ipsum dular",
+        image: "",
       },
       {
-        Id: "2",
+        id: "2",
         name: "product name2",
         quantity: 52,
         price: 444,
         description: "lorem22222 ipsum dular lorem ipsum dular",
+        image: "",
       },
     ],
     services: [
       {
-        Id: "1",
+        id: "1",
         name: "service name1",
         duration: "30",
         price: 4,
@@ -44,7 +49,7 @@ const Profile = () => {
         type: "sometype1",
       },
       {
-        Id: "2",
+        id: "2",
         name: "service name2",
         duration: "60",
         price: 444,
@@ -130,11 +135,10 @@ const Profile = () => {
           { listOfInfoAndInput.map((input, key) => (
             < div className="col-sm-5 d-flex flex-wrap" key={ key } >
               {
-                editMode
+                editAccountMode
                   ? <FormInput
                     key={ key }
                     { ...input }
-                    let
                     onChange={ handlerProfileEdit }
                     onInput={ handlerProfileEdit }
                   />
@@ -149,7 +153,7 @@ const Profile = () => {
           <div className="card-body p-0">
 
             < label className="form-label" for="BusinessDescription">Business Description: </label>
-            { editMode
+            { editAccountMode
               ? <textarea rows="5"
                 onChange={ handlerProfileEdit }
                 name="BusinessDescription"
@@ -162,7 +166,7 @@ const Profile = () => {
             }
           </div>
         </div>
-        { editMode &&
+        { editAccountMode &&
           <button className="btn btn-primary" type="submit" >Save changes</button>
         }
       </div >
@@ -171,48 +175,65 @@ const Profile = () => {
   )
 
 
+
   return (
-    <div className="container-xl px-4 mt-4 mb-4">
-      <div className="d-flex gap-4 flex-wrap">
-        <div className="row">
+    <>
+      <div className="container-xl px-4 mt-4 mb-4">
+        <div className="d-flex gap-4 flex-wrap">
 
-          <div className="col-xl-4">
-            <div className="card mb-4 mb-xl-0">
-              <div className="card-header">Profile Picture</div>
-              <div className="card-body text-center">
-                <img className="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
-                <div className="small font-italic text-muted mb-4">
-                  <button className="btn btn-primary" type="button">Upload new image</button>
+          <div className="row">
+
+            <div className="col-xl-4">
+              <div className="card mb-4 mb-xl-0">
+                <div className="card-header">Profile Picture</div>
+                <div className="card-body text-center">
+                  <img className="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
+                  <div className="small font-italic text-muted mb-4">
+                    <button className="btn btn-primary" type="button">Upload new image</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="col-xl-8">
-            <div className="row d-flex mb-3">
-              <div className="col-6 d-flex align-items-end">
-                Account Details
-              </div>
-              { !editMode &&
-                <div className="col-6 d-flex justify-content-end">
-                  <button className="border btn btn-outline-Wraning" onClick={ editHandler }>
-                    <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
-                    <lord-icon
-                      src="https://cdn.lordicon.com/puvaffet.json"
-                      trigger="loop"
-                      colors="primary:#121331,secondary:#2516c7"
-                      styles="width:250px;height:250px">
-                    </lord-icon>
-                  </button>
+            <div className="col-xl-8">
+              <div className="row d-flex mb-3">
+                <div className="col-6 d-flex align-items-end">
+                  <u>Account Details</u>
                 </div>
-              }
+                { !editAccountMode &&
+                  <div className="col-6 d-flex justify-content-end">
+                    <button className="border btn btn-outline-Wraning" onClick={ editHandler }>
+                      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                      <lord-icon
+                        src="https://cdn.lordicon.com/puvaffet.json"
+                        trigger="loop"
+                        colors="primary:#121331,secondary:#2516c7"
+                        styles="width:250px;height:250px">
+                      </lord-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+              { showLabelInputList }
             </div>
-            { showLabelInputList }
+
           </div>
 
         </div>
-      </div>
-    </div >
+      </div >
+
+      <ProductsProfile className
+        setProfileInfo={ setProfileInfo }
+        submitHandler={ submitHandler }
+        profileInfo={ profileInfo }
+      />
+
+      <ServicesProfile
+        setProfileInfo={ setProfileInfo }
+        submitHandler={ submitHandler }
+        profileInfo={ profileInfo }
+      />
+    </>
   )
 
 }
