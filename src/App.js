@@ -9,6 +9,8 @@ import Layout from './components/Layouts/Layout';
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
 import Profile from './components/profile/Profile'
 
+import { ProfileInfoProvider } from './ProfileInfoContext';
+
 const routes = [
   { path: '/', componentName: Review },
   { path: '/Review', componentName: Review },
@@ -36,18 +38,21 @@ function App() {
   ));
 
   return (
-    <div className="main">
-      { loginStatus ?
-        <BrowserRouter BrowserRouter className="Routes BrowserRouter">
-          <Routes>
-            <Route element={ <Layout setToLogout={ logOut } /> }>
-              { routeOfComponents }
-            </Route>
-          </Routes>
-        </BrowserRouter>
-        : <Welcome setToLogin={ logIn } />
-      }
-    </div >
+
+    <ProfileInfoProvider>
+      <div className="main">
+        { loginStatus ?
+          <BrowserRouter BrowserRouter className="Routes BrowserRouter">
+            <Routes>
+              <Route element={ <Layout setToLogout={ logOut } /> }>
+                { routeOfComponents }
+              </Route>
+            </Routes>
+          </BrowserRouter>
+          : <Welcome setToLogin={ logIn } />
+        }
+      </div >
+    </ProfileInfoProvider >
   );
 }
 export default App;

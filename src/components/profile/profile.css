@@ -7,8 +7,8 @@ tr {
 }
 .show {
   transform: scaleY(1);
-  transform-origin: bottom;
-  transition: 1s;
+  transform-origin: top;
+  transition: 0.5s;
 }
 .curserBtn {
   cursor: pointer;

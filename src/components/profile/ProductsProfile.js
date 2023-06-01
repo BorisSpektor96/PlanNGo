@@ -4,7 +4,6 @@ import './profile.css'
 
 const ProductsProfile = props => {
 
-
   const [ editProductsMode, setEditProductsMode ] = useState(false)
 
   const editProductsModeHandler = () => {
@@ -14,6 +13,7 @@ const ProductsProfile = props => {
   const [ productId, setProductId ] = useState(
     parseInt(props.profileInfo.products[ props.profileInfo.products.length - 1 ].id) + 1
   );
+
   const [ product, setProduct ] = useState({
     name: "",
     quantity: 0,
@@ -30,10 +30,10 @@ const ProductsProfile = props => {
     }));
   };
 
-  const submitProductsHandler = (e) => {
-    e.preventDefault()
-    editProductsModeHandler()
-  }
+  // const submitProductsHandler = (e) => {
+  //   e.preventDefault()
+  //   editProductsModeHandler()
+  // }
 
   const addProducteHandler = (e) => {
     e.preventDefault()
@@ -105,12 +105,10 @@ const ProductsProfile = props => {
   ]
 
   const showProductAddInputs = (
-    <div className={ !editProductsMode ? "hide" : "show" }>
+    <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
       <form onSubmit={ addProducteHandler }>
         {
-          // editProductsMode
-          // &&
-          <div className="card xl-12">
+          <div className="xl-12">
             <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
               { productsListInputs.map((input, key) => (
                 < div className=" d-flex flex-wrap" key={ key } >
@@ -127,9 +125,8 @@ const ProductsProfile = props => {
               ))
               }
             </div>
-            <div className="d-flex justify-content-center mb-3">
-              <button
-                className="btn btn-success mt-3"
+            <div className="d-flex justify-content-center ">
+              <button className="mt-3 text-center col-4 btn btn-success"
                 type="submit"
               >
                 Add Product
@@ -142,19 +139,20 @@ const ProductsProfile = props => {
   )
 
   const showProductsInTable = (
-    <div className="d-flex flex-column m-3">
-      <div className="col">
-        <div className="d-flex justify-content-between p-1 mb-2">
-          <div className="d-flex align-items-end">
-            <u>Products Details</u>
+    <div className="p-0 d-flex flex-column m-3">
+      <div className="border border-primary">
+        <div className="card-header d-flex justify-content-around p-1">
+          <div className="d-flex align-items-center">
+            Products Details
           </div>
           { !editProductsMode
-            && <div className="">
-              <button className="border btn btn-outline-Wraning" onClick={ editProductsModeHandler }>
+            && <div>
+              <button className="border-0" onClick={ editProductsModeHandler }>
                 <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                 <lord-icon
                   src="https://cdn.lordicon.com/puvaffet.json"
                   trigger="loop"
+                  stroke="85"
                   colors="primary:#121331,secondary:#2516c7"
                   styles="width:250px;height:250px">
                 </lord-icon>
@@ -163,7 +161,7 @@ const ProductsProfile = props => {
           }
         </div>
       </div>
-      <table className="table table-striped table-hover mt-3 mb-3">
+      <table className="table table-striped table-hover">
         <thead>
           { props.profileInfo.products.length > 0 && (
             <tr className="table-secondary">
@@ -198,13 +196,12 @@ const ProductsProfile = props => {
               <td className="text-center">{ product.quantity }</td>
               <td className="text-center">{ product.description }</td>
               { editProductsMode &&
-                <td className="">
-                  <btn className="curserBtn"
+                <td className="text-center">
+                  <button className="btn p-0 m-0"
                     onClick={ () => {
                       deleteProductHandler(product.id);
                     } }
                   >
-                    {/* X */ }
                     <lord-icon
                       src="https://cdn.lordicon.com/gsqxdxog.json"
                       trigger="hover"
@@ -212,24 +209,25 @@ const ProductsProfile = props => {
                       stroke="100"
                       styles="width:250px;height:250px"
                     ></lord-icon>
-                  </btn>
+                  </button>
                 </td>
               }
 
             </tr>
           )) }
         </tbody>
-
       </table>
       {
         editProductsMode
         &&
-        <button className="btn btn-primary"
-          type="button"
-          onClick={ editProductsModeHandler }
-        >
-          Save changes
-        </button>
+        <div className="d-flex justify-content-center ">
+          <button className="mb-3 text-center col-4 btn btn-primary"
+            type="button"
+            onClick={ editProductsModeHandler }
+          >
+            Save changes
+          </button>
+        </div>
       }
     </div>
   )
@@ -237,7 +235,6 @@ const ProductsProfile = props => {
   return (
     <div className="d-flex justify-content-center">
       <div className="col-lg-11">
-        {/* { editProductsMode && showProductAddInputs } */ }
         { showProductAddInputs }
         { showProductsInTable }
       </div >

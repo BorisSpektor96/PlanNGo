@@ -1,13 +1,17 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import FormInput from "../forms/FormInput"
+import { ProfileInfoContext } from '../../ProfileInfoContext';
 
 const ServicesProfile = props => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+
   const [ service, setService ] = useState({
     name: "",
-    duration: 0,
     price: 0,
+    duration: 0,
     type: "",
     description: "",
     image: "",
@@ -16,6 +20,45 @@ const ServicesProfile = props => {
   const editServiceModeHandler = () => {
     setEditServicesMode(!editServicesMode)
   }
+
+  const [ serviceId, setServiceId ] = useState(
+    profileInfo.services[ profileInfo.services.length - 1 ].id + 1
+  );
+
+  const handleInputServiceChange = (e) => {
+    const { name, value } = e.target;
+    setService(prevData => ({
+      ...prevData,
+      [ name ]: value
+    }));
+  };
+
+  const submitServiceForm = (e) => {
+    e.preventDefault()
+
+    setServiceId((serviceId + 1))
+
+    const newService = {
+      id: serviceId,
+      ...service,
+    }
+    const updatedServices = [ ...localProfileInfo.services, newService ]
+    setLocalProfileInfo(prevState => ({
+      ...prevState,
+      services: [ ...prevState.services, newService ]
+    }));
+    dispatch({ type: 'UPDATE_SERVICES', payload: updatedServices });
+    console.log(profileInfo.services)
+  }
+
+  const deleteServiceHandler = (serviceId) => {
+    setLocalProfileInfo(prevState => ({
+      ...prevState,
+      services: prevState.services.filter(service => service.id !== serviceId)
+    }));
+    console.log(localProfileInfo.services)
+    dispatch({ type: 'UPDATE_SERVICES', payload: localProfileInfo.services });
+  };
 
   const servicesListInputs = [
     {
@@ -48,15 +91,6 @@ const ServicesProfile = props => {
       errorMessage: "Must Be Duration to Service Can't Be 0",
     },
     {
-      id: "description",
-      name: "description",
-      type: "text",
-      label: "Description",
-      placeholder: "Enter Product Description: ",
-      required: true,
-      errorMessage: "Must Be Description to the Product",
-    },
-    {
       id: "type",
       name: "type",
       type: "text",
@@ -64,6 +98,15 @@ const ServicesProfile = props => {
       placeholder: "Enter Service type: ",
       required: true,
       errorMessage: "Must Be type to the Service",
+    },
+    {
+      id: "description",
+      name: "description",
+      type: "text",
+      label: "Description",
+      placeholder: "Enter Product Description: ",
+      required: true,
+      errorMessage: "Must Be Description to the Product",
     },
     {
       id: "image",
@@ -77,22 +120,21 @@ const ServicesProfile = props => {
   ]
 
   const showServiceAddInputs = (
-    <div>
-      <form >
-        {/* <form onSubmit={ addServiceHandler }> */ }
+    <div className={ !editServicesMode ? "hide" : "show pt-4 pb-4 card" }>
+      <form onSubmit={ submitServiceForm }>
         {
           editServicesMode
           &&
-          <div className="card xl-12">
-            <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
+          <div className="">
+            <div className="d-flex flex-wrap gap-3 justify-content-center">
               { servicesListInputs.map((input, key) => (
                 < div className=" d-flex flex-wrap" key={ key } >
                   <div>
                     <FormInput
                       key={ key }
                       { ...input }
-                      value={ service[ input.name ] }
-                    // onChange={ handleInputProductChange }
+                      value={ profileInfo[ input.name ] }
+                      onChange={ handleInputServiceChange }
                     />
 
                   </div>
@@ -100,9 +142,8 @@ const ServicesProfile = props => {
               ))
               }
             </div>
-            <div className="d-flex justify-content-center mb-3">
-              <button
-                className="btn btn-success mt-3"
+            <div className="d-flex justify-content-center ">
+              <button className="mt-3 text-center col-4 btn btn-success"
                 type="submit"
               >
                 Add Service
@@ -116,20 +157,21 @@ const ServicesProfile = props => {
 
   const showServicesInTable = (
     <div className="d-flex flex-column m-3">
-      <div className="col">
-        <div className="d-flex justify-content-between p-1 mb-2">
-          <div className="d-flex align-items-end">
-            <u>Services Details</u>
+      <div className="col card border-primary">
+        <div className="card-header d-flex justify-content-around p-1">
+          <div className="d-flex align-items-center">
+            Services Details
           </div>
           { !editServicesMode
-            && <div className="">
-              <button className="border btn btn-outline-Wraning"
+            && <div>
+              <button className="border-0"
                 onClick={ editServiceModeHandler }
               >
                 <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                 <lord-icon
                   src="https://cdn.lordicon.com/puvaffet.json"
                   trigger="loop"
+                  stroke="85"
                   colors="primary:#121331,secondary:#2516c7"
                   styles="width:250px;height:250px">
                 </lord-icon>
@@ -138,7 +180,7 @@ const ServicesProfile = props => {
           }
         </div>
       </div>
-      <table table className="table table-striped table-hover mt-3 mb-3" >
+      <table className="card-body table table-striped table-hover">
         <thead>
           <tr className="table-secondary ">
             <th className="text-center  " scope="col">
@@ -165,7 +207,7 @@ const ServicesProfile = props => {
           </tr>
         </thead>
         <tbody>
-          { props.profileInfo.services.map((service) => (
+          { profileInfo.services.map((service) => (
             <tr key={ service.id } className="table-secondary">
 
               <td className="text-center">{ service.name }</td>
@@ -175,12 +217,18 @@ const ServicesProfile = props => {
               <td className="text-center">{ service.description }</td>
               { editServicesMode &&
                 <td className="text-center">
-                  <button className="btn btn-danger"
+                  <button className="btn p-0 m-0"
                     onClick={ () => {
-                      // props.deleteServicesHandler(service.id);
+                      deleteServiceHandler(service.id);
                     } }
                   >
-                    X
+                    <lord-icon
+                      src="https://cdn.lordicon.com/gsqxdxog.json"
+                      trigger="hover"
+                      colors="primary:#c71f16,secondary:#000000"
+                      stroke="100"
+                      styles="width:250px;height:250px"
+                    ></lord-icon>
                   </button>
                 </td>
               }
@@ -191,24 +239,26 @@ const ServicesProfile = props => {
       {
         editServicesMode
         &&
-        <button className="btn btn-primary"
-          type="button"
-          onClick={ editServiceModeHandler }
-        >
-          Save changes
-        </button>
+        <div className="d-flex justify-content-center ">
+          <button className="mb-3 text-center col-4 btn btn-primary"
+            type="button"
+            onClick={ editServiceModeHandler }
+          >
+            Save changes
+          </button>
+        </div>
       }
     </div>
   )
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-11">
+      <div className="col-lg-11 rounded">
+        { showServiceAddInputs }
         { showServicesInTable }
       </div >
     </div >
   )
 
 }
-
-export default ServicesProfile
+export default ServicesProfile;
