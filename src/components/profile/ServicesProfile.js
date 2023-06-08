@@ -2,11 +2,13 @@ import { useState, useContext } from "react"
 import FormInput from "../forms/FormInput"
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 
-const ServicesProfile = props => {
+const ServicesProfile = () => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+
+  let len = localProfileInfo.services.length.toString()
 
   const [ service, setService ] = useState({
     name: "",
@@ -35,29 +37,34 @@ const ServicesProfile = props => {
 
   const submitServiceForm = (e) => {
     e.preventDefault()
-
     setServiceId((serviceId + 1))
-
     const newService = {
       id: serviceId,
       ...service,
     }
     const updatedServices = [ ...localProfileInfo.services, newService ]
-    setLocalProfileInfo(prevState => ({
-      ...prevState,
-      services: [ ...prevState.services, newService ]
+    setLocalProfileInfo(prev => ({
+      ...prev,
+      services: [ ...prev.services, newService ]
     }));
     dispatch({ type: 'UPDATE_SERVICES', payload: updatedServices });
-    console.log(profileInfo.services)
   }
 
   const deleteServiceHandler = (serviceId) => {
-    setLocalProfileInfo(prevState => ({
-      ...prevState,
-      services: prevState.services.filter(service => service.id !== serviceId)
+    const updatedServices = localProfileInfo.services.filter(service => service.id !== serviceId
+    )
+    setLocalProfileInfo(prev => ({
+      ...prev,
+      services: updatedServices
     }));
-    console.log(localProfileInfo.services)
-    dispatch({ type: 'UPDATE_SERVICES', payload: localProfileInfo.services });
+    dispatch({ type: 'DELETE_SERVICE', payload: updatedServices });
+    // if (localProfileInfo.services.length > 0) {
+    //   setLocalProfileInfo((prevState) => ({
+    //     ...prevState,
+    //     services: prevState.services.filter(service => service.id !== serviceId)
+    //   }));
+    //   dispatch({ type: 'UPDATE_SERVICES', payload: localProfileInfo.services });
+    // }
   };
 
   const servicesListInputs = [
@@ -207,33 +214,40 @@ const ServicesProfile = props => {
           </tr>
         </thead>
         <tbody>
-          { profileInfo.services.map((service) => (
-            <tr key={ service.id } className="table-secondary">
+          { localProfileInfo.services.length > 0 ? (
+            localProfileInfo.services.map((service) => (
+              <tr key={ service.id } className="table-secondary">
 
-              <td className="text-center">{ service.name }</td>
-              <td className="text-center">{ service.type }</td>
-              <td className="text-center">{ service.price }</td>
-              <td className="text-center">{ service.duration }</td>
-              <td className="text-center">{ service.description }</td>
-              { editServicesMode &&
-                <td className="text-center">
-                  <button className="btn p-0 m-0"
-                    onClick={ () => {
-                      deleteServiceHandler(service.id);
-                    } }
-                  >
-                    <lord-icon
-                      src="https://cdn.lordicon.com/gsqxdxog.json"
-                      trigger="hover"
-                      colors="primary:#c71f16,secondary:#000000"
-                      stroke="100"
-                      styles="width:250px;height:250px"
-                    ></lord-icon>
-                  </button>
-                </td>
-              }
+                <td className="text-center">{ service.name }</td>
+                <td className="text-center">{ service.type }</td>
+                <td className="text-center">{ service.price }</td>
+                <td className="text-center">{ service.duration }</td>
+                <td className="text-center">{ service.description }</td>
+
+                { editServicesMode &&
+                  <td className="text-center">
+                    <button className="btn p-0 m-0"
+                      onClick={ () => {
+                        deleteServiceHandler(service.id);
+                      } }
+                    >
+                      <lord-icon
+                        src="https://cdn.lordicon.com/gsqxdxog.json"
+                        trigger="hover"
+                        colors="primary:#c71f16,secondary:#000000"
+                        stroke="100"
+                        styles="width:250px;height:250px"
+                      ></lord-icon>
+                    </button>
+                  </td>
+                }
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">No Services</td>
             </tr>
-          )) }
+          ) }
         </tbody>
       </table >
       {
@@ -254,6 +268,7 @@ const ServicesProfile = props => {
   return (
     <div className="d-flex justify-content-center">
       <div className="col-lg-11 rounded">
+        { len }
         { showServiceAddInputs }
         { showServicesInTable }
       </div >

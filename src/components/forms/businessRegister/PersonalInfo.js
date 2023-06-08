@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import FormInput from "../FormInput";
 
 const PersonalInfo = (props) => {
-  const [ formValues, setformValues ] = useState({
+  const [formValues, setformValues] = useState({
     fullName: "",
     email: "",
     password: "",
@@ -10,7 +10,7 @@ const PersonalInfo = (props) => {
     phoneNumber: "",
     userType: "Business",
   });
-  if (props.currentStep !== 1) {
+    if (props.currentStep !== 1) {
     return null;
   }
 
@@ -70,25 +70,25 @@ const PersonalInfo = (props) => {
   ];
 
   const onChange = (e) => {
-    setformValues({ ...formValues, [ e.target.name ]: e.target.value });
+    setformValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
   return (
     <>
       <p className="text-center display-6">Personal Information</p>
-      {/* <form> */ }
-      { inputs.map((input) => (
-        <FormInput
-          key={ input.id }
-          { ...input }
-          let
-          v={ formValues[ input.name ] }
-          value={ props.v }
-          onInput={ onChange }
-          onChange={ props.handleChange }
-        />
-      )) }
-      {/* </form> */ }
+      <form>
+        {inputs.map((input) => (
+          <FormInput
+            key={input.id}
+            {...input}
+            let
+            v={formValues[input.name]}
+            value={props.v}
+            onInput={onChange}
+            onChange={props.handleChange}
+          />
+        ))}
+      </form>
     </>
   );
 };

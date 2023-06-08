@@ -3,16 +3,15 @@ import { FormGroup, Button, Label, Input } from "reactstrap";
 import { useState } from "react";
 
 const Services = (props) => {
-  const [ enteredName, setEnteredName ] = useState("");
-  const [ enteredPrice, setEnteredPrice ] = useState("");
-  const [ enteredDuration, SetEnteredDuration ] = useState("");
-  const [ enteredType, SetEnteredType ] = useState("");
-  let [ serviceId, SetserviceId ] = useState(1);
-
+  const [enteredName, setEnteredName] = useState("");
+  const [enteredPrice, setEnteredPrice] = useState("");
+  const [enteredDuration, SetEnteredDuration] = useState("");
+  const [enteredType, SetEnteredType] = useState("");
+  let [serviceId, SetserviceId] = useState(1);
   const addServiceHandler = (event) => {
     event.preventDefault(); // Prevents the page from refreshing
-    SetserviceId(serviceId + 1);
-    props.handleServices(enteredType, enteredName, enteredPrice, enteredDuration, serviceId)
+    SetserviceId(serviceId+1);
+   props.handleServices(enteredType, enteredName,enteredPrice,enteredDuration,serviceId)
   }
 
 
@@ -43,37 +42,37 @@ const Services = (props) => {
         <Input
           id="name"
           type="text"
-          value={ enteredName }
-          onChange={ nameChangeHandler }
+          value={enteredName}
+          onChange={nameChangeHandler}
         />
 
-        <Label htmlFor="type">Service type</Label>
+<Label htmlFor="type">Service type</Label>
         <Input
           id="type"
           type="text"
-          value={ enteredType }
-          onChange={ typeChangeHandler }
+          value={enteredType}
+          onChange={typeChangeHandler}
         />
 
         <Label htmlFor="price">Price</Label>
         <Input
           id="price"
           type="text"
-          value={ enteredPrice }
-          onChange={ priceChangeHandler }
+          value={enteredPrice}
+          onChange={priceChangeHandler}
         />
 
         <Label htmlFor="duration">Duration (enter min)</Label>
         <Input
           id="duration"
           type="number"
-          value={ enteredDuration }
-          onChange={ durationHandler }
+          value={enteredDuration}
+          onChange={durationHandler}
         />
 
         <Button
           className="btn btn-success mt-3"
-          onClick={ addServiceHandler }
+          onClick={addServiceHandler}
           type="submit"
         >
           Add Service
@@ -81,7 +80,7 @@ const Services = (props) => {
 
         <table className="table table-striped table-hover mt-3 mb-3">
           <thead>
-            { props.services.length > 0 && (
+            {props.services.length > 0 && (
               <tr className="table-secondary ">
                 <th className="text-center  " scope="col">
                   Service Name
@@ -95,25 +94,26 @@ const Services = (props) => {
                 <th className="text-center" scope="col">
                   type
                 </th>
-                <th scope="col">
+                <th  scope="col">
                   Remove
                 </th>
               </tr>
-            ) }
+            )}
           </thead>
           <tbody>
-            { props.services.map((service) => (
-              <tr key={ service.id } className="table-secondary">
-
-                <td className="text-center">{ service.name }</td>
-                <td className="text-center">{ service.price }</td>
-                <td className="text-center">{ service.duration }</td>
-                <td className="text-center">{ service.serviceType }</td>
+            {props.services.map((service) => (
+              <tr key={service.id} className="table-secondary">
+          
+                <td className="text-center">{service.name}</td>
+                <td className="text-center">{service.price}</td>
+                <td className="text-center">{service.duration}</td>
+                <td className="text-center">{service.serviceType}</td>
                 <td className="text-center">
                   <button className="btn"
-                    onClick={ () => {
+                  type="button"
+                    onClick={() => {
                       props.deleteServicesHandler(service.id);
-                    } }
+                    }}
                   >
                     <lord-icon
                       src="https://cdn.lordicon.com/gsqxdxog.json"
@@ -123,9 +123,8 @@ const Services = (props) => {
                     ></lord-icon>
                   </button>
                 </td>
-
               </tr>
-            )) }
+            ))}
           </tbody>
         </table>
       </FormGroup>

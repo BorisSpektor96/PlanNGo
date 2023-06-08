@@ -62,9 +62,9 @@ const Profile = () => {
     <>
       <div className="mt-4 mb-4">
         <AccountProfile
-          setProfileInfo={ setProfileInfo }
-          submitHandler={ submitHandler }
-          profileInfo={ profileInfo }
+        // setProfileInfo={ setProfileInfo }
+        // submitHandler={ submitHandler }
+        // profileInfo={ profileInfo }
         />
       </div>
       <div className="mt-4 mb-4">

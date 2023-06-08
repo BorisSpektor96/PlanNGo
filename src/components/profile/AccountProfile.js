@@ -3,15 +3,16 @@ import FormInput from "../forms/FormInput"
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 
-const AccountProfile = props => {
+const AccountProfile = () => {
 
   const [ editAccountMode, setEditAccountMode ] = useState(false)
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
   const editHandler = () => {
     setEditAccountMode(!editAccountMode)
   }
+
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
   const handlerInputProfileEdit = (e) => {
     setLocalProfileInfo({
@@ -92,7 +93,7 @@ const AccountProfile = props => {
                   :
                   <div className="">
                     < label className="form-label" for={ input.id }>{ input.label } </label>
-                    <div className="">{ profileInfo[ input.name ] }</div>
+                    <div className="">{ localProfileInfo[ input.name ] }</div>
                   </div>
               }
             </div>
@@ -106,14 +107,14 @@ const AccountProfile = props => {
                 <textarea rows="5"
                   onChange={ handlerInputProfileEdit }
                   name="businessDescription"
-                  value={ profileInfo.BusinessDescription }
+                  value={ localProfileInfo.businessDescription }
                   className="form-control"
                 />
               </div>
               : <div className="d-flex flex-column align-items-center justify-content-center">
                 < label className="form-label" for="BusinessDescription">Business Description: </label>
                 <div>
-                  { profileInfo.BusinessDescription }
+                  { localProfileInfo.businessDescription }
                 </div>
               </div>
             }

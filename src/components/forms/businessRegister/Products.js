@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 
 const Products = (props) => {
-  const [ selectedImage, setSelectedImage ] = useState("");
+  const [ selectedImage, setSelectedImage ] = useState(null);
   const [ enteredDescription, setEnteredDescription ] = useState("");
   const [ enteredName, setEnteredName ] = useState("");
   const [ enteredQuantity, setEnteredQuantity ] = useState(1);
@@ -17,7 +17,8 @@ const Products = (props) => {
       enteredPrice,
       enteredDescription,
       enteredName,
-      enteredQuantity
+      enteredQuantity,
+      selectedImage,
     );
   };
 
@@ -98,24 +99,11 @@ const Products = (props) => {
           Products picture
         </Label>
         <div className="d-flex flex-column gap-2">
-          { selectedImage && (
-            <div className="d-flex justify-content-around">
-              <img
-                alt="not found"
-                width={ "50px" }
-                height={ "50px" }
-                src={ URL.createObjectURL(selectedImage) }
-              />
-              <br />
-              <button className="btn btn-outline-danger" onClick={ () => setSelectedImage(null) }>Remove</button>
-            </div>
-          ) }
           <input
             type="file"
             name="myImage"
             lable="choose image"
             onChange={ (event) => {
-              console.log(event.target.files[ 0 ]);
               setSelectedImage(event.target.files[ 0 ]);
             } }
           />
@@ -148,6 +136,9 @@ const Products = (props) => {
                 <th className="text-center" scope="col">
                   Description
                 </th>
+                <th className="text-center" scope="col">
+                  image
+                </th>
                 <th scope="col">Remove</th>
               </tr>
             ) }
@@ -161,8 +152,18 @@ const Products = (props) => {
                 <td className="text-center">{ product.price }</td>
                 <td className="text-center">{ product.quantity }</td>
                 <td className="text-center">{ product.description }</td>
+                <td className=" text-center">
+                  
+                {selectedImage&&<img
+                className="img-thumbnail w-75 h-75"
+                alt="not found"
+                src={URL.createObjectURL(product.photo)}
+                />}
+                </td>
+
                 <td className="text-center">
                   <button className="btn"
+                  type="button"
                     onClick={ () => {
                       props.deleteProductHandler(product.productId);
                     } }

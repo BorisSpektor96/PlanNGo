@@ -8,12 +8,12 @@ const initialState = {
   email: "mail@gmail.com",
   businessAddress: "Israel TLV",
   businessName: "Something",
-  businessDescription: "Lorem Ipsum is simply dummy text of the printing",
+  businessDescription: "Lorem Ipsum is simply dummsy text of the printing",
   phoneNumber: "05412345678",
   images: [],
   products: [
     {
-      id: "1",
+      id: 1,
       name: "product name1",
       quantity: 5,
       price: 123,
@@ -21,7 +21,7 @@ const initialState = {
       image: "",
     },
     {
-      id: "2",
+      id: 2,
       name: "product name2",
       quantity: 52,
       price: 444,
@@ -58,6 +58,18 @@ const profileInfoReducer = (state, action) => {
       return { ...state, products: action.payload };
     case 'UPDATE_SERVICES':
       return { ...state, services: action.payload };
+    case 'DELETE_SERVICE':
+      if (state.services.length > 0) {
+        return { ...state, services: action.payload };
+      } else {
+        return { ...state, services: [] }
+      }
+    case 'DELETE_PRODUCT':
+      if (state.products.length > 0) {
+        return { ...state, products: action.payload };
+      } else {
+        return { ...state, products: [] }
+      }
     default:
       return state;
   }

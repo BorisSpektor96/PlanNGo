@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Modal from "../UI/Modal";
+
 import FormInput from "./FormInput";
-
 const Register = (props) => {
-  const [ RememberMe, RememberMehandler ] = useState(false);
+  const [RememberMe, RememberMehandler] = useState(false);
 
-  const [ formValues, setformValues ] = useState({
+  const [formValues, setformValues] = useState({
     fullName: "",
     email: "",
     password: "",
@@ -42,7 +42,7 @@ const Register = (props) => {
       type: "text",
       placeholder: "Password",
       label: "Password",
-      pattern: `(?=.*)(?=.*[a-z])(?=.*[A-Z]).{8,}`,
+      pattern: `(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}`,
       required: true,
       errorMessage:
         "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
@@ -80,30 +80,30 @@ const Register = (props) => {
   };
 
   const onChange = (e) => {
-    setformValues({ ...formValues, [ e.target.name ]: e.target.value });
+    setformValues({ ...formValues, [e.target.name]: e.target.value });
   };
   return (
     <Modal>
-      <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
+      <div class="d-flex flex-row justify-content-end p-1 w-100 p-0 ">
         <button
           type="button"
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={ props.onClose }
+          onClick={props.onClose}
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
-      <form class=" p-4" onSubmit={ submitHandler }>
-        { inputs.map((input) => (
+      <form class=" p-1" onSubmit={submitHandler}>
+        {inputs.map((input) => (
           <FormInput
-            key={ input.id }
-            { ...input }
-            value={ formValues[ input.name ] }
-            onChange={ onChange }
+            key={input.id}
+            {...input}
+            value={formValues[input.name]}
+            onChange={onChange}
           />
-        )) }
+        ))}
         <div className="row mb-4">
           <div className="col d-flex ">
             <div className="form-check">
@@ -117,7 +117,7 @@ const Register = (props) => {
               <label
                 className="form-check-label"
                 for="form2Example31"
-                onChange={ RememberMeCheckbox }
+                onChange={RememberMeCheckbox}
               >
                 Remember me
               </label>

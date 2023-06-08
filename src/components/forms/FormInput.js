@@ -3,14 +3,16 @@ import "./formInput.css";
 const FormInput = (props) => {
   const { label, errorMessage, onChange, id, ...inputProps } = props;
 
+
+
   return (
     <div className="formInput">
-      <label className="form-label">{ label }</label>
+      <label  className="form-label">{label}</label>
       <input className="form-control"
-        { ...inputProps }
-        onChange={ onChange }
+        {...inputProps}
+        onChange={onChange}
       />
-      <span>{ errorMessage }</span>
+      <span>{errorMessage}</span>
     </div>
   );
 };

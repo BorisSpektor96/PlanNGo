@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import {
-  Form, Button, Card, CardHeader,
-  CardBody, CardTitle, CardText,
+  Form,
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  CardText,
   CardFooter,
 } from "reactstrap";
 import Modal from "../../UI/Modal";
@@ -30,7 +35,7 @@ class MainBusinessForm extends Component {
       businessType: "",
       services: [],
       products: [],
-      photo_gallery: [],
+      business_photo_gallery: [],
     };
 
     // Bind the submission to handleChange()
@@ -39,6 +44,10 @@ class MainBusinessForm extends Component {
     this.deleteServicesHandler = this.deleteServicesHandler.bind(this);
     this.handleProducts = this.handleProducts.bind(this);
     this.deleteProductHandler = this.deleteProductHandler.bind(this);
+    this.handleBusinessType = this.handleBusinessType.bind(this);
+    this.handleInsertImage = this.handleInsertImage.bind(this);
+    this.handleDeleteImage = this.handleDeleteImage.bind(this);
+
     // Bind new functions for next and previous
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
@@ -49,14 +58,13 @@ class MainBusinessForm extends Component {
     const { name, value } = event.target;
 
     this.setState({
-      [ name ]: value,
+      [name]: value,
     });
   }
   handleBusinessType(type) {
-    this.setState((state) => {
-      state.businessType = type;
-    });
+    this.setState({ businessType: type });
   }
+
   handleServices(serviceType, name, price, duration, id) {
     this.setState((state) => {
       const services = [
@@ -81,11 +89,11 @@ class MainBusinessForm extends Component {
     });
   };
 
-  handleProducts(productId, price, description, name, quantity) {
+  handleProducts(productId, price, description, name, quantity, photo) {
     this.setState((state) => {
       const products = [
         ...state.products,
-        { productId, price, description, name, quantity },
+        { productId, price, description, name, quantity, photo },
       ];
 
       return {
@@ -106,59 +114,53 @@ class MainBusinessForm extends Component {
     });
   };
 
+  handleInsertImage = (selectedFiles) => {
+    this.setState((prevState) => {
+      const business_photo_gallery = [
+        ...prevState.business_photo_gallery,
+        ...selectedFiles,
+      ];
+      console.log("business_photo_gallery");
+
+      for (let i = 0; i < business_photo_gallery.length; i++) {
+        const file = business_photo_gallery[i];
+        console.log(i);
+
+        console.log("File Name:", file.name);
+        console.log("File Type:", file.type);
+        console.log("File Size:", file.size);
+      }
+      return { business_photo_gallery };
+    });
+  };
+
+  handleDeleteImage = (index) => {
+    this.setState((state) => {
+      const business_photo_gallery = [...state.business_photo_gallery];
+      business_photo_gallery.splice(index, 1);
+      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:");
+
+      console.log("business_photo_gallery after delete:");
+
+      for (let i = 0; i < business_photo_gallery.length; i++) {
+        const file = business_photo_gallery[i];
+        console.log(i);
+
+        console.log("File Name:", file.name);
+        console.log("File Type:", file.type);
+        console.log("File Size:", file.size);
+      }
+      return {
+        business_photo_gallery,
+      };
+    });
+  };
+
   // Trigger an alert on form submission
   handleSubmit = (event) => {
     event.preventDefault();
-    const {
-      email,
-      fullname,
-      password,
-      business_phone,
-      address,
-      businessType,
-      business_name,
-      business_email,
-      services,
-      business_description,
-    } = this.state;
-    services.forEach((service, index) => {
+    console.log(this.state);
 
-      let servicesString = "";
-
-      servicesString += `Service ${index + 1}: \n`;
-      servicesString += `Service Type: ${service.serviceType} \n`;
-      servicesString += `Name: ${service.name} \n`;
-      servicesString += `Price: ${service.price} \n`;
-      servicesString += `Duration: ${service.duration} \n`;
-      servicesString += `ID: ${service.id} \n`;
-      servicesString += "---------------------- \n";
-    });
-
-    console.log("Services:");
-    services.forEach((service, index) => {
-      console.log(`Service ${index + 1}:`);
-      console.log(`Service Type: ${service.serviceType}`);
-      console.log(`Name: ${service.name}`);
-      console.log(`Price: ${service.price}`);
-      console.log(`Duration: ${service.duration}`);
-      console.log(`ID: ${service.id}`);
-      console.log("----------------------");
-    });
-
-    alert(`Your registration detail: \n 
-    "personal info:"\n
-      Email: ${email} \n 
-      fullname: ${fullname} \n
-      Password: ${password}\n
-      address: ${address}\n
-
-    "business info:"\n
-    businessType: ${businessType}\n
-      business_phone: ${business_phone}\n
-      business_email:${business_email}\n
-      business_name:${business_name}\n
-      description:${business_description}\n
-      `);
   };
 
   // Test current step with ternary
@@ -193,7 +195,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={ this._prev }>
+        <Button color="secondary float-left" onClick={this._prev}>
           Previous
         </Button>
       );
@@ -208,7 +210,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 3, then render the "next" button
     if (currentStep < 4) {
       return (
-        <Button color="primary float-right" onClick={ this._next }>
+        <Button color="primary float-right" onClick={this._next}>
           Next
         </Button>
       );
@@ -230,49 +232,55 @@ class MainBusinessForm extends Component {
 
   render() {
     return (
-      <Modal >
-
-        <form className="pb-5" onSubmit={ this.handleSubmit }>
+      <Modal>
+        <Form className="pb-5" onSubmit={this.handleSubmit}>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
-            <button type="button" class="btn-close" aria-label="Close" onClick={ this.props.onClose }></button>
-
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Close"
+              onClick={this.props.onClose}
+            ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={ this.state.currentStep } />
+                <MultiStepProgressBar currentStep={this.state.currentStep} />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
               />
               <BusinessInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                handleBusinessType={ this.handleBusinessType }
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
+                handleBusinessType={this.handleBusinessType}
+                handleInsertImage={this.handleInsertImage}
+                handleDeleteImage={this.handleDeleteImage}
+                business_photo_gallery={this.state.business_photo_gallery}
               />
               <Services
-                currentStep={ this.state.currentStep }
-                handleServices={ this.handleServices }
-                deleteServicesHandler={ this.deleteServicesHandler }
-                services={ this.state.services }
+                currentStep={this.state.currentStep}
+                handleServices={this.handleServices}
+                deleteServicesHandler={this.deleteServicesHandler}
+                services={this.state.services}
               />
               <Products
-                currentStep={ this.state.currentStep }
-                handleProducts={ this.handleProducts }
-                deleteProductHandler={ this.deleteProductHandler }
-                products={ this.state.products }
+                currentStep={this.state.currentStep}
+                handleProducts={this.handleProducts}
+                deleteProductHandler={this.deleteProductHandler}
+                products={this.state.products}
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              { this.previousButton }
-              { this.nextButton }
-              { this.submitButton }
+              {this.previousButton}
+              {this.nextButton}
+              {this.submitButton}
             </CardFooter>
           </Card>
-        </form>
+        </Form>
       </Modal>
     );
   }

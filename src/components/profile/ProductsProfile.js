@@ -1,17 +1,16 @@
 import FormInput from "../forms/FormInput"
-import { useState } from "react";
+import { useState, useContext } from "react";
 import './profile.css'
+import { ProfileInfoContext } from '../../ProfileInfoContext';
 
-const ProductsProfile = props => {
+const ProductsProfile = () => {
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
-
-  const editProductsModeHandler = () => {
-    setEditProductsMode(!editProductsMode)
-  }
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
   const [ productId, setProductId ] = useState(
-    parseInt(props.profileInfo.products[ props.profileInfo.products.length - 1 ].id) + 1
+    profileInfo.products[ profileInfo.products.length - 1 ].id + 1
   );
 
   const [ product, setProduct ] = useState({
@@ -22,36 +21,54 @@ const ProductsProfile = props => {
     image: "",
   })
 
-  const handleInputProductChange = (event) => {
-    const { name, value } = event.target;
+
+  const editProductsModeHandler = () => {
+    setEditProductsMode(!editProductsMode)
+  }
+
+  const inputProductHandlerChange = (e) => {
+
+    const { name, value } = e.target
     setProduct(prevData => ({
       ...prevData,
       [ name ]: value
-    }));
+    }))
+
   };
 
-  // const submitProductsHandler = (e) => {
-  //   e.preventDefault()
-  //   editProductsModeHandler()
-  // }
-
-  const addProducteHandler = (e) => {
+  const submitProductsHandler = (e) => {
     e.preventDefault()
-    setProductId((parseInt(productId) + 1).toString())
+
+    setProductId((productId + 1))
+
     const newProduct = {
       id: productId,
-      ...product,
-    };
-    props.setProfileInfo(prevState => ({
-      ...prevState,
-      products: [ ...prevState.products, newProduct ]
-    }));
+      ...product
+    }
+    const updateProducts = [ ...localProfileInfo.products, newProduct ]
+    setLocalProfileInfo(prev => ({
+      ...prev, products: [ ...prev.products, newProduct ]
+    }))
+    dispatch({ type: 'UPDATE_PRODUCTS', payload: updateProducts });
+    // console.log(localProfileInfo.products)
   }
+
   const deleteProductHandler = (productId) => {
-    props.setProfileInfo(prevState => ({
-      ...prevState,
-      products: prevState.products.filter(product => product.id !== productId)
+    const updatedProducts = localProfileInfo.products.filter(product => product.id !== productId
+    )
+    setLocalProfileInfo(prev => ({
+      ...prev,
+      products: updatedProducts
     }));
+    dispatch({ type: 'DELETE_PRODUCT', payload: updatedProducts });
+    // if (localProfileInfo.products.length > 0) {
+    //   setLocalProfileInfo(prevState => ({
+    //     // ...prevState,
+    //     products: prevState.products.filter(product => product.id !== productId)
+    //   }));
+    //   dispatch({ type: 'UPDATE_PRODUCTS', payload: localProfileInfo.products });
+    // }
+
   };
 
   const productsListInputs = [
@@ -106,7 +123,7 @@ const ProductsProfile = props => {
 
   const showProductAddInputs = (
     <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
-      <form onSubmit={ addProducteHandler }>
+      <form onSubmit={ submitProductsHandler }>
         {
           <div className="xl-12">
             <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
@@ -116,8 +133,8 @@ const ProductsProfile = props => {
                     <FormInput
                       key={ key }
                       { ...input }
-                      value={ product[ input.name ] }
-                      onChange={ handleInputProductChange }
+                      value={ localProfileInfo[ input.name ] }
+                      onChange={ inputProductHandlerChange }
                     />
 
                   </div>
@@ -163,7 +180,7 @@ const ProductsProfile = props => {
       </div>
       <table className="table table-striped table-hover">
         <thead>
-          { props.profileInfo.products.length > 0 && (
+          { profileInfo.products.length > 0 && (
             <tr className="table-secondary">
               <th className="text-center" scope="col">
                 #
@@ -187,34 +204,41 @@ const ProductsProfile = props => {
           ) }
         </thead>
         <tbody>
-          { props.profileInfo.products.map((product) => (
-            <tr key={ product.productId } className="table-secondary">
+          { localProfileInfo.products.length > 0 ? (
+            localProfileInfo.products.map((product) => (
+              <tr tr key={ product.id } className="table-secondary" >
 
-              <td className="text-center">{ product.id }</td>
-              <td className="text-center">{ product.name }</td>
-              <td className="text-center">{ product.price }</td>
-              <td className="text-center">{ product.quantity }</td>
-              <td className="text-center">{ product.description }</td>
-              { editProductsMode &&
-                <td className="text-center">
-                  <button className="btn p-0 m-0"
-                    onClick={ () => {
-                      deleteProductHandler(product.id);
-                    } }
-                  >
-                    <lord-icon
-                      src="https://cdn.lordicon.com/gsqxdxog.json"
-                      trigger="hover"
-                      colors="primary:#c71f16,secondary:#000000"
-                      stroke="100"
-                      styles="width:250px;height:250px"
-                    ></lord-icon>
-                  </button>
-                </td>
-              }
+                <td className="text-center">{ product.id }</td>
+                <td className="text-center">{ product.name }</td>
+                <td className="text-center">{ product.price }</td>
+                <td className="text-center">{ product.quantity }</td>
+                <td className="text-center">{ product.description }</td>
 
+                { editProductsMode &&
+                  <td className="text-center">
+                    <button className="btn p-0 m-0"
+                      onClick={ () => {
+                        deleteProductHandler(product.id);
+                      } }
+                    >
+                      <lord-icon
+                        src="https://cdn.lordicon.com/gsqxdxog.json"
+                        trigger="hover"
+                        colors="primary:#c71f16,secondary:#000000"
+                        stroke="100"
+                        styles="width:250px;height:250px"
+                      ></lord-icon>
+                    </button>
+                  </td>
+                }
+
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">No Products</td>
             </tr>
-          )) }
+          ) }
         </tbody>
       </table>
       {
@@ -229,7 +253,7 @@ const ProductsProfile = props => {
           </button>
         </div>
       }
-    </div>
+    </div >
   )
 
   return (

@@ -1,3 +1,5 @@
+
+
 label{
     font-size: 12px;
     color: gray;
@@ -9,6 +11,8 @@ span{
     color: red;
     display: none;
 }
+
+
 
 input:invalid:focus + span {
     display: block;
