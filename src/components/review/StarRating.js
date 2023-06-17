@@ -1,10 +1,16 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Star from "./Star";
-function StarRating({ onChange }) {
-  const [ rating, setRating ] = useState(0);
+function StarRating({ initialRating, onChange, disableOnChange  }) {
+  const [ rating, setRating ] = useState(initialRating);
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
+
   const changeRating = (newRating) => {
-    setRating(newRating);
-    onChange?.(newRating);
+    if (!disableOnChange) {
+      setRating(newRating);
+      onChange?.(newRating);
+    }
   };
   return (
     <div>

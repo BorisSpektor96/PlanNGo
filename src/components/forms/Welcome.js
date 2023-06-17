@@ -9,6 +9,32 @@ const Welcome = (props) => {
   const [RegisterIsShown, setRegisterIsShown] = useState(false);
   const [BusinessRegisterIsShown, setBusinessRegisterIsShown] = useState(false);
 
+  const settings = {
+    canvas: {
+      canvasFillSpace: true,
+      width: 200,
+      height: 200,
+      useBouncyWalls: false
+    },
+    particle: {
+      particleCount: 50,
+      color: '#94ecbe',
+      minSize: 2,
+      maxSize: 5
+    },
+    velocity: {
+      directionAngle: 0,
+      directionAngleVariance: 360,
+      minSpeed: 1,
+      maxSpeed: 3
+    },
+    opacity: {
+      minOpacity: 0,
+      maxOpacity: 0.5,
+      opacityTransitionTime: 3000
+    }
+  }
+  
   const showLoginHandler = () => {
     setLoginIsShown(true);
   };

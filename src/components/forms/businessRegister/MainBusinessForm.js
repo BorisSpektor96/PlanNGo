@@ -58,7 +58,7 @@ class MainBusinessForm extends Component {
     const { name, value } = event.target;
 
     this.setState({
-      [name]: value,
+      [ name ]: value,
     });
   }
   handleBusinessType(type) {
@@ -123,7 +123,7 @@ class MainBusinessForm extends Component {
       console.log("business_photo_gallery");
 
       for (let i = 0; i < business_photo_gallery.length; i++) {
-        const file = business_photo_gallery[i];
+        const file = business_photo_gallery[ i ];
         console.log(i);
 
         console.log("File Name:", file.name);
@@ -136,14 +136,14 @@ class MainBusinessForm extends Component {
 
   handleDeleteImage = (index) => {
     this.setState((state) => {
-      const business_photo_gallery = [...state.business_photo_gallery];
+      const business_photo_gallery = [ ...state.business_photo_gallery ];
       business_photo_gallery.splice(index, 1);
       console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:");
 
       console.log("business_photo_gallery after delete:");
 
       for (let i = 0; i < business_photo_gallery.length; i++) {
-        const file = business_photo_gallery[i];
+        const file = business_photo_gallery[ i ];
         console.log(i);
 
         console.log("File Name:", file.name);
@@ -195,7 +195,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={this._prev}>
+        <Button color="secondary float-left" onClick={ this._prev }>
           Previous
         </Button>
       );
@@ -210,7 +210,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 3, then render the "next" button
     if (currentStep < 4) {
       return (
-        <Button color="primary float-right" onClick={this._next}>
+        <Button color="primary float-right" onClick={ this._next }>
           Next
         </Button>
       );
@@ -233,51 +233,51 @@ class MainBusinessForm extends Component {
   render() {
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={this.handleSubmit}>
+        <Form className="pb-5" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={this.props.onClose}
+              onClick={ this.props.onClose }
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={this.state.currentStep} />
+                <MultiStepProgressBar currentStep={ this.state.currentStep } />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
               />
               <BusinessInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                handleBusinessType={this.handleBusinessType}
-                handleInsertImage={this.handleInsertImage}
-                handleDeleteImage={this.handleDeleteImage}
-                business_photo_gallery={this.state.business_photo_gallery}
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                handleBusinessType={ this.handleBusinessType }
+                handleInsertImage={ this.handleInsertImage }
+                handleDeleteImage={ this.handleDeleteImage }
+                business_photo_gallery={ this.state.business_photo_gallery }
               />
               <Services
-                currentStep={this.state.currentStep}
-                handleServices={this.handleServices}
-                deleteServicesHandler={this.deleteServicesHandler}
-                services={this.state.services}
+                currentStep={ this.state.currentStep }
+                handleServices={ this.handleServices }
+                deleteServicesHandler={ this.deleteServicesHandler }
+                services={ this.state.services }
               />
               <Products
-                currentStep={this.state.currentStep}
-                handleProducts={this.handleProducts}
-                deleteProductHandler={this.deleteProductHandler}
-                products={this.state.products}
+                currentStep={ this.state.currentStep }
+                handleProducts={ this.handleProducts }
+                deleteProductHandler={ this.deleteProductHandler }
+                products={ this.state.products }
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              {this.previousButton}
-              {this.nextButton}
-              {this.submitButton}
+              { this.previousButton }
+              { this.nextButton }
+              { this.submitButton }
             </CardFooter>
           </Card>
         </Form>

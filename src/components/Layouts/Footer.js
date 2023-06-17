@@ -5,10 +5,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import "bootstrap/dist/css/bootstrap.css";
-
+import "./Footer.css"
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="body2" >
       { 'Copyright © ' }
       <Link color="inherit" href="https://mui.com/">
         Your Website
@@ -21,19 +21,16 @@ function Copyright() {
 
 const Footer = () => {
   return (
-    <footer className='d-flex navbar-dark bg-success display-7'>
-      <CssBaseline />
+    <footer className=' bg-dark navbar-dark text-light  d-flex flex-column footer '>
+        <div >
 
-      <Box className="bg-success" component="footer" >
-        <Container maxWidth="sm">
-
-          <p>
+          <p class="nav-link  font-weight-light ">
             My sticky footer can be found here.
           </p>
           <Copyright />
 
-        </Container>
-      </Box>
+        </div>
+
     </footer>
   );
 }
