@@ -8,10 +8,11 @@ import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
 
 const BusinessPage = (props) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [ isFavorite, setIsFavorite ] = useState(false);
 
-  const [addReviewIsShown, setAddReviewIsShown] = useState(false);
-  const [calendarIsShown, setCalendarIsShown] = useState(false);
+  const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
+  const [ calendarIsShown, setCalendarIsShown ] = useState(false);
+
   const addToFavoritesHandler = () => {
     setIsFavorite(!isFavorite);
   };
@@ -37,10 +38,10 @@ const BusinessPage = (props) => {
 
   return (
     <Fragment>
-      {calendarIsShown && <Calendar onClose={hideCalendarHandler} />}
+      { calendarIsShown && <Calendar onClose={ hideCalendarHandler } /> }
 
       <div className="d-flex justify-content-between p-5">
-        <Link className="btn border-dark rounded pt-2" to={pathToBackMenu}>
+        <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
           <lord-icon
             src="https://cdn.lordicon.com/iiueiwdd.json"
             trigger="hover"
@@ -53,15 +54,15 @@ const BusinessPage = (props) => {
       <div className="d-flex flex-wrap justify-content-around p-4 mt-2 mb-5">
         <div className="card border-light ">
           <div className="d-flex justify-content-center">
-            <img className={styles.img} src="./logo512.png" alt="..." />
+            <img className={ styles.img } src="./logo512.png" alt="..." />
           </div>
         </div>
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
           <div className="card col-lg-4 col-lg-8 border-light ">
             <div className="card-body">
-              <h5 className="card-title">{businessDetails.businessName}</h5>
-              <p className="card-text">{businessDetails.businessDescription}</p>
+              <h5 className="card-title">{ businessDetails.businessName }</h5>
+              <p className="card-text">{ businessDetails.businessDescription }</p>
             </div>
           </div>
 
@@ -72,13 +73,13 @@ const BusinessPage = (props) => {
               </div>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item ">
-                  <p>{businessDetails.tel}</p>
+                  <p>{ businessDetails.tel }</p>
                 </li>
                 <li className="list-group-item ">
-                  <p>{businessDetails.address}</p>
+                  <p>{ businessDetails.address }</p>
                 </li>
                 <li className="list-group-item ">
-                  <p>{businessDetails.email}</p>
+                  <p>{ businessDetails.email }</p>
                 </li>
               </ul>
             </div>
@@ -87,7 +88,7 @@ const BusinessPage = (props) => {
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
             <button
               className="d-flex btn btn-outline-primary align-items-center"
-              onClick={scheduleOpenView}
+              onClick={ scheduleOpenView }
             >
               <lord-icon
                 src="https://cdn.lordicon.com/kbtmbyzy.json"
@@ -100,7 +101,7 @@ const BusinessPage = (props) => {
             </button>
 
             <button
-              onClick={showAddReview}
+              onClick={ showAddReview }
               className="d-flex btn btn-outline-success align-items-center"
             >
               <lord-icon
@@ -113,33 +114,32 @@ const BusinessPage = (props) => {
             </button>
 
             <button
-      className={`d-flex btn btn-outline-warning align-items-center ${
-        isFavorite ? "active" : ""
-      }`}
-      onClick={addToFavoritesHandler}
-    >
-      <lord-icon
-        src="https://cdn.lordicon.com/ytuosppc.json"
-        trigger="loop"
-        delay="1200"
-            colors={isFavorite ? "primary:#c71f16,secondary:#c71f16" : "primary:#4030e8,secondary:#c71f16"}
-        stroke="80"
-        styles="width:350px;height:350px;"
-      >
-      </lord-icon>
-      <p className="m-0 ">{isFavorite ? "" : "Add to favorites"}</p>
-    </button>
+              className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                }` }
+              onClick={ addToFavoritesHandler }
+            >
+              <lord-icon
+                src="https://cdn.lordicon.com/ytuosppc.json"
+                trigger="loop"
+                delay="1200"
+                colors={ isFavorite ? "primary:#c71f16,secondary:#c71f16" : "primary:#4030e8,secondary:#c71f16" }
+                stroke="80"
+                styles="width:350px;height:350px;"
+              >
+              </lord-icon>
+              <p className="m-0 ">{ isFavorite ? "" : "Add to favorites" }</p>
+            </button>
           </div>
 
           <div>
             <div className="mt-5">
               <h3>Reviews</h3>
             </div>
-            <Review />
+            <Review reviews={ businessDetails.reviews } />
           </div>
         </div>
       </div>
-      {addReviewIsShown && <AddReview onClose={hideFormHandler} />}
+      { addReviewIsShown && <AddReview businessDetails={ businessDetails } onClose={ hideFormHandler } /> }
     </Fragment>
   );
 };

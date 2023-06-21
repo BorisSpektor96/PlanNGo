@@ -14,10 +14,33 @@ const AddReview = (props) => {
   const handleSubmit = (event) => {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-
+    console.log(props.businessDetails)
     alert("review: " + enteredText + "\nRating: " + enteredRate + "\nDate: " + date);
     event.preventDefault();
   };
+
+  const postReviewToBusiness = async (Rcontent, rating, date) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+      console.log('User entered review successfully:', data);
+
+    } catch (error) {
+      console.error('Add review failed:', error);
+    }
+  };
+
 
   return (
     <Modal>
@@ -30,12 +53,13 @@ const AddReview = (props) => {
           onClick={ props.onClose }
         ></button>
       </div>
+
       <form onSubmit={ handleSubmit } className="form-outline   ">
         <p className="d-flex justify-content-center">add a review</p>
         <div className="d-flex flex-sm-column">
           <label>how was your visit?</label>
 
-          <textarea value={ enteredText } onChange={ handleText } />
+          <textarea name="Rcontent" value={ enteredText } onChange={ handleText } />
           <div className="d-flex p-2 justify-content-center">
             <StarRating onChange={ starHandler } />
           </div>

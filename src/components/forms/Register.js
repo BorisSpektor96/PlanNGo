@@ -3,9 +3,9 @@ import Modal from "../UI/Modal";
 
 import FormInput from "./FormInput";
 const Register = (props) => {
-  const [RememberMe, RememberMehandler] = useState(false);
+  const [ RememberMe, RememberMehandler ] = useState(false);
 
-  const [formValues, setformValues] = useState({
+  const [ formValues, setformValues ] = useState({
     fullName: "",
     email: "",
     password: "",
@@ -13,6 +13,34 @@ const Register = (props) => {
     phoneNumber: "",
     userType: "user",
   });
+
+  const DBreq = async (e) => {
+    try {
+      const response = await fetch('http://localhost:3001/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+      console.log('User registered successfully:', data);
+
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    console.log(formValues);
+    DBreq();
+  };
 
   const inputs = [
     {
@@ -74,13 +102,8 @@ const Register = (props) => {
     RememberMehandler(!RememberMe);
   };
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    console.log(formValues);
-  };
-
   const onChange = (e) => {
-    setformValues({ ...formValues, [e.target.name]: e.target.value });
+    setformValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
   return (
     <Modal>
@@ -90,20 +113,20 @@ const Register = (props) => {
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={props.onClose}
+          onClick={ props.onClose }
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
-      <form class=" p-1" onSubmit={submitHandler}>
-        {inputs.map((input) => (
+      <form class=" p-1" onSubmit={ submitHandler }>
+        { inputs.map((input) => (
           <FormInput
-            key={input.id}
-            {...input}
-            value={formValues[input.name]}
-            onChange={onChange}
+            key={ input.id }
+            { ...input }
+            value={ formValues[ input.name ] }
+            onChange={ onChange }
           />
-        ))}
+        )) }
         <div className="row mb-4">
           <div className="col d-flex ">
             <div className="form-check">
@@ -117,7 +140,7 @@ const Register = (props) => {
               <label
                 className="form-check-label"
                 for="form2Example31"
-                onChange={RememberMeCheckbox}
+                onChange={ RememberMeCheckbox }
               >
                 Remember me
               </label>

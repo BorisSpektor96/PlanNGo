@@ -32,10 +32,19 @@ const businessSchema = new mongoose.Schema({
       photo: String
     }
   ],
-  business_photo_gallery: [ String ]
-});
+  business_photo_gallery: [],
+  reviews: [
+    {
+      Rname: String,
+      Rating_date: String,
+      Rcontent: String,
+      rating: Number
+    }
+  ]
+},
+  { collection: 'users' },
+);
 
-const Business = mongoose.model('Business', businessSchema);
+const userBusinessModel = mongoose.model('Business', businessSchema);
 
-// module.exports = Business;
-export default Business;
+export default userBusinessModel;

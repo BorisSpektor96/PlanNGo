@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import styles from "./BusinessesMenu.module.css";
 import "bootstrap/dist/css/bootstrap.css";
 import SearchBar from "../forms/SearchBar";
 import BusinessFormat from "./BusinessFormat";
@@ -11,13 +10,10 @@ const BusinessesMenu = () => {
   const fetchBusinessesArr = async (e) => {
 
     try {
-      let response = await fetch('http://localhost:3000/business/userBusiness',
+      let response = await fetch('http://localhost:3001/business/getAllUsersBusiness',
         {
           method: "get",
-          // body: JSON.stringify(),
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers: { 'Content-Type': 'application/json' }
         }
       );
       if (!response.ok) {
@@ -38,28 +34,28 @@ const BusinessesMenu = () => {
           address: data[ key ].address,
           service: data[ key ].business_type,
           isBusiness: data[ key ].isBusiness,
-          businessDescription: data[ key ].business_description
+          businessDescription: data[ key ].business_description,
+          services: data[ key ].services,
+          products: data[ key ].products,
+          businessGallery: data[ key ].business_photo_gallery,
+          reviews: data[ key ].reviews
         });
       }
-
+      console.log(loadedBusiness[ 0 ].reviews)
       setListOfBusinesses(loadedBusiness);
-
     } catch (error) {
       console.log(error.message)
     }
   };
 
   useEffect(() => {
-    console.log("fetch");
     fetchBusinessesArr();
   }, []);
 
   useEffect(() => {
     const logTimeout = setTimeout(() => {
-      console.log("listOfBusinesses");
-      console.log(listOfBusinesses);
       setFilteredBusinesses(listOfBusinesses)
-    }, 200);
+    }, 100);
 
     return () => clearTimeout(logTimeout);
   }, [ listOfBusinesses ]);
@@ -105,7 +101,7 @@ const BusinessesMenu = () => {
         { noResults ? (
           <div>No businesses found based on the filter criteria.</div>
         ) : (
-          filteredBusinesses.map(({ id, businessName, businessDescription, tel, email, address }) => (
+          filteredBusinesses.map(({ id, businessName, businessDescription, tel, email, address, reviews }) => (
             <BusinessFormat
               key={ id }
               id={ id }
@@ -114,6 +110,7 @@ const BusinessesMenu = () => {
               tel={ tel }
               email={ email }
               address={ address }
+              reviews={ reviews }
             />
           ))
         ) }

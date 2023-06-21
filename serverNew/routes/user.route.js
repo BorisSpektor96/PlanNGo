@@ -1,17 +1,17 @@
 import express from "express";
-import db from "../configuration/mongodb.js";
-import User from '../models/User.js'
+// import db from "../configuration/mongodb.js";
+import userModel from '../models/User.js'
 
-const router = express.Router();
-const usersDB = db.collection("users")
+const userRouter = express.Router();
+// const usersDB = db.collection("users")
 
-router.post('/signup', async (req, res) => {
+userRouter.post('/signup', async (req, res) => {
   try {
-    const user = new User({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      age: req.body.age,
-      gender: req.body.gender,
+    const user = new userModel({
+      fullName: req.body.fullName,
+      email: req.body.email,
+      password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
     });
     await user.save();
     return res.status(201).json({ ok: true, uid: user.id });
@@ -23,25 +23,16 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
-router.get("/users", async (req, res) => {
+userRouter.get("/getAllUsers", async (req, res) => {
   try {
-    const allUsers = [];
-    const users = await usersDB.find({}).sort({ _id: -1 });
-    // const users = await usersDB.find({ business: true }).sort({ _id: -1 });
-    //can the result
-    await users.forEach((user) => {
-      // if (!user.business) {
-      allUsers.push(user);
-      // }
-    });
+    const allUsers = await userModel.find({});
     res.json(allUsers);
   } catch (err) {
     res.send("Error " + err);
   }
 });
 
-router.post("/newUser", async (req, res) => {
+userRouter.post("/newUser", async (req, res) => {
   const user = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -52,4 +43,4 @@ router.post("/newUser", async (req, res) => {
   res.status(200).json(result);
 });
 
-export default router;
+export default userRouter;
