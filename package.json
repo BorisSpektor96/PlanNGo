@@ -8,6 +8,7 @@
     "@mui/material": "^5.12.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.5",
     "lottie-web": "^5.11.0",

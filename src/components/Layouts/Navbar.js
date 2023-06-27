@@ -8,7 +8,6 @@ const OffcanvasExample = (props) => {
 
   const logOff3 = () => {
     props.setLogOut2(false)
-    console.log("Navbar Component");
   }
 
   const NavTabs = [
@@ -24,7 +23,7 @@ const OffcanvasExample = (props) => {
       tabName: 'Massages',
       pathName: '/'
     },
-    
+
   ];
 
   const listOfNavTabs = (
@@ -70,9 +69,12 @@ const OffcanvasExample = (props) => {
                   </Link>
                 </li>
                 <li className="nav-item me-1 my-1">
-                  <button onClick={ logOff3 } type="button" className="btn btn-outline-danger">
+                  <Link onClick={ logOff3 }
+                    type="button"
+                    className="btn btn-outline-danger"
+                    to="/Welcome">
                     Logout
-                  </button>
+                  </Link>
                 </li>
               </ul>
 

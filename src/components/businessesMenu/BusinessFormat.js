@@ -11,11 +11,11 @@ const BusinessFormat = (props) => {
 
   if (businessLogin) {
     return (
-      <div className="d-flex flex-wrap justify-content-around p-4 mt-2 mb-5">
+      <div className="col-12 d-flex flex-wrap justify-content-around p-4 mt-2 mb-2">
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
 
-          <div className="card border-light ">
+          <div className="card border-light">
             <div className="d-flex justify-content-center">
               <img src="./logo512.png" className={ styles.img } alt="..." />
             </div>
@@ -29,7 +29,7 @@ const BusinessFormat = (props) => {
             </div>
           </div>
 
-          <div className="card border-light" >
+          <div className="card col-lg-3 col-md-5 border-light" >
             <div className="card text-dark">
               <div className="border-dark card-header">
                 <h5>

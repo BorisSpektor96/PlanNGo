@@ -8,7 +8,6 @@ const BusinessesMenu = () => {
   const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
 
   const fetchBusinessesArr = async (e) => {
-
     try {
       let response = await fetch('http://localhost:3001/business/getAllUsersBusiness',
         {
@@ -41,7 +40,6 @@ const BusinessesMenu = () => {
           reviews: data[ key ].reviews
         });
       }
-      console.log(loadedBusiness[ 0 ].reviews)
       setListOfBusinesses(loadedBusiness);
     } catch (error) {
       console.log(error.message)
@@ -97,7 +95,7 @@ const BusinessesMenu = () => {
         setFilterLocation={ setFilterLocation }
         handleFilter={ handleFilter }
       />
-      <div className="d-flex flex-column p-3">
+      <div className="d-flex flex-column col-12">
         { noResults ? (
           <div>No businesses found based on the filter criteria.</div>
         ) : (

@@ -7,18 +7,23 @@ const Layout = (props) => {
 
   const logOff2 = (value) => {
     props.setToLogout(value)
-    console.log("Layout Component");
   }
+
+  const ifWelcomeDontShowComponent = window.location.pathname !== '/Welcome'
 
   return (
     <main>
-      <Navbar setLogOut2={ logOff2 } />
+      { ifWelcomeDontShowComponent &&
+        <Navbar setLogOut2={ logOff2 } />
+      }
       <div className='min-vh-100'>
 
         <Outlet />
 
       </div>
-      <Footer />
+      { ifWelcomeDontShowComponent &&
+        <Footer />
+      }
 
     </main >
   );

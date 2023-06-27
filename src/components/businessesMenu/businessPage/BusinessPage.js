@@ -33,6 +33,7 @@ const BusinessPage = (props) => {
 
   const location = useLocation();
   const businessDetails = location.state;
+  console.log(businessDetails)
 
   const pathToBackMenu = "/BusinessesMenu";
 
@@ -40,7 +41,7 @@ const BusinessPage = (props) => {
     <Fragment>
       { calendarIsShown && <Calendar onClose={ hideCalendarHandler } /> }
 
-      <div className="d-flex justify-content-between p-5">
+      <div className="d-flex justify-content-between pt-3 ps-5 p-1">
         <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
           <lord-icon
             src="https://cdn.lordicon.com/iiueiwdd.json"
@@ -51,22 +52,24 @@ const BusinessPage = (props) => {
         </Link>
       </div>
 
-      <div className="d-flex flex-wrap justify-content-around p-4 mt-2 mb-5">
-        <div className="card border-light ">
+      <div className="d-flex flex-wrap justify-content-around p-2 mt-1 mb-5">
+
+        <div className="card border-light">
           <div className="d-flex justify-content-center">
             <img className={ styles.img } src="./logo512.png" alt="..." />
           </div>
         </div>
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
-          <div className="card col-lg-4 col-lg-8 border-light ">
+
+          <div className="card col-lg-4 col-lg-8 border-info">
             <div className="card-body">
               <h5 className="card-title">{ businessDetails.businessName }</h5>
               <p className="card-text">{ businessDetails.businessDescription }</p>
             </div>
           </div>
 
-          <div className="card border-light">
+          <div className="card border-dark">
             <div className="card text-dark">
               <div className="border-dark card-header">
                 <h5>Contact:</h5>

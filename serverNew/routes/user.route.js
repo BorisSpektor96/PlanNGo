@@ -8,18 +8,28 @@ const userRouter = express.Router();
 userRouter.post('/signup', async (req, res) => {
   try {
     const user = new userModel({
-      fullName: req.body.fullName,
       email: req.body.email,
       password: req.body.password,
+      fullName: req.body.fullName,
       phoneNumber: req.body.phoneNumber,
     });
-    await user.save();
-    return res.status(201).json({ ok: true, uid: user.id });
+    const result = await user.create();
+    return res.status(200).json(result);
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ ok: false, error: 'duplicate' });
     }
-    return res.status(400).json({ ok: false });
+    return res.status(400).send(error);
+  }
+});
+
+userRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const loggedUser = await userModel.findOne({ email: email, password: password });
+    res.json(loggedUser);
+  } catch (err) {
+    res.send("Error " + err);
   }
 });
 
@@ -33,14 +43,19 @@ userRouter.get("/getAllUsers", async (req, res) => {
 });
 
 userRouter.post("/newUser", async (req, res) => {
-  const user = {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    age: req.body.age,
-    gender: req.body.gender,
-  };
-  const result = await users.insertOne(user);
-  res.status(200).json(result);
+  const newUser = {
+    email: req.body.email,
+    password: req.body.password,
+    fullName: req.body.fullName,
+    phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
+  }
+  try {
+    const result = await userModel.create(newUser);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 export default userRouter;

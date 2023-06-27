@@ -5,36 +5,10 @@ import styles from "./Welcome.module.css";
 import MainBusinessForm from "./businessRegister/MainBusinessForm";
 
 const Welcome = (props) => {
-  const [loginIsShown, setLoginIsShown] = useState(false);
-  const [RegisterIsShown, setRegisterIsShown] = useState(false);
-  const [BusinessRegisterIsShown, setBusinessRegisterIsShown] = useState(false);
+  const [ loginIsShown, setLoginIsShown ] = useState(false);
+  const [ RegisterIsShown, setRegisterIsShown ] = useState(false);
+  const [ BusinessRegisterIsShown, setBusinessRegisterIsShown ] = useState(false);
 
-  const settings = {
-    canvas: {
-      canvasFillSpace: true,
-      width: 200,
-      height: 200,
-      useBouncyWalls: false
-    },
-    particle: {
-      particleCount: 50,
-      color: '#94ecbe',
-      minSize: 2,
-      maxSize: 5
-    },
-    velocity: {
-      directionAngle: 0,
-      directionAngleVariance: 360,
-      minSpeed: 1,
-      maxSpeed: 3
-    },
-    opacity: {
-      minOpacity: 0,
-      maxOpacity: 0.5,
-      opacityTransitionTime: 3000
-    }
-  }
-  
   const showLoginHandler = () => {
     setLoginIsShown(true);
   };
@@ -59,45 +33,45 @@ const Welcome = (props) => {
 
   return (
     <Fragment>
-      {loginIsShown && (
-        <Login btnLogIn={setToLoggedIn} onClose={hideFormHandler} />
-      )}
-      {RegisterIsShown && <Register onClose={hideFormHandler} />}
-      {BusinessRegisterIsShown && (
-        <MainBusinessForm onClose={hideFormHandler} />
-      )}
+      { loginIsShown && (
+        <Login btnLogIn={ setToLoggedIn } onClose={ hideFormHandler } />
+      ) }
+      { RegisterIsShown && <Register onClose={ hideFormHandler } /> }
+      { BusinessRegisterIsShown && (
+        <MainBusinessForm onClose={ hideFormHandler } />
+      ) }
 
-      <div className={styles.container}>
+      <div className={ styles.container }>
         <div className="header">
           <h1 className="header display-4 text-center">Welcome </h1>
         </div>
 
-        <div className={styles.Bcontainer}>
-          <div className={styles.B2}>
+        <div className={ styles.Bcontainer }>
+          <div className={ styles.B2 }>
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={showLoginHandler}
+              onClick={ showLoginHandler }
             >
               Login
             </button>
           </div>
 
-          <div className={styles.B2}>
+          <div className={ styles.B2 }>
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={showRegisterHandler}
+              onClick={ showRegisterHandler }
             >
               Register
             </button>
           </div>
 
-          <div className={styles.B2}>
+          <div className={ styles.B2 }>
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={showBusinessRegisterHandler}
+              onClick={ showBusinessRegisterHandler }
             >
               Business Register
             </button>

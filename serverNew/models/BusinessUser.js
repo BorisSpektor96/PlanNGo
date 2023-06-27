@@ -35,14 +35,14 @@ const businessSchema = new mongoose.Schema({
   business_photo_gallery: [],
   reviews: [
     {
-      Rname: String,
-      Rating_date: String,
-      Rcontent: String,
+      reviewer: String,
+      date: String,
+      content: String,
       rating: Number
     }
   ]
 },
-  { collection: 'users' },
+  { collection: 'users', versionKey: false },
 );
 
 const userBusinessModel = mongoose.model('Business', businessSchema);

@@ -8,24 +8,28 @@ import BusinessesMenu from './components/businessesMenu/BusinessesMenu';
 import Layout from './components/Layouts/Layout';
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
 import Profile from './components/profile/Profile'
+import FavoritesList from './components/favorites/FavoritesList'
 
 import { ProfileInfoProvider } from './ProfileInfoContext';
 
 const routes = [
-  { path: '/', componentName: Review },
+  { path: '/', componentName: Welcome },
   { path: '/Review', componentName: Review },
   { path: '/Welcome', componentName: Welcome },
   { path: '/BusinessesMenu', componentName: BusinessesMenu },
   { path: '/BusinessPage', componentName: BusinessPage },
   { path: '/Profile', componentName: Profile },
+  { path: '/FavoritesList', componentName: FavoritesList },
 ]
 
 function App() {
   const [ loginStatus, setLogIn ] = useState(true);
 
-  const logOut = (value) => {
-    setLogIn(value)
+  const logOut = async (value) => {
+    await setLogIn(value)
+    localStorage.setItem('userData', 'empty')
     console.log('app log out')
+    console.log(localStorage.getItem('userData'))
   }
   const logIn = value => {
     setLogIn(value)
@@ -41,16 +45,16 @@ function App() {
 
     <ProfileInfoProvider>
       <div className="main">
-        { loginStatus ?
-          <BrowserRouter BrowserRouter className="Routes BrowserRouter">
-            <Routes>
-              <Route element={ <Layout setToLogout={ logOut } /> }>
-                { routeOfComponents }
-              </Route>
-            </Routes>
-          </BrowserRouter>
-          : <Welcome setToLogin={ logIn } />
-        }
+        {/* { loginStatus ? */ }
+        <BrowserRouter BrowserRouter className="Routes BrowserRouter">
+          <Routes>
+            <Route element={ <Layout setToLogout={ logOut } /> }>
+              { routeOfComponents }
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        {/* //   : <Welcome setToLogin={ logIn } /> */ }
+        {/* // } */ }
       </div >
     </ProfileInfoProvider >
   );

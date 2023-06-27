@@ -3,39 +3,45 @@ import StarRating from "./StarRating";
 import { useState } from "react";
 
 const AddReview = (props) => {
-  const [ enteredText, setEnteredText ] = useState("");
-  const [ enteredRate, setEnteredRate ] = useState("");
+  const [ reviewContent, setReviewContent ] = useState("");
+  const [ reviewRate, setreviewRate ] = useState("");
   function starHandler(value) {
-    setEnteredRate(value.toString());
+    setreviewRate(value.toString());
   }
-  const handleText = (event) => {
-    setEnteredText(event.target.value);
-  };
-  const handleSubmit = (event) => {
-    const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    console.log(props.businessDetails)
-    alert("review: " + enteredText + "\nRating: " + enteredRate + "\nDate: " + date);
-    event.preventDefault();
+  const handleReviewContent = (event) => {
+    setReviewContent(event.target.value);
   };
 
-  const postReviewToBusiness = async (Rcontent, rating, date) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const current = new Date();
+    const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+    postReviewToBusiness("User Name", reviewContent, reviewRate, reviewDate)
+  };
+
+  const postReviewToBusiness = async (reviewer, content, rating, date) => {
     try {
+      const formValues = {
+        email: props.businessDetails.email,
+        reviewer: reviewer,
+        content: content,
+        rating: rating,
+        date: date
+      };
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // body: JSON.stringify(formValues),
+        body: JSON.stringify(formValues),
       });
 
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
-
       const data = await response.json();
+      alert(`review added successfully`);
       console.log('User entered review successfully:', data);
-
     } catch (error) {
       console.error('Add review failed:', error);
     }
@@ -54,21 +60,21 @@ const AddReview = (props) => {
         ></button>
       </div>
 
-      <form onSubmit={ handleSubmit } className="form-outline   ">
+      <form onSubmit={ handleSubmit } className="form-outline">
         <p className="d-flex justify-content-center">add a review</p>
-        <div className="d-flex flex-sm-column">
-          <label>how was your visit?</label>
-
-          <textarea name="Rcontent" value={ enteredText } onChange={ handleText } />
-          <div className="d-flex p-2 justify-content-center">
+        <div className="d-flex flex-column justify-content-center">
+          <div className="d-flex p-2 justify-content-between">
+            <label>how was your visit?</label>
             <StarRating onChange={ starHandler } />
           </div>
-
-          <input
-            className="btn-sm btn btn-outline-success "
-            type="submit"
-            value="Submit"
-          />
+          <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } />
+          <div className="p-2 mt-4 d-flex justify-content-center">
+            <input
+              className="btn btn-outline-success "
+              type="submit"
+              value="Post Review"
+            />
+          </div>
         </div>
       </form>
     </Modal>

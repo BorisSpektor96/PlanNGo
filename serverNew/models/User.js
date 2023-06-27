@@ -6,8 +6,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   isBusiness: { type: Boolean, required: true, default: false }
-},
-  { collection: 'users' },
+}, { collection: 'users', versionKey: false },
 );
 
 const userModel = mongoose.model('users', userSchema);

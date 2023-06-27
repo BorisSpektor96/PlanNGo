@@ -13,7 +13,7 @@ userBusinessRouter.get("/getAllUsersBusiness", async (req, res) => {
   }
 });
 
-userBusinessRouter.post("/newUser", async (req, res) => {
+userBusinessRouter.post("/newBusinessUser", async (req, res) => {
   const user = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -25,12 +25,12 @@ userBusinessRouter.post("/newUser", async (req, res) => {
 });
 
 userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
-  const { email, Rname, Rating_date, Rcontent, rating } = req.body
+  const { email, reviewer, date, content, rating } = req.body
 
-  const user = await userBusinessModel.findOne({ email: email });
+  const user = await userBusinessModel.findOne({ business_email: email });
   try {
     if (user) {
-      user.reviews.push({ Rname, Rating_date, Rcontent, rating });
+      user.reviews.push({ reviewer, date, content, rating });
       await user.save();
 
       res.status(200).json({ message: "Review added successfully" });

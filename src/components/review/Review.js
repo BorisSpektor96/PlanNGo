@@ -21,15 +21,15 @@ const Review = (props) => {
       <p>The average is  { averageRating } stars.</p>
       { props.reviews.map((review, index) => (
         <div className="container" key={ index }>
-          <div className="Rname">{ review.Rname }</div>
+          <div className="Rname">{ review.reviewer }</div>
           <div className="Rating_date">
             <div className="rating">
               <StarRating initialRating={ review.rating } disableOnChange={ true } />
             </div>
-            <div className="date">{ review.Rating_date }</div>
+            <div className="date">{ review.date }</div>
           </div>
           <div className="Rcontent">
-            <p>{ review.Rcontent }</p>
+            <p>{ review.content }</p>
           </div>
         </div>
       )) }

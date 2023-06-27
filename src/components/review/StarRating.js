@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Star from "./Star";
-function StarRating({ initialRating, onChange, disableOnChange  }) {
+function StarRating({ initialRating, onChange, disableOnChange }) {
   const [ rating, setRating ] = useState(initialRating);
   useEffect(() => {
     setRating(initialRating);
-  }, [initialRating]);
+  }, [ initialRating ]);
 
   const changeRating = (newRating) => {
     if (!disableOnChange) {
