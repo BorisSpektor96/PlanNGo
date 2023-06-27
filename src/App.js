@@ -26,10 +26,9 @@ function App() {
   const [ loginStatus, setLogIn ] = useState(true);
 
   const logOut = async (value) => {
-    await setLogIn(value)
+    setLogIn(value)
     localStorage.setItem('userData', 'empty')
     console.log('app log out')
-    console.log(localStorage.getItem('userData'))
   }
   const logIn = value => {
     setLogIn(value)

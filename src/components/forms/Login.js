@@ -9,7 +9,7 @@ const Login = (props) => {
     password: "",
   });
 
-  const [ user, setUser ] = useState(null)
+  const [ user, setUser ] = useState({})
 
   const inputs = [
     {
@@ -37,9 +37,9 @@ const Login = (props) => {
   ];
   const submitHandler = async (e) => {
     e.preventDefault();
-    userLogin();
+    const loggedIn = await userLogin();
 
-    if (user !== null) {
+    if (loggedIn) {
       console.log('Logged in');
       window.location.href = '/BusinessesMenu';
     } else {
@@ -58,15 +58,14 @@ const Login = (props) => {
           password: formValues.password
         })
       });
-      if (response.json() !== undefined) {
-
+      if (response != null) {
         let data = await response.json();
         await setUser(data);
 
-        await localStorage.setItem('userData', JSON.stringify(data, "empty"));
+        await localStorage.setItem('userData', JSON.stringify(data, 'empty'));
 
         console.log("User:" + localStorage.getItem('userData'));
-
+        return true
       } else {
         throw new Error('Something went wrong!');
       }
