@@ -1,14 +1,14 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 
 const ServicesProfile = () => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
-  let len = localProfileInfo.services.length.toString()
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
   const [ service, setService ] = useState({
     name: "",
@@ -23,9 +23,13 @@ const ServicesProfile = () => {
     setEditServicesMode(!editServicesMode)
   }
 
-  const [ serviceId, setServiceId ] = useState(
-    profileInfo.services[ profileInfo.services.length - 1 ].id + 1
-  );
+  const [ serviceId, setServiceId ] = useState(0);
+
+  useEffect(() => {
+    if (profileInfo && profileInfo.services && profileInfo.services.length > 0) {
+      setServiceId(profileInfo.services[ profileInfo.services.length - 1 ].id + 1);
+    }
+  }, [ profileInfo ]);
 
   const handleInputServiceChange = (e) => {
     const { name, value } = e.target;
@@ -58,13 +62,6 @@ const ServicesProfile = () => {
       services: updatedServices
     }));
     dispatch({ type: 'DELETE_SERVICE', payload: updatedServices });
-    // if (localProfileInfo.services.length > 0) {
-    //   setLocalProfileInfo((prevState) => ({
-    //     ...prevState,
-    //     services: prevState.services.filter(service => service.id !== serviceId)
-    //   }));
-    //   dispatch({ type: 'UPDATE_SERVICES', payload: localProfileInfo.services });
-    // }
   };
 
   const servicesListInputs = [
@@ -189,32 +186,35 @@ const ServicesProfile = () => {
       </div>
       <table className="card-body table table-striped table-hover">
         <thead>
-          <tr className="table-secondary ">
-            <th className="text-center  " scope="col">
-              Service Name
-            </th>
-            <th className="text-center" scope="col">
-              Type
-            </th>
-            <th className="text-center" scope="col">
-              Price
-            </th>
-            <th className="text-center" scope="col">
-              Duration
-            </th>
-            <th className="text-center" scope="col">
-              Description
-            </th>
-            {
-              editServicesMode &&
-              <th scope="col">
-                Remove
+          { localProfileInfo.services.length > 0
+            &&
+            <tr className="table-secondary ">
+              <th className="text-center  " scope="col">
+                Service Name
               </th>
-            }
-          </tr>
+              <th className="text-center" scope="col">
+                Type
+              </th>
+              <th className="text-center" scope="col">
+                Price
+              </th>
+              <th className="text-center" scope="col">
+                Duration
+              </th>
+              <th className="text-center" scope="col">
+                Description
+              </th>
+              {
+                editServicesMode &&
+                <th scope="col">
+                  Remove
+                </th>
+              }
+            </tr>
+          }
         </thead>
         <tbody>
-          { localProfileInfo.services.length > 0 ? (
+          { localProfileInfo.services && localProfileInfo.services.length > 0 ? (
             localProfileInfo.services.map((service) => (
               <tr key={ service.id } className="table-secondary">
 
@@ -268,7 +268,7 @@ const ServicesProfile = () => {
   return (
     <div className="d-flex justify-content-center">
       <div className="col-lg-11 rounded">
-  
+
         { showServiceAddInputs }
         { showServicesInTable }
       </div >

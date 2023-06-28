@@ -1,17 +1,23 @@
 import FormInput from "../forms/FormInput"
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 
 const ProductsProfile = () => {
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
+
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
-  const [ productId, setProductId ] = useState(
-    profileInfo.products[ profileInfo.products.length - 1 ].id + 1
-  );
+  const [ productId, setProductId ] = useState(0);
+
+  useEffect(() => {
+    if (profileInfo && profileInfo.products && profileInfo.products.length > 0) {
+      setProductId(profileInfo.products[ profileInfo.products.length - 1 ].id + 1);
+    }
+  }, [ profileInfo ]);
 
   const [ product, setProduct ] = useState({
     name: "",
@@ -50,7 +56,6 @@ const ProductsProfile = () => {
       ...prev, products: [ ...prev.products, newProduct ]
     }))
     dispatch({ type: 'UPDATE_PRODUCTS', payload: updateProducts });
-    // console.log(localProfileInfo.products)
   }
 
   const deleteProductHandler = (productId) => {
@@ -61,14 +66,6 @@ const ProductsProfile = () => {
       products: updatedProducts
     }));
     dispatch({ type: 'DELETE_PRODUCT', payload: updatedProducts });
-    // if (localProfileInfo.products.length > 0) {
-    //   setLocalProfileInfo(prevState => ({
-    //     // ...prevState,
-    //     products: prevState.products.filter(product => product.id !== productId)
-    //   }));
-    //   dispatch({ type: 'UPDATE_PRODUCTS', payload: localProfileInfo.products });
-    // }
-
   };
 
   const productsListInputs = [

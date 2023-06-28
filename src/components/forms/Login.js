@@ -3,13 +3,20 @@ import "bootstrap/dist/css/bootstrap.css";
 import FormInput from "./FormInput";
 import { useState } from "react";
 
+// ******************
+import { useContext } from 'react';
+import { ProfileInfoContext } from '../../ProfileInfoContext'
+// ******************
+
 const Login = (props) => {
+  // ******************
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  // ******************
+
   const [ formValues, setformValues ] = useState({
     email: "",
     password: "",
   });
-
-  const [ user, setUser ] = useState({})
 
   const inputs = [
     {
@@ -35,6 +42,7 @@ const Login = (props) => {
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
     },
   ];
+
   const submitHandler = async (e) => {
     e.preventDefault();
     const loggedIn = await userLogin();
@@ -58,14 +66,19 @@ const Login = (props) => {
           password: formValues.password
         })
       });
-      if (response != null) {
+
+      if (response.status === 200) {
         let data = await response.json();
-        await setUser(data);
 
-        await localStorage.setItem('userData', JSON.stringify(data, 'empty'));
+        if (data !== null) {
+          dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
+          localStorage.setItem('userData', JSON.stringify(data));
+          return true;
+        } else {
+          localStorage.setItem('userData', null);
+          return false
+        }
 
-        console.log("User:" + localStorage.getItem('userData'));
-        return true
       } else {
         throw new Error('Something went wrong!');
       }

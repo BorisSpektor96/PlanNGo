@@ -10,7 +10,7 @@ import BusinessPage from './components/businessesMenu/businessPage/BusinessPage'
 import Profile from './components/profile/Profile'
 import FavoritesList from './components/favorites/FavoritesList'
 
-import { ProfileInfoProvider } from './ProfileInfoContext';
+import ProfileInfoProvider from './ProfileInfoContext';
 
 const routes = [
   { path: '/', componentName: Welcome },
@@ -23,17 +23,24 @@ const routes = [
 ]
 
 function App() {
-  const [ loginStatus, setLogIn ] = useState(true);
+  // const [ loginStatus, setLogIn ] = useState(
+  //   localStorage.getItem('userData') !== null &&
+  //   localStorage.getItem('userData') !== 'null' &&
+  //   typeof JSON.parse(localStorage.getItem('userData')) === 'object'
+  // );
+  // console.log(loginStatus);
 
   const logOut = async (value) => {
-    setLogIn(value)
-    localStorage.setItem('userData', 'empty')
-    console.log('app log out')
-  }
+    // setLogIn(value);
+    localStorage.removeItem('userData');
+    window.location.href = '/Welcome';
+    console.log('app log out');
+  };
+
   const logIn = value => {
-    setLogIn(value)
-    console.log('app log in')
-  }
+    // setLogIn(value);
+    console.log('app log in');
+  };
 
   const routeOfComponents = routes.map(({ path, componentName }, key) => (
     <Route exact path={ path } Component={ componentName } key={ key } />
@@ -44,18 +51,19 @@ function App() {
 
     <ProfileInfoProvider>
       <div className="main">
-        {/* { loginStatus ? */ }
-        <BrowserRouter BrowserRouter className="Routes BrowserRouter">
+        {/* { (loginStatus) ? ( */ }
+        <BrowserRouter className="Routes BrowserRouter">
           <Routes>
             <Route element={ <Layout setToLogout={ logOut } /> }>
               { routeOfComponents }
             </Route>
           </Routes>
         </BrowserRouter>
-        {/* //   : <Welcome setToLogin={ logIn } /> */ }
-        {/* // } */ }
-      </div >
-    </ProfileInfoProvider >
+        {/* ) : (
+          <Welcome setToLogin={ logIn } />
+        ) } */}
+      </div>
+    </ProfileInfoProvider>
   );
 }
 export default App;
