@@ -107,18 +107,18 @@ const Register = (props) => {
   };
   return (
     <Modal>
-      <div class="d-flex flex-row justify-content-end p-1 w-100 p-0 ">
+      <div className="d-flex flex-row justify-content-end p-1 w-100 p-0 ">
         <button
           type="button"
-          class="btn-close"
+          className="btn-close"
           aria-label="Close"
-          dal
+          // dal
           onClick={ props.onClose }
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
-      <form class=" p-1" onSubmit={ submitHandler }>
+      <form className=" p-1" onSubmit={ submitHandler }>
         { inputs.map((input) => (
           <FormInput
             key={ input.id }
@@ -135,11 +135,10 @@ const Register = (props) => {
                 type="checkbox"
                 value="RememberMe"
                 id="form2Example31"
-                checked
               />
               <label
                 className="form-check-label"
-                for="form2Example31"
+                htmlFor="form2Example31"
                 onChange={ RememberMeCheckbox }
               >
                 Remember me

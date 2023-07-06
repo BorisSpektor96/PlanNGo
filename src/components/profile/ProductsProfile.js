@@ -30,6 +30,7 @@ const ProductsProfile = () => {
 
   const editProductsModeHandler = () => {
     setEditProductsMode(!editProductsMode)
+    console.log(profileInfo)
   }
 
   const inputProductHandlerChange = (e) => {
@@ -119,145 +120,158 @@ const ProductsProfile = () => {
   ]
 
   const showProductAddInputs = (
-    <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
-      <form onSubmit={ submitProductsHandler }>
-        {
-          <div className="xl-12">
-            <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
-              { productsListInputs.map((input, key) => (
-                < div className=" d-flex flex-wrap" key={ key } >
-                  <div>
-                    <FormInput
-                      key={ key }
-                      { ...input }
-                      value={ localProfileInfo[ input.name ] }
-                      onChange={ inputProductHandlerChange }
-                    />
+    <>
+      { profileInfo.isBusiness
+        &&
+        <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
+          <form onSubmit={ submitProductsHandler }>
+            {
+              <div className="xl-12">
+                <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
+                  { productsListInputs.map((input, key) => (
+                    < div className=" d-flex flex-wrap" key={ key } >
+                      <div>
+                        <FormInput
+                          key={ key }
+                          { ...input }
+                          value={ localProfileInfo[ input.name ] }
+                          onChange={ inputProductHandlerChange }
+                        />
 
-                  </div>
+                      </div>
+                    </div>
+                  ))
+                  }
                 </div>
-              ))
-              }
-            </div>
-            <div className="d-flex justify-content-center ">
-              <button className="mt-3 text-center col-4 btn btn-success"
-                type="submit"
-              >
-                Add Product
-              </button>
-            </div>
-          </div >
-        }
-      </form >
-    </div>
+                <div className="d-flex justify-content-center ">
+                  <button className="mt-3 text-center col-4 btn btn-success"
+                    type="submit"
+                  >
+                    Add Product
+                  </button>
+                </div>
+              </div >
+            }
+          </form >
+        </div>
+      }
+    </>
   )
 
   const showProductsInTable = (
-    <div className="p-0 d-flex flex-column m-3">
-      <div className="border border-primary">
-        <div className="card-header d-flex justify-content-around p-1">
-          <div className="d-flex align-items-center">
-            Products Details
+    <>
+      {
+        profileInfo.isBusiness
+        &&
+        <div className="p-0 d-flex flex-column m-3">
+          <div className="border border-primary">
+            <div className="card-header d-flex justify-content-around p-1">
+              <div className="d-flex align-items-center">
+                Products Details
+              </div>
+              { !editProductsMode
+                && <div>
+                  <button className="border-0" onClick={ editProductsModeHandler }>
+                    <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                    <lord-icon
+                      src="https://cdn.lordicon.com/puvaffet.json"
+                      trigger="loop"
+                      stroke="85"
+                      colors="primary:#121331,secondary:#2516c7"
+                      styles="width:250px;height:250px">
+                    </lord-icon>
+                  </button>
+                </div>
+              }
+            </div>
           </div>
-          { !editProductsMode
-            && <div>
-              <button className="border-0" onClick={ editProductsModeHandler }>
-                <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
-                <lord-icon
-                  src="https://cdn.lordicon.com/puvaffet.json"
-                  trigger="loop"
-                  stroke="85"
-                  colors="primary:#121331,secondary:#2516c7"
-                  styles="width:250px;height:250px">
-                </lord-icon>
+          <table className="table table-striped table-hover">
+            <thead>
+              { localProfileInfo.products.length > 0 && (
+                <tr className="table-secondary">
+                  <th className="text-center" scope="col">
+                    #
+                  </th>
+                  <th className="text-center" scope="col">
+                    Product Name
+                  </th>
+                  <th className="text-center" scope="col">
+                    Price
+                  </th>
+                  <th className="text-center" scope="col">
+                    Quantity
+                  </th>
+                  <th className="text-center" scope="col">
+                    Description
+                  </th>
+                  { editProductsMode &&
+                    <th scope="col">Remove</th>
+                  }
+                </tr>
+              ) }
+            </thead>
+            <tbody>
+              { localProfileInfo.products.length > 0 ? (
+                localProfileInfo.products.map((product) => (
+                  <tr tr key={ product.id } className="table-secondary" >
+
+                    <td className="text-center">{ product.productId }</td>
+                    <td className="text-center">{ product.name }</td>
+                    <td className="text-center">{ product.price }</td>
+                    <td className="text-center">{ product.quantity }</td>
+                    <td className="text-center">{ product.description }</td>
+
+                    { editProductsMode &&
+                      <td className="text-center">
+                        <button className="btn p-0 m-0"
+                          onClick={ () => {
+                            deleteProductHandler(product.id);
+                          } }
+                        >
+                          <lord-icon
+                            src="https://cdn.lordicon.com/gsqxdxog.json"
+                            trigger="hover"
+                            colors="primary:#c71f16,secondary:#000000"
+                            stroke="100"
+                            styles="width:250px;height:250px"
+                          ></lord-icon>
+                        </button>
+                      </td>
+                    }
+
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">No Products</td>
+                </tr>
+              ) }
+            </tbody>
+          </table>
+          {
+            editProductsMode
+            &&
+            <div className="d-flex justify-content-center ">
+              <button className="mb-3 text-center col-4 btn btn-primary"
+                type="button"
+                onClick={ editProductsModeHandler }
+              >
+                Save changes
               </button>
             </div>
           }
-        </div>
-      </div>
-      <table className="table table-striped table-hover">
-        <thead>
-          { profileInfo.products.length > 0 && (
-            <tr className="table-secondary">
-              <th className="text-center" scope="col">
-                #
-              </th>
-              <th className="text-center" scope="col">
-                Product Name
-              </th>
-              <th className="text-center" scope="col">
-                Price
-              </th>
-              <th className="text-center" scope="col">
-                Quantity
-              </th>
-              <th className="text-center" scope="col">
-                Description
-              </th>
-              { editProductsMode &&
-                <th scope="col">Remove</th>
-              }
-            </tr>
-          ) }
-        </thead>
-        <tbody>
-          { localProfileInfo.products.length > 0 ? (
-            localProfileInfo.products.map((product) => (
-              <tr tr key={ product.id } className="table-secondary" >
-
-                <td className="text-center">{ product.id }</td>
-                <td className="text-center">{ product.name }</td>
-                <td className="text-center">{ product.price }</td>
-                <td className="text-center">{ product.quantity }</td>
-                <td className="text-center">{ product.description }</td>
-
-                { editProductsMode &&
-                  <td className="text-center">
-                    <button className="btn p-0 m-0"
-                      onClick={ () => {
-                        deleteProductHandler(product.id);
-                      } }
-                    >
-                      <lord-icon
-                        src="https://cdn.lordicon.com/gsqxdxog.json"
-                        trigger="hover"
-                        colors="primary:#c71f16,secondary:#000000"
-                        stroke="100"
-                        styles="width:250px;height:250px"
-                      ></lord-icon>
-                    </button>
-                  </td>
-                }
-
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center">No Products</td>
-            </tr>
-          ) }
-        </tbody>
-      </table>
-      {
-        editProductsMode
-        &&
-        <div className="d-flex justify-content-center ">
-          <button className="mb-3 text-center col-4 btn btn-primary"
-            type="button"
-            onClick={ editProductsModeHandler }
-          >
-            Save changes
-          </button>
-        </div>
+        </div >
       }
-    </div >
+    </>
   )
 
   return (
     <div className="d-flex justify-content-center">
       <div className="col-lg-11">
+
         { showProductAddInputs }
         { showProductsInTable }
+
       </div >
     </div >
   )

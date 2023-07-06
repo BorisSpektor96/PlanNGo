@@ -64,7 +64,7 @@ const BusinessPage = (props) => {
 
           <div className="card col-lg-4 col-lg-8 border-info">
             <div className="card-body">
-              <h5 className="card-title">{ businessDetails.businessName }</h5>
+              <h5 className="card-title">{ businessDetails.business_name }</h5>
               <p className="card-text">{ businessDetails.businessDescription }</p>
             </div>
           </div>

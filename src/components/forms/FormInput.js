@@ -7,12 +7,14 @@ const FormInput = (props) => {
 
   return (
     <div className="formInput">
-      <label  className="form-label">{label}</label>
+      <label htmlFor={ id } className="form-label">{ label }</label>
       <input className="form-control"
-        {...inputProps}
-        onChange={onChange}
+        id={ id }
+        name={ id }
+        { ...inputProps }
+        onChange={ onChange }
       />
-      <span>{errorMessage}</span>
+      <span>{ errorMessage }</span>
     </div>
   );
 };

@@ -124,145 +124,145 @@ const ServicesProfile = () => {
   ]
 
   const showServiceAddInputs = (
-    <div className={ !editServicesMode ? "hide" : "show pt-4 pb-4 card" }>
-      <form onSubmit={ submitServiceForm }>
-        {
-          editServicesMode
-          &&
-          <div className="">
-            <div className="d-flex flex-wrap gap-3 justify-content-center">
-              { servicesListInputs.map((input, key) => (
-                < div className=" d-flex flex-wrap" key={ key } >
-                  <div>
-                    <FormInput
-                      key={ key }
-                      { ...input }
-                      value={ profileInfo[ input.name ] }
-                      onChange={ handleInputServiceChange }
-                    />
+    <>
+      { profileInfo.isBusiness
+        &&
+        <div className={ !editServicesMode ? "hide" : "show pt-4 pb-4 card" }>
+          <form onSubmit={ submitServiceForm }>
+            {
+              editServicesMode
+              &&
+              <div className="">
+                <div className="d-flex flex-wrap gap-3 justify-content-center">
+                  { servicesListInputs.map((input, key) => (
+                    < div className=" d-flex flex-wrap" key={ key } >
+                      <div>
+                        <FormInput
+                          key={ key }
+                          { ...input }
+                          value={ profileInfo[ input.name ] }
+                          onChange={ handleInputServiceChange }
+                        />
 
-                  </div>
+                      </div>
+                    </div>
+                  ))
+                  }
                 </div>
-              ))
-              }
-            </div>
-            <div className="d-flex justify-content-center ">
-              <button className="mt-3 text-center col-4 btn btn-success"
-                type="submit"
-              >
-                Add Service
-              </button>
-            </div>
-          </div >
-        }
-      </form >
-    </div>
+                <div className="d-flex justify-content-center ">
+                  <button className="mt-3 text-center col-4 btn btn-success"
+                    type="submit"
+                  >
+                    Add Service
+                  </button>
+                </div>
+              </div >
+            }
+          </form >
+        </div>
+      }
+    </>
   )
 
   const showServicesInTable = (
-    <div className="d-flex flex-column m-3">
-      <div className="col card border-primary">
-        <div className="card-header d-flex justify-content-around p-1">
-          <div className="d-flex align-items-center">
-            Services Details
+    <>
+      { profileInfo.isBusiness
+        &&
+        <div className="p-0 d-flex flex-column m-3">
+          <div className="col card border-primary">
+            <div className="card-header d-flex justify-content-around p-1">
+              <div className="d-flex align-items-center">
+                Services Details
+              </div>
+              { !editServicesMode
+                && <div>
+                  <button className="border-0" onClick={ editServiceModeHandler } >
+                    <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                    <lord-icon
+                      src="https://cdn.lordicon.com/puvaffet.json"
+                      trigger="loop"
+                      stroke="85"
+                      colors="primary:#121331,secondary:#2516c7"
+                      styles="width:250px;height:250px">
+                    </lord-icon>
+                  </button>
+                </div>
+              }
+            </div>
           </div>
-          { !editServicesMode
-            && <div>
-              <button className="border-0"
+          <table className="table table-striped table-hover">
+            <thead>
+              { localProfileInfo.services.length > 0
+                &&
+                <tr className="table-secondary ">
+                  <th className="text-center  " scope="col">
+                    Service Name
+                  </th>
+                  <th className="text-center" scope="col">
+                    Price
+                  </th>
+                  <th className="text-center" scope="col">
+                    Duration
+                  </th>
+                  {
+                    editServicesMode &&
+                    <th scope="col">
+                      Remove
+                    </th>
+                  }
+                </tr>
+              }
+            </thead>
+            <tbody>
+              { localProfileInfo.services.length > 0 ? (
+                localProfileInfo.services.map((service) => (
+                  <tr key={ service.id } className="table-secondary">
+
+                    <td className="text-center">{ service.name }</td>
+                    <td className="text-center">{ service.price }</td>
+                    <td className="text-center">{ service.duration }</td>
+
+                    { editServicesMode &&
+                      <td className="text-center">
+                        <button className="btn p-0 m-0"
+                          onClick={ () => {
+                            deleteServiceHandler(service.id);
+                          } }
+                        >
+                          <lord-icon
+                            src="https://cdn.lordicon.com/gsqxdxog.json"
+                            trigger="hover"
+                            colors="primary:#c71f16,secondary:#000000"
+                            stroke="100"
+                            styles="width:250px;height:250px"
+                          ></lord-icon>
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">No Services</td>
+                </tr>
+              ) }
+            </tbody>
+          </table >
+          {
+            editServicesMode
+            &&
+            <div className="d-flex justify-content-center ">
+              <button className="mb-3 text-center col-4 btn btn-primary"
+                type="button"
                 onClick={ editServiceModeHandler }
               >
-                <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
-                <lord-icon
-                  src="https://cdn.lordicon.com/puvaffet.json"
-                  trigger="loop"
-                  stroke="85"
-                  colors="primary:#121331,secondary:#2516c7"
-                  styles="width:250px;height:250px">
-                </lord-icon>
+                Save changes
               </button>
             </div>
           }
         </div>
-      </div>
-      <table className="card-body table table-striped table-hover">
-        <thead>
-          { localProfileInfo.services.length > 0
-            &&
-            <tr className="table-secondary ">
-              <th className="text-center  " scope="col">
-                Service Name
-              </th>
-              <th className="text-center" scope="col">
-                Type
-              </th>
-              <th className="text-center" scope="col">
-                Price
-              </th>
-              <th className="text-center" scope="col">
-                Duration
-              </th>
-              <th className="text-center" scope="col">
-                Description
-              </th>
-              {
-                editServicesMode &&
-                <th scope="col">
-                  Remove
-                </th>
-              }
-            </tr>
-          }
-        </thead>
-        <tbody>
-          { localProfileInfo.services && localProfileInfo.services.length > 0 ? (
-            localProfileInfo.services.map((service) => (
-              <tr key={ service.id } className="table-secondary">
-
-                <td className="text-center">{ service.name }</td>
-                <td className="text-center">{ service.type }</td>
-                <td className="text-center">{ service.price }</td>
-                <td className="text-center">{ service.duration }</td>
-                <td className="text-center">{ service.description }</td>
-
-                { editServicesMode &&
-                  <td className="text-center">
-                    <button className="btn p-0 m-0"
-                      onClick={ () => {
-                        deleteServiceHandler(service.id);
-                      } }
-                    >
-                      <lord-icon
-                        src="https://cdn.lordicon.com/gsqxdxog.json"
-                        trigger="hover"
-                        colors="primary:#c71f16,secondary:#000000"
-                        stroke="100"
-                        styles="width:250px;height:250px"
-                      ></lord-icon>
-                    </button>
-                  </td>
-                }
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center">No Services</td>
-            </tr>
-          ) }
-        </tbody>
-      </table >
-      {
-        editServicesMode
-        &&
-        <div className="d-flex justify-content-center ">
-          <button className="mb-3 text-center col-4 btn btn-primary"
-            type="button"
-            onClick={ editServiceModeHandler }
-          >
-            Save changes
-          </button>
-        </div>
       }
-    </div>
+    </>
   )
 
   return (
@@ -271,6 +271,7 @@ const ServicesProfile = () => {
 
         { showServiceAddInputs }
         { showServicesInTable }
+
       </div >
     </div >
   )

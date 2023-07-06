@@ -1,4 +1,4 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
@@ -7,12 +7,15 @@ const AccountProfile = () => {
 
   const [ editAccountMode, setEditAccountMode ] = useState(false)
 
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+
   const editHandler = () => {
     setEditAccountMode(!editAccountMode)
+    console.log(profileInfo)
+    console.log(localProfileInfo)
   }
-
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
   const handlerInputProfileEdit = (e) => {
     setLocalProfileInfo({
@@ -21,28 +24,27 @@ const AccountProfile = () => {
     });
   };
 
-  const submitAccountForm = (e) => {
+  const submitAccountForm = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
+    await dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
     setEditAccountMode(!editAccountMode);
   };
 
+  // useEffect(() => {
+  //   dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
+  //   setLocalProfileInfo(profileInfo);
+  // }, [ profileInfo ])
+
   const listOfInfoAndInput = [
     {
-      id: 'firstname',
-      name: 'firstname',
+      id: 'fullname',
+      name: 'fullname',
       type: 'text',
-      label: 'First name',
+      label: 'fullname',
       required: true,
       errorMessage: "",
-    }, {
-      id: 'lastname',
-      name: 'lastname',
-      type: 'text',
-      label: 'Last name',
-      required: true,
-      errorMessage: "",
-    }, {
+    },
+    {
       id: 'email',
       name: 'email',
       type: 'email',
@@ -50,24 +52,24 @@ const AccountProfile = () => {
       required: true,
       errorMessage: "It should be a valid email address!",
     }, {
-      id: 'businessName',
-      name: 'businessName',
+      id: 'business_name',
+      name: 'business_name',
       type: 'text',
       label: "Business Name",
       required: true,
       errorMessage: "",
     },
     {
-      id: 'businessAddress',
-      name: 'businessAddress',
+      id: 'address',
+      name: 'address',
       type: 'text',
       label: 'Business Address',
       required: true,
       errorMessage: "",
     },
     {
-      id: 'phoneNumber',
-      name: 'phoneNumber',
+      id: 'business_phone',
+      name: 'business_phone',
       type: 'tel',
       label: 'Phone number',
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
@@ -79,9 +81,10 @@ const AccountProfile = () => {
   const showLabelInputList = (
     <form onSubmit={ submitAccountForm }>
       <div className="col-xl-12">
-        <div className="d-flex flex-wrap gap-3 mb-3 justify-content-center">
+        <div className="row gap-3 mb-3 justify-content-center">
+
           { listOfInfoAndInput.map((input, key) => (
-            < div className="d-flex flex-wrap" key={ key } >
+            < div className="" key={ key } >
               {
                 editAccountMode
                   ? <FormInput
@@ -103,18 +106,18 @@ const AccountProfile = () => {
 
             { editAccountMode
               ? <div>
-                < label className="form-label" for="BusinessDescription">Business Description: </label>
+                < label className="form-label" for="business_description">Business Description: </label>
                 <textarea rows="5"
+                  value={ localProfileInfo.business_description }
                   onChange={ handlerInputProfileEdit }
-                  name="businessDescription"
-                  value={ localProfileInfo.businessDescription }
                   className="form-control"
+                  name="business_description"
                 />
               </div>
               : <div className="d-flex flex-column align-items-center justify-content-center">
                 < label className="form-label" for="BusinessDescription">Business Description: </label>
                 <div>
-                  { localProfileInfo.businessDescription }
+                  { localProfileInfo.business_description }
                 </div>
               </div>
             }
@@ -130,6 +133,7 @@ const AccountProfile = () => {
   )
 
   return (
+
     <div className="container-xl px-4 mt-4 mb-4">
       <div className="d-flex gap-4 flex-wrap">
         <div className="row">

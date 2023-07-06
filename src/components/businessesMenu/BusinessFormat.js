@@ -23,7 +23,7 @@ const BusinessFormat = (props) => {
 
           <div className="card col-lg-4 col-md-6 border-light ">
             <div className="card-body">
-              <h5 className="card-title">{ props.businessName }</h5>
+              <h5 className="card-title">{ props.business_name }</h5>
               <p className="card-text">{ props.businessDescription }</p>
               <p className="card-text"><small className="text-muted">{ props.lastTouch }</small></p>
             </div>
@@ -43,7 +43,7 @@ const BusinessFormat = (props) => {
               </ul>
               <Link className="btn btn-outline-primary"
                 to={ pathToBusinessPage }
-                id={ props.businessName }
+                id={ props.business_name }
                 state={ props }
               >
                 Go To Service

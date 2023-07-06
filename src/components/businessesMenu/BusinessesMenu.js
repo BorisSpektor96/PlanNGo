@@ -26,20 +26,21 @@ const BusinessesMenu = () => {
       for (const key in data) {
         loadedBusiness.push({
           id: data[ key ]._id,
-          businessName: data[ key ].business_name,
+          business_name: data[ key ].business_name,
           fullname: data[ key ].fullname,
           tel: data[ key ].business_phone,
           email: data[ key ].business_email,
           address: data[ key ].address,
           service: data[ key ].business_type,
           isBusiness: data[ key ].isBusiness,
-          businessDescription: data[ key ].business_description,
+          businessDescription: data[ key ].businessDescription,
           services: data[ key ].services,
           products: data[ key ].products,
           businessGallery: data[ key ].business_photo_gallery,
           reviews: data[ key ].reviews
         });
       }
+      console.log(loadedBusiness)
       setListOfBusinesses(loadedBusiness);
     } catch (error) {
       console.log(error.message)
@@ -67,7 +68,7 @@ const BusinessesMenu = () => {
   const handleFilter = () => {
     const filtered = listOfBusinesses.filter((business) => {
       if (business.isBusiness) {
-        const nameMatch = business.businessName.toLowerCase().includes(filterName.toLowerCase());
+        const nameMatch = business.business_name.toLowerCase().includes(filterName.toLowerCase());
         const serviceMatch = business.service.toLowerCase().includes(filterService.toLowerCase());
         const locationMatch =
           filterLocation === '' || business.address.toLowerCase().includes(filterLocation.toLowerCase());
@@ -99,11 +100,11 @@ const BusinessesMenu = () => {
         { noResults ? (
           <div>No businesses found based on the filter criteria.</div>
         ) : (
-          filteredBusinesses.map(({ id, businessName, businessDescription, tel, email, address, reviews }) => (
+          filteredBusinesses.map(({ id, business_name, businessDescription, tel, email, address, reviews }) => (
             <BusinessFormat
               key={ id }
               id={ id }
-              businessName={ businessName }
+              business_name={ business_name }
               businessDescription={ businessDescription }
               tel={ tel }
               email={ email }

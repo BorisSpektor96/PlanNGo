@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from "react-router-dom";
+
 const OffcanvasExample = (props) => {
 
 
@@ -10,21 +12,32 @@ const OffcanvasExample = (props) => {
     props.setLogOut2(false)
   }
 
-  const NavTabs = [
-    {
-      tabName: 'Home',
-      pathName: '/businessesMenu'
-    },
-    {
-      tabName: 'Favorites',
-      pathName: '/FavoritesList'
-    },
-    {
-      tabName: 'Massages',
-      pathName: '/'
-    },
+  const [ loggedIn, setLoggedInt ] = useState(false)
+  let NavTabs = []
+  if (loggedIn) {
+    NavTabs = [
+      {
+        tabName: 'Home',
+        pathName: '/businessesMenu'
+      },
+      {
+        tabName: 'Favorites',
+        pathName: '/FavoritesList'
+      },
+      {
+        tabName: 'Massages',
+        pathName: '/'
+      },
+    ];
+  } else {
+    NavTabs = [
+      {
+        tabName: 'Massages',
+        pathName: '/'
+      },
+    ];
+  }
 
-  ];
 
   const listOfNavTabs = (
     <ul className="navbar-nav">

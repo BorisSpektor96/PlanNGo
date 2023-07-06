@@ -1,7 +1,3 @@
-import { useState, useContext } from "react"
-
-import { ProfileInfoContext } from '../../ProfileInfoContext';
-
 import ServicesProfile from "./ServicesProfile";
 import ProductsProfile from "./ProductsProfile";
 import AccountProfile from "./AccountProfile";
@@ -9,14 +5,6 @@ import AccountProfile from "./AccountProfile";
 import './profile.css'
 
 const Profile = () => {
-
-
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    console.log("submit Handler")
-  };
 
   return (
     <>
