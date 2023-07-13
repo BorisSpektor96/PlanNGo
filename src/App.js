@@ -10,6 +10,7 @@ import Profile from './components/profile/Profile'
 import FavoritesList from './components/favorites/FavoritesList'
 
 import ProfileInfoProvider from './ProfileInfoContext';
+import { useState } from 'react';
 
 const routes = [
   { path: '/', componentName: Welcome },
@@ -23,20 +24,27 @@ const routes = [
 
 function App() {
 
-  const logOut = (value) => {
+  const [ loggedIn, setLoggedIn ] = useState(true)
+
+  const logOut = () => {
     localStorage.removeItem('userData');
-    window.location.href = '/Welcome';
+    setLoggedIn(false)
     console.log('app log out');
+    window.location.href = '/Welcome';
   };
 
-  // const logIn = value => {
-  //   // setLogIn(value);
-  //   console.log('app log in');
-  // };
+  const logIn = () => {
+    setLoggedIn(true);
+    console.log('app log in');
+  };
 
   const routeOfComponents = routes
     .map(({ path, componentName }, key) => (
-      <Route exact path={ path } Component={ componentName } key={ key } />
+      <Route exact path={ path }
+        Component={ componentName }
+        key={ key }
+        loggedIn={ loggedIn } setToLogin={ logIn }
+      />
     ));
 
   return (
@@ -45,7 +53,16 @@ function App() {
       <div className="main">
         <BrowserRouter className="Routes BrowserRouter">
           <Routes>
-            <Route path='/' element={ <Layout setToLogout={ logOut } /> }>
+            <Route
+              path='/'
+              element={
+                <Layout
+                  setToLogout={ logOut }
+                  setToLogin={ logIn }
+                  loggedIn={ loggedIn }
+                />
+              }
+            >
               { routeOfComponents }
             </Route>
           </Routes>

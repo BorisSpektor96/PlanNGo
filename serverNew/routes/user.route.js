@@ -1,9 +1,7 @@
 import express from "express";
-// import db from "../configuration/mongodb.js";
 import userModel from '../models/User.js'
 
 const userRouter = express.Router();
-// const usersDB = db.collection("users")
 
 userRouter.post('/signup', async (req, res) => {
   try {
@@ -30,6 +28,23 @@ userRouter.post("/login", async (req, res) => {
     res.json(loggedUser);
   } catch (err) {
     res.send("Error " + err);
+  }
+});
+
+userRouter.post("/checkEmail", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email: email });
+
+    if (user) {
+      // Email exists in the database
+      res.json({ exists: true });
+    } else {
+      // Email does not exist in the database
+      res.json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

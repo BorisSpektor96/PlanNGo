@@ -26,16 +26,17 @@ class MainBusinessForm extends Component {
       password: "",
       fullname: "",
       personal_phone: "",
+      isBusiness: true,
       userType: "B",
       address: "",
       business_phone: "",
-      business_email: "",
       business_name: "",
       business_description: "",
       businessType: "",
       services: [],
       products: [],
       business_photo_gallery: [],
+      errors: {}, // Add a new "errors" field to store validation errors
     };
 
     // Bind the submission to handleChange()
@@ -55,12 +56,115 @@ class MainBusinessForm extends Component {
 
   // Use the submitted data to set the state
   handleChange(event) {
+    event.preventDefault();
     const { name, value } = event.target;
+    const { currentStep } = this.state;
 
-    this.setState({
-      [ name ]: value,
-    });
+    if (currentStep === 1) {
+      this.setState((prevState) => ({
+        ...prevState,
+        fullname: name === "fullname" ? value : prevState.fullname,
+        email: name === "email" ? value : prevState.email,
+        password: name === "password" ? value : prevState.password,
+        confirmPassword:
+          name === "confirmPassword" ? value : prevState.confirmPassword,
+        personal_phone:
+          name === "personal_phone" ? value : prevState.personal_phone,
+      }));
+    } else if (currentStep === 2) {
+      this.setState((prevState) => ({
+        ...prevState,
+        business_name:
+          name === "business_name" ? value : prevState.business_name,
+        business_phone:
+          name === "business_phone" ? value : prevState.business_phone,
+        business_description:
+          name === "business_description" ? value: prevState.business_description,
+        address: 
+          name === "address" ? value : prevState.address,
+          businessType:
+           name === 'businessType' ? value : prevState.businessType,
+          business_photo_gallery: 
+          name === 'business_photo_gallery' ? value : prevState.business_photo_gallery,
+    
+      }));
+    }
   }
+  checkEmailExists = async (email) => {
+    try {
+      const response = await fetch("http://localhost:3001/users/checkEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+  
+      const data = await response.json();
+      return data.exists; // Assuming the response from the server contains a field 'exists' indicating email existence
+    } catch (error) {
+      console.error("Email existence check failed:", error);
+      return false;
+    }
+  };
+
+  validateFields = async () => {
+    const { currentStep, ...formData } = this.state;
+    let errors = {};
+
+    // Check the fields based on the current step
+    if (currentStep === 1) {
+       const emailExists = await this.checkEmailExists(formData.email);
+    if (emailExists) {
+      errors.email = "Email already exists";
+    }
+      if (formData.fullname.trim() === "") {
+        errors.fullname = "Full Name is required";
+      }
+      if (formData.email.trim() === "") {
+        errors.email = "Email is required";
+      }
+      if (
+        !/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/.test(formData.password)
+      ) {
+        errors.password =
+          "Password should be 8-20 characters and include at least 1 letter, 1 number, and 1 special character!";
+      }
+      if (formData.confirmPassword !== formData.password) {
+        errors.confirmPassword = "Passwords don't match!";
+      }
+      if (
+        !/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/.test(
+          formData.personal_phone
+        )
+      ) {
+        errors.personal_phone = "Invalid phone number.";
+      }
+    } else if (currentStep === 2) {
+      if (formData.business_name.trim() === "") {
+        errors.business_name = "Business Name is required";
+      }
+      if (
+        !/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/.test(
+          formData.business_phone
+        )
+      ) {
+        errors.business_phone = "Invalid phone number.";
+      }
+      // ... Validate other fields for Step 2
+    }
+
+    // Set the errors in the state
+    this.setState({ errors });
+
+    // Return true if there are no errors
+    return Object.keys(errors).length === 0;
+  };
+
   handleBusinessType(type) {
     this.setState({ businessType: type });
   }
@@ -120,49 +224,48 @@ class MainBusinessForm extends Component {
         ...prevState.business_photo_gallery,
         ...selectedFiles,
       ];
-      console.log("business_photo_gallery");
-
-      for (let i = 0; i < business_photo_gallery.length; i++) {
-        const file = business_photo_gallery[ i ];
-        console.log(i);
-
-        console.log("File Name:", file.name);
-        console.log("File Type:", file.type);
-        console.log("File Size:", file.size);
-      }
-      return { business_photo_gallery };
+      return business_photo_gallery;
     });
   };
-
   handleDeleteImage = (index) => {
+  
     this.setState((state) => {
-      const business_photo_gallery = [ ...state.business_photo_gallery ];
+      const business_photo_gallery = [...state.business_photo_gallery];
       business_photo_gallery.splice(index, 1);
-      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:");
-
-      console.log("business_photo_gallery after delete:");
-
-      for (let i = 0; i < business_photo_gallery.length; i++) {
-        const file = business_photo_gallery[ i ];
-        console.log(i);
-
-        console.log("File Name:", file.name);
-        console.log("File Type:", file.type);
-        console.log("File Size:", file.size);
-      }
       return {
         business_photo_gallery,
       };
     });
   };
 
-  // Trigger an alert on form submission
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state);
+  handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const { currentStep, errors, confirmPassword, ...formData } = this.state;
+    console.log(formData);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/business/newBusinessUser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+
+      const data = await response.json();
+      console.log("User registered successfully:", data);
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
-
   // Test current step with ternary
   // _next and _previous functions will be called on button click
   _next() {
@@ -195,7 +298,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={ this._prev }>
+        <Button color="secondary float-left" onClick={this._prev}>
           Previous
         </Button>
       );
@@ -204,24 +307,38 @@ class MainBusinessForm extends Component {
     // ...else return nothing
     return null;
   }
+  handleNext = async () => {
+    // Validate the form fields
+    const isValid = await this.validateFields();
+  
+    if (isValid) {
+      // Move to the next step if the form is valid
+      this._next();
+    }
+  };
 
   get nextButton() {
     let currentStep = this.state.currentStep;
     // If the current step is not 3, then render the "next" button
+
+    // Determine the CSS class for the "next" button based on isValidPassword
+    const buttonClass = "primary float-right";
+
+    // If the current step is not 3, render the "next" button with the appropriate style
     if (currentStep < 4) {
       return (
-        <Button color="primary float-right" onClick={ this._next }>
+        <Button color={buttonClass} onClick={this._next}>
           Next
         </Button>
       );
     }
+
     // ...else render nothing
     return null;
   }
 
   get submitButton() {
     let currentStep = this.state.currentStep;
-
     // If the current step is the last step, then render the "submit" button
     if (currentStep > 3) {
       return <Button color="primary float-right">Submit</Button>;
@@ -231,53 +348,65 @@ class MainBusinessForm extends Component {
   }
 
   render() {
+    const { currentStep, errors } = this.state;
+
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={ this.handleSubmit }>
+        <Form className="pb-5" onSubmit={this.handleSubmit}>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={ this.props.onClose }
+              onClick={this.props.onClose}
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={ this.state.currentStep } />
+                <MultiStepProgressBar currentStep={this.state.currentStep} />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
+                errors={this.state.errors} // Pass the errors object to the component
+                formInput={this.state}
               />
               <BusinessInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                handleBusinessType={ this.handleBusinessType }
-                handleInsertImage={ this.handleInsertImage }
-                handleDeleteImage={ this.handleDeleteImage }
-                business_photo_gallery={ this.state.business_photo_gallery }
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
+                handleBusinessType={this.handleBusinessType}
+                handleInsertImage={this.handleInsertImage}
+                handleDeleteImage={this.handleDeleteImage}
+                business_photo_gallery={this.state.business_photo_gallery}
+                formInput={this.state}
+                errors={this.state.errors} // Pass the errors object to the component
               />
               <Services
-                currentStep={ this.state.currentStep }
-                handleServices={ this.handleServices }
-                deleteServicesHandler={ this.deleteServicesHandler }
-                services={ this.state.services }
+                currentStep={this.state.currentStep}
+                handleServices={this.handleServices}
+                deleteServicesHandler={this.deleteServicesHandler}
+                services={this.state.services}
               />
               <Products
-                currentStep={ this.state.currentStep }
-                handleProducts={ this.handleProducts }
-                deleteProductHandler={ this.deleteProductHandler }
-                products={ this.state.products }
+                currentStep={this.state.currentStep}
+                handleProducts={this.handleProducts}
+                deleteProductHandler={this.deleteProductHandler}
+                products={this.state.products}
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              { this.previousButton }
-              { this.nextButton }
-              { this.submitButton }
+              {this.previousButton}
+              {currentStep < 4 && (
+                <Button color="primary float-right" onClick={this.handleNext}>
+                  Next
+                </Button>
+              )}
+              {currentStep === 4 && (
+                <Button color="primary float-right">Submit</Button>
+              )}
             </CardFooter>
           </Card>
         </Form>

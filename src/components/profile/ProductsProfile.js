@@ -7,19 +7,13 @@ const ProductsProfile = () => {
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const { profileInfo } = useContext(ProfileInfoContext);
 
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
-
-  const [ productId, setProductId ] = useState(0);
-
-  useEffect(() => {
-    if (profileInfo && profileInfo.products && profileInfo.products.length > 0) {
-      setProductId(profileInfo.products[ profileInfo.products.length - 1 ].id + 1);
-    }
-  }, [ profileInfo ]);
+  // const [ productId, setProductId ] = useState(0);
+  const [ products, setProducts ] = useState([]);
 
   const [ product, setProduct ] = useState({
+    // id: productId,
     name: "",
     quantity: 0,
     price: 0,
@@ -27,11 +21,37 @@ const ProductsProfile = () => {
     image: "",
   })
 
-
   const editProductsModeHandler = () => {
     setEditProductsMode(!editProductsMode)
-    console.log(profileInfo)
   }
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/business/getBusinessProducts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email })
+      });
+
+      if (response.ok) {
+        const productsData = await response.json();
+        if (productsData !== null) {
+          setProducts(productsData);
+        } else {
+          setProducts(productsData);
+        }
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      setProducts([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [ profileInfo.email ]);
 
   const inputProductHandlerChange = (e) => {
 
@@ -40,33 +60,53 @@ const ProductsProfile = () => {
       ...prevData,
       [ name ]: value
     }))
-
   };
 
-  const submitProductsHandler = (e) => {
+  const submitProductForm = (e) => {
     e.preventDefault()
-
-    setProductId((productId + 1))
-
+    // setProductId((productId + 1))
     const newProduct = {
-      id: productId,
+      // id: productId,
       ...product
     }
-    const updateProducts = [ ...localProfileInfo.products, newProduct ]
-    setLocalProfileInfo(prev => ({
-      ...prev, products: [ ...prev.products, newProduct ]
-    }))
-    dispatch({ type: 'UPDATE_PRODUCTS', payload: updateProducts });
+    addProductHandler(newProduct)
   }
 
-  const deleteProductHandler = (productId) => {
-    const updatedProducts = localProfileInfo.products.filter(product => product.id !== productId
-    )
-    setLocalProfileInfo(prev => ({
-      ...prev,
-      products: updatedProducts
-    }));
-    dispatch({ type: 'DELETE_PRODUCT', payload: updatedProducts });
+  const addProductHandler = async (product) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/addProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email, product })
+      });
+
+      if (response.ok) {
+        alert('product added successfully');
+        fetchProducts();
+      } else {
+        console.log('Failed to add product');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const deleteProductHandler = async (productId) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/deleteProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email, productId })
+      });
+
+      if (response.ok) {
+        fetchProducts();
+      } else {
+        console.log('Failed to delete product');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   const productsListInputs = [
@@ -124,7 +164,7 @@ const ProductsProfile = () => {
       { profileInfo.isBusiness
         &&
         <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
-          <form onSubmit={ submitProductsHandler }>
+          <form onSubmit={ submitProductForm }>
             {
               <div className="xl-12">
                 <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
@@ -134,7 +174,7 @@ const ProductsProfile = () => {
                         <FormInput
                           key={ key }
                           { ...input }
-                          value={ localProfileInfo[ input.name ] }
+                          value={ profileInfo[ input.name ] }
                           onChange={ inputProductHandlerChange }
                         />
 
@@ -187,7 +227,7 @@ const ProductsProfile = () => {
           </div>
           <table className="table table-striped table-hover">
             <thead>
-              { localProfileInfo.products.length > 0 && (
+              { products.length > 0 && (
                 <tr className="table-secondary">
                   <th className="text-center" scope="col">
                     #
@@ -211,41 +251,43 @@ const ProductsProfile = () => {
               ) }
             </thead>
             <tbody>
-              { localProfileInfo.products.length > 0 ? (
-                localProfileInfo.products.map((product) => (
-                  <tr tr key={ product.id } className="table-secondary" >
+              { products.length > 0
+                ?
+                (
+                  products.map((product) => (
+                    <tr tr key={ product._id } className="table-secondary" >
 
-                    <td className="text-center">{ product.productId }</td>
-                    <td className="text-center">{ product.name }</td>
-                    <td className="text-center">{ product.price }</td>
-                    <td className="text-center">{ product.quantity }</td>
-                    <td className="text-center">{ product.description }</td>
+                      <td className="text-center">{ product._id }</td>
+                      <td className="text-center">{ product.name }</td>
+                      <td className="text-center">{ product.price }</td>
+                      <td className="text-center">{ product.quantity }</td>
+                      <td className="text-center">{ product.description }</td>
 
-                    { editProductsMode &&
-                      <td className="text-center">
-                        <button className="btn p-0 m-0"
-                          onClick={ () => {
-                            deleteProductHandler(product.id);
-                          } }
-                        >
-                          <lord-icon
-                            src="https://cdn.lordicon.com/gsqxdxog.json"
-                            trigger="hover"
-                            colors="primary:#c71f16,secondary:#000000"
-                            stroke="100"
-                            styles="width:250px;height:250px"
-                          ></lord-icon>
-                        </button>
-                      </td>
-                    }
+                      { editProductsMode &&
+                        <td className="text-center">
+                          <button className="btn p-0 m-0"
+                            onClick={ () => {
+                              deleteProductHandler(product.id);
+                            } }
+                          >
+                            <lord-icon
+                              src="https://cdn.lordicon.com/gsqxdxog.json"
+                              trigger="hover"
+                              colors="primary:#c71f16,secondary:#000000"
+                              stroke="100"
+                              styles="width:250px;height:250px"
+                            ></lord-icon>
+                          </button>
+                        </td>
+                      }
 
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">No Products</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="text-center">No Products</td>
-                </tr>
-              ) }
+                ) }
             </tbody>
           </table>
           {

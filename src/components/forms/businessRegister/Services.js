@@ -1,6 +1,6 @@
-import React from "react";
-import { FormGroup, Button, Label, Input } from "reactstrap";
-import { useState } from "react";
+import React, { useState } from "react";
+import { FormGroup, Button, Label } from "reactstrap";
+import FormInput from "../FormInput"; // Assuming the FormInput component is in a separate file
 
 const Services = (props) => {
   const [enteredName, setEnteredName] = useState("");
@@ -8,12 +8,12 @@ const Services = (props) => {
   const [enteredDuration, SetEnteredDuration] = useState("");
   const [enteredType, SetEnteredType] = useState("");
   let [serviceId, SetserviceId] = useState(1);
+
   const addServiceHandler = (event) => {
     event.preventDefault(); // Prevents the page from refreshing
-    SetserviceId(serviceId+1);
-   props.handleServices(enteredType, enteredName,enteredPrice,enteredDuration,serviceId)
-  }
-
+    SetserviceId(serviceId + 1);
+    props.handleServices(enteredType, enteredName, enteredPrice, enteredDuration, serviceId);
+  };
 
   const nameChangeHandler = (event) => {
     setEnteredName(event.target.value);
@@ -22,6 +22,7 @@ const Services = (props) => {
   const priceChangeHandler = (event) => {
     setEnteredPrice(event.target.value);
   };
+
   const typeChangeHandler = (event) => {
     SetEnteredType(event.target.value);
   };
@@ -34,41 +35,57 @@ const Services = (props) => {
     return null;
   }
 
+  const inputs = [
+    {
+      id: "name",
+      label: "Service Name",
+      placeholder: "Enter Service Name",
+      value: enteredName,
+      onChange: nameChangeHandler,
+      errorMessage: "missing service name",
+      pattern: "^[a-zA-Z0-9 ]+$",
+      required: true,
+    },
+    {
+      id: "type",
+      label: "Service Type",
+      placeholder: "Enter Service Type",
+      value: enteredType,
+      onChange: typeChangeHandler,
+      required: true,
+    },
+    {
+      id: "price",
+      label: "Price",
+      placeholder: "Enter Price",
+      value: enteredPrice,
+      onChange: priceChangeHandler,
+      errorMessage: "must be a number",
+      pattern: "^\\d+$",
+      required: true,
+    },
+    {
+      id: "duration",
+      label: "Duration (enter min)",
+      placeholder: "Enter Duration",
+      value: enteredDuration,
+      onChange: durationHandler,
+      errorMessage: "must be a number",
+      pattern: "^\\d+$",
+      required: true,
+    },
+  ];
+
   return (
     <div>
       <p className="display-6 text-center">Add Your Services</p>
-      <FormGroup className="form-check p-0">
-        <Label htmlFor="service">Service name</Label>
-        <Input
-          id="name"
-          type="text"
-          value={enteredName}
-          onChange={nameChangeHandler}
-        />
-
-<Label htmlFor="type">Service type</Label>
-        <Input
-          id="type"
-          type="text"
-          value={enteredType}
-          onChange={typeChangeHandler}
-        />
-
-        <Label htmlFor="price">Price</Label>
-        <Input
-          id="price"
-          type="text"
-          value={enteredPrice}
-          onChange={priceChangeHandler}
-        />
-
-        <Label htmlFor="duration">Duration (enter min)</Label>
-        <Input
-          id="duration"
-          type="number"
-          value={enteredDuration}
-          onChange={durationHandler}
-        />
+      <form className="form-check p-0">
+        {inputs.map((input) => (
+          <FormInput
+            key={input.id}
+            {...input}
+          />
+        ))}
 
         <Button
           className="btn btn-success mt-3"
@@ -92,25 +109,23 @@ const Services = (props) => {
                   Duration
                 </th>
                 <th className="text-center" scope="col">
-                  type
+                  Type
                 </th>
-                <th  scope="col">
-                  Remove
-                </th>
+                <th scope="col">Remove</th>
               </tr>
             )}
           </thead>
           <tbody>
             {props.services.map((service) => (
               <tr key={service.id} className="table-secondary">
-          
                 <td className="text-center">{service.name}</td>
                 <td className="text-center">{service.price}</td>
                 <td className="text-center">{service.duration}</td>
                 <td className="text-center">{service.serviceType}</td>
                 <td className="text-center">
-                  <button className="btn"
-                  type="button"
+                  <button
+                    className="btn"
+                    type="button"
                     onClick={() => {
                       props.deleteServicesHandler(service.id);
                     }}
@@ -127,8 +142,9 @@ const Services = (props) => {
             ))}
           </tbody>
         </table>
-      </FormGroup>
+      </form>
     </div>
   );
 };
+
 export default Services;

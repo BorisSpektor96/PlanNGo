@@ -1,21 +1,24 @@
-import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from "react-router-dom";
 
-const OffcanvasExample = (props) => {
-
+const MainNavbar = (props) => {
 
   const logOff3 = () => {
     props.setLogOut2(false)
   }
 
-  const [ loggedIn, setLoggedInt ] = useState(false)
+
   let NavTabs = []
-  if (loggedIn) {
+
+  if (props.loggedIn) {
     NavTabs = [
+      // {
+      //   tabName: 'Welcome',
+      //   pathName: '/'
+      // },
       {
         tabName: 'Home',
         pathName: '/businessesMenu'
@@ -26,18 +29,10 @@ const OffcanvasExample = (props) => {
       },
       {
         tabName: 'Massages',
-        pathName: '/'
-      },
-    ];
-  } else {
-    NavTabs = [
-      {
-        tabName: 'Massages',
-        pathName: '/'
+        pathName: '/Welcome'
       },
     ];
   }
-
 
   const listOfNavTabs = (
     <ul className="navbar-nav">
@@ -82,12 +77,12 @@ const OffcanvasExample = (props) => {
                   </Link>
                 </li>
                 <li className="nav-item me-1 my-1">
-                  <Link onClick={ logOff3 }
+                  <button onClick={ logOff3 }
                     type="button"
                     className="btn btn-outline-danger"
-                    to="/Welcome">
+                  >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
 
@@ -101,4 +96,4 @@ const OffcanvasExample = (props) => {
   );
 }
 
-export default OffcanvasExample;
+export default MainNavbar;

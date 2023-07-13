@@ -1,28 +1,16 @@
-import { React, useState } from "react";
-import FormInput from "../FormInput";
+import React from "react";
+import { Input, Label } from "reactstrap";
 
 const PersonalInfo = (props) => {
-  const [formValues, setformValues] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    userType: "Business",
-  });
-    if (props.currentStep !== 1) {
-    return null;
-  }
-
   const inputs = [
     {
       id: 1,
       name: "fullname",
       type: "text",
       placeholder: "fullName",
+      label: "fullName",
       errorMessage:
         "fullName should be 3-16 characters and shouldn't include any special character!",
-      label: "fullName",
       pattern: "^[A-Za-z0-9]{3,16}$",
       required: true,
     },
@@ -31,65 +19,77 @@ const PersonalInfo = (props) => {
       name: "email",
       type: "email",
       placeholder: "Email",
-      errorMessage: "It should be a valid email address!",
       label: "Email",
+      errorMessage: "It should be a valid email address!",
       required: true,
     },
-
     {
       id: 3,
       name: "password",
-      type: "text",
+      type: "password",
       placeholder: "Password",
       label: "Password",
       required: true,
       errorMessage:
-        "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+        "Password should be 8-20 characters and include at least 1 letter, 1 number, and 1 special character!",
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
     },
     {
       id: 4,
       name: "confirmPassword",
-      type: "text",
+      type: "password",
       placeholder: "Confirm Password",
-      errorMessage: "Passwords don't match!",
       label: "Confirm Password",
-      pattern: props.password,
       required: true,
+      errorMessage: "Passwords don't match!",
+      pattern: props.password,
     },
     {
       id: 5,
-      name: "phoneNumber",
+      name: "personal_phone",
       type: "text",
-      placeholder: "phone number",
-      errorMessage: "invalid phone number.",
-      label: "phone number",
+      placeholder: "personal_phone",
+      label: "personal_phone",
+      errorMessage: "Invalid phone number.",
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
       required: true,
     },
   ];
-
-  const onChange = (e) => {
-    setformValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
+  if (props.currentStep !== 1) {
+    return null;
+  }
   return (
     <>
       <p className="text-center display-6">Personal Information</p>
       <form>
         {inputs.map((input) => (
-          <FormInput
-            key={input.id}
-            {...input}
-            let
-            v={formValues[input.name]}
-            value={props.v}
-            onInput={onChange}
-            onChange={props.handleChange}
-          />
+          <div key={input.id}>
+            <Label className="mt-2 mb-0" for={input.name}>
+              {input.label}
+            </Label>
+            <Input
+              type={input.type}
+              name={input.name}
+              placeholder={input.placeholder}
+              value={props.formInput[input.name]}
+              onChange={props.handleChange}
+              invalid={props.errors[input.name] !== undefined}
+            />
+            {props.errors[input.name] && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "red",
+                }}
+              >
+                {props.errors[input.name]}
+              </p>
+            )}
+          </div>
         ))}
       </form>
     </>
   );
 };
+
 export default PersonalInfo;

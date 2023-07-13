@@ -10,11 +10,17 @@ const AccountProfile = () => {
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
 
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+  const [ profile, setProfile ] = useState({
+    fullname: "",
+    email: "",
+    address: "",
+    business_name: "",
+    personal_phone: "",
+    business_description: ""
+  });
 
   const editHandler = () => {
     setEditAccountMode(!editAccountMode)
-    console.log(profileInfo)
-    console.log(localProfileInfo)
   }
 
   const handlerInputProfileEdit = (e) => {
@@ -24,16 +30,91 @@ const AccountProfile = () => {
     });
   };
 
+  // useEffect(() => {
+  //   setLocalProfileInfo(profile)
+  // }, [ profile ])
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/business/getBusinessProfile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email })
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        if (user !== null) {
+          setProfile(user)
+        } else {
+          setProfile(user)
+        }
+      } else {
+        setProfile({})
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      setProfile({})
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, [ profileInfo.email ]);
+
   const submitAccountForm = async (e) => {
     e.preventDefault();
-    await dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
+    const fullname = e.target.fullname.value
+    const email = e.target.email.value
+    const business_name = e.target.business_name.value
+    const address = e.target.address.value
+    const personal_phone = e.target.personal_phone.value
+    const business_description = e.target.business_description.value
+
+    await updateProfile(fullname, email, business_name, address, personal_phone, business_description)
+    // await fetchProfile()
+    // await dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
     setEditAccountMode(!editAccountMode);
+    // console.log(profileInfo)
+  };
+
+  const updateProfile = async (fullname, email, business_name, address, phone, description) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/updateUserProfile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: profileInfo.email,
+          fullname: fullname,
+          emailNew: email,
+          business_name: business_name,
+          address: address,
+          business_phone: phone,
+          business_description: description
+        })
+      });
+      console.log(response)
+
+      if (response.ok) {
+        const newProfile = await response.json();
+        console.log(newProfile)
+        if (newProfile !== null) {
+          setProfile(newProfile)
+        } else {
+          setProfile(newProfile)
+        }
+      } else {
+        console.log("not ok ")
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   // useEffect(() => {
   //   dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
-  //   setLocalProfileInfo(profileInfo);
-  // }, [ profileInfo ])
+  //   // setLocalProfileInfo(JSON.parse(localStorage.getItem('userData')));
+  // }, [ localProfileInfo ])
 
   const listOfInfoAndInput = [
     {
@@ -51,7 +132,8 @@ const AccountProfile = () => {
       label: 'Email',
       required: true,
       errorMessage: "It should be a valid email address!",
-    }, {
+    },
+    {
       id: 'business_name',
       name: 'business_name',
       type: 'text',
@@ -68,11 +150,19 @@ const AccountProfile = () => {
       errorMessage: "",
     },
     {
-      id: 'business_phone',
-      name: 'business_phone',
+      id: 'personal_phone',
+      name: 'personal_phone',
       type: 'tel',
       label: 'Phone number',
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
+      required: true,
+      errorMessage: "It should be a valid phone number!",
+    },
+    {
+      id: 'business_description',
+      name: 'business_description',
+      type: 'text',
+      label: 'Business Description',
       required: true,
       errorMessage: "It should be a valid phone number!",
     },
@@ -102,7 +192,7 @@ const AccountProfile = () => {
             </div>
           ))
           }
-          <div className="card-body p-3">
+          {/* <div className="card-body p-3">
 
             { editAccountMode
               ? <div>
@@ -117,11 +207,13 @@ const AccountProfile = () => {
               : <div className="d-flex flex-column align-items-center justify-content-center">
                 < label className="form-label" for="BusinessDescription">Business Description: </label>
                 <div>
-                  { localProfileInfo.business_description }
+                  <p className="d-flex">
+                    { localProfileInfo.business_description }
+                  </p>
                 </div>
               </div>
             }
-          </div>
+          </div> */}
         </div>
         { editAccountMode &&
           <div className="d-flex justify-content-center ">

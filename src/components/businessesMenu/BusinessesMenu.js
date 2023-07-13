@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import SearchBar from "../forms/SearchBar";
 import BusinessFormat from "./BusinessFormat";
@@ -49,7 +49,7 @@ const BusinessesMenu = () => {
 
   useEffect(() => {
     fetchBusinessesArr();
-  }, []);
+  }, [ listOfBusinesses.length == 0 ]);
 
   useEffect(() => {
     const logTimeout = setTimeout(() => {

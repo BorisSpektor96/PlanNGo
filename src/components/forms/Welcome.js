@@ -26,15 +26,23 @@ const Welcome = (props) => {
     setBusinessRegisterIsShown(false);
   };
 
-  const setToLoggedIn = (value) => {
-    props.setToLogin(value);
+  const setToLoggedIn = () => {
+    props.setToLogin();
     console.log("Welcome Component");
   };
 
   return (
     <Fragment>
       { loginIsShown && (
-        <Login btnLogIn={ setToLoggedIn } onClose={ hideFormHandler } />
+        <Login
+          // setToLoggedIn2={ setToLoggedIn }
+          // onClose={ hideFormHandler }
+          // hideForm={ hideFormHandler }
+          setToLoggedIn={ setToLoggedIn }
+          // setToLogin={ props.setToLogin }
+          onClose={ hideFormHandler }
+          hideForm={ hideFormHandler }
+        />
       ) }
       { RegisterIsShown && <Register onClose={ hideFormHandler } /> }
       { BusinessRegisterIsShown && (

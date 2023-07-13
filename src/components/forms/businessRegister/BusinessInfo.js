@@ -1,23 +1,77 @@
 import React from "react";
-import { FormGroup, Label, Input } from "reactstrap";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Select from "react-select";
+import { Input, Label } from "reactstrap";
 
 const BusinessInfo = (props) => {
-  const [ selectedImage, setSelectedImage ] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedBusinessType, setSelectedBusinessType] = useState(null);
 
-  const handleRemoveImage = (index) => {
-    const updatedImages = [ ...selectedImage ];
-    updatedImages.splice(index, 1);
-    setSelectedImage(updatedImages);
+  useEffect(() => {
+    if (props.formInput.businessType) {
+      setSelectedBusinessType({
+        value: props.formInput.businessType,
+        label: props.formInput.businessType,
+      });
+    }
+  }, [props.formInput.businessType]);
+
+
+  const handleBusinessTypeChange = (selectedOption) => {
+    setSelectedBusinessType(selectedOption);
+    props.handleBusinessType(selectedOption.value);
   };
 
+
+  
   const options = [
     { value: "barber shop", label: "barber shop", name: "businessType" },
     { value: "nail tech", label: "nail tech", name: "businessType" },
     { value: "spa", label: "spa", name: "businessType" },
     { value: "other", label: "other", name: "businessType" },
   ];
+
+  const inputs = [
+    {
+      id: "business_name",
+      label: "Business Name",
+      placeholder: "Enter your business name",
+      name: "business_name",
+      errorMessage: "must provide a business name",
+      pattern: "^[a-zA-Z0-9 ]+$",
+      required: true,
+      type: "text",
+    },
+    {
+      id: "business_phone",
+      label: "Business Phone Number",
+      placeholder: "Enter business phone number",
+      name: "business_phone",
+      errorMessage: "invalid phone number.",
+      pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
+      required: true,
+      type: "text",
+    },
+    {
+      id: "address",
+      label: "Business Address",
+      placeholder: "Enter business address",
+      name: "address",
+      errorMessage: "must provide a business address",
+      pattern: "^[a-zA-Z0-9 ]+$",
+      required: true,
+      type: "text",
+    },
+    {
+      id: "business_description",
+      label: "Business Description",
+      placeholder: "Enter business description",
+      name: "business_description",
+      required: true,
+      type: "text",
+    },
+  ];
+
   if (props.currentStep !== 2) {
     return null;
   }
@@ -25,113 +79,87 @@ const BusinessInfo = (props) => {
   return (
     <>
       <p className="text-center display-6">Business Information</p>
-      <FormGroup className="form-check p-0">
-        <Label className="mt-2 mb-0" for="business_name">
-          Business Name
-        </Label>
-        <Input
-          type="text"
-          name="business_name"
-          id="business_name"
-          placeholder="Enter your business name"
-          value={ props.business_name } // Prop: The username input data
-          onChange={ props.handleChange } // Prop: Puts data into the state
-        />
-        <Label className="mt-2 mb-0" for="business_phone">
-          Business Phone Number
-        </Label>
-        <Input
-          type="text"
-          name="business_phone"
-          id="business_phone"
-          placeholder="Enter business phone number"
-          value={ props.business_phone } // Prop: The username input data
-          onChange={ props.handleChange } // Prop: Puts data into the state
-        />
-        <Label className="mt-2 mb-0" for="address">
-          Business Address
-        </Label>
-        <Input
-          type="text"
-          name="address"
-          id="address"
-          placeholder="Enter business address"
-          value={ props.address } // Prop: The username input data
-          onChange={ props.handleChange } // Prop: Puts data into the state
-        />
-        <Label className="mt-2 mb-0" for="business_email">
-          Business Email
-        </Label>
-        <Input
-          type="text"
-          name="business_email"
-          id="business_email"
-          placeholder="Enter business email address"
-          value={ props.business_email } // Prop: The username input data
-          onChange={ props.handleChange } // Prop: Puts data into the state
-        />
-        <Label className="mt-2 mb-0" for="business_description">
-          business description
-        </Label>
-        <Input
-          type="text"
-          name="business_description"
-          id="business_description"
-          placeholder="Enter business description"
-          value={ props.business_description } // Prop: The username input data
-          onChange={ props.handleChange } // Prop: Puts data into the state
-        />
+      <form className="form-check p-0">
+        {inputs.map((input) => (
+          <div key={input.id}>
+            <Label className="mt-2 mb-0" for={input.name}>
+              {input.label}
+            </Label>
+            <Input
+              type={input.type}
+              name={input.name}
+              placeholder={input.placeholder}
+              value={props.formInput[input.name]}
+              onChange={props.handleChange}
+              invalid={props.errors[input.name] !== undefined}
+            />
+            {props.errors[input.name] && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  padding: "3px",
+                  color: "red",
+                }}
+              >
+                {props.errors[input.name]}
+              </p>
+            )}
+          </div>
+        ))}
+
         <div className="p-2">
-          <Select
-            options={ options }
-            onChange={ (selectedOption) =>
-              props.handleBusinessType(selectedOption.value)
-            }
-            autoFocus={ true }
+  <Select
+            options={options}
+            value={selectedBusinessType}
+            onChange={handleBusinessTypeChange}
+            autoFocus={true}
             className="custom-select text-center form-control"
             placeholder="Select business type"
-          ></Select>
+          />
         </div>
-        <Label class="custom-file-label" for="photo_gallery">
+
+        <Label className="custom-file-label" for="photo_gallery">
           Upload pictures
         </Label>
         <div className="d-flex flex-column gap-2">
           <input
             className="custom-file-input"
             type="file"
-            name="myImage"
-            lable="choose image"
-            onChange={ (event) =>
+            name="business_photo_gallery"
+            label="choose image"
+            onChange={(event) =>
               props.handleInsertImage(Array.from(event.target.files))
             }
             multiple // Allow multiple file selection
           />
 
-          { props.business_photo_gallery && (
+          {props.business_photo_gallery && (
             <div className="d-flex justify-content-around">
-              {/* Display selected images */ }
-              { props.business_photo_gallery.map((image, index) => (
-                <div key={ index }>
+              {/* Display selected images */}
+              {props.business_photo_gallery.map((image, index) => (
+                <div key={index}>
                   <img
                     alt="not found"
-                    width={ "50px" }
-                    height={ "50px" }
-                    src={ URL.createObjectURL(image) }
+                    width={"50px"}
+                    height={"50px"}
+                    src={URL.createObjectURL(image)}
                   />
                   <br />
                   <button
+                  type="button"
                     className="btn btn-outline-danger"
-                    onClick={ () => props.handleDeleteImage(index) }
+                    onClick={() => props.handleDeleteImage(index)}
                   >
                     Remove
                   </button>
                 </div>
-              )) }
+              ))}
             </div>
-          ) }
+          )}
         </div>
-      </FormGroup>
+      </form>
     </>
   );
 };
+
 export default BusinessInfo;

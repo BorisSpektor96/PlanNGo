@@ -2,50 +2,64 @@ import Modal from "../UI/Modal";
 import "bootstrap/dist/css/bootstrap.css";
 import FormInput from "./FormInput";
 import { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 // ******************
 import { ProfileInfoContext } from '../../ProfileInfoContext'
 // ******************
 
 const Login = (props) => {
-  const navigate = useNavigate()
+
   // ******************
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
   const [ data, setData ] = useState();
-  // ******************
-
-  useEffect(() => {
-    setLocalProfileInfo(profileInfo);
-  }, [ profileInfo ])
-
-  useEffect(() => {
-    localStorage.setItem('userData', JSON.stringify(data))
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
-  }, [ data ])
 
   const [ formValues, setformValues ] = useState({
     email: "",
     password: "",
   });
+  // ******************
 
+  useEffect(() => {
+    const storedData = localStorage.getItem('userData');
+    if (storedData !== 'undefined') {
+      setLocalProfileInfo(JSON.parse(storedData));
+    }
+  }, [ profileInfo ]);
+
+  useEffect(() => {
+    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
+  }, [ data ]);
+
+  useEffect(() => {
+    setLocalProfileInfo(data);
+    localStorage.setItem('userData', JSON.stringify(data))
+    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
+    console.log(profileInfo)
+    console.log(data)
+  }, [ data ]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const loggedIn = await userLogin();
-    console.log(data)
-    console.log(profileInfo)
-    if (loggedIn) {
-      console.log('Logged in');
-      // window.location.href = '/BusinessesMenu';
-      // navigate('/BusinessesMenu')
-    } else {
-      console.log('Bad information');
-      navigate('/Welcome')
-      // window.location.href = '/Welcome';
+
+    try {
+      const isLoginSuccessful = await userLogin();
+
+      if (isLoginSuccessful) {
+        console.log('Good information');
+        window.location.href = '/BusinessesMenu'
+      } else {
+        console.log('Bad information');
+      }
+    } catch (error) {
+      console.log('Error:', error);
     }
   };
+
+  const setToLoggedIn3 = () => {
+    props.setToLoggedIn()
+    props.hideForm()
+  }
 
   const userLogin = async () => {
     try {
@@ -59,23 +73,23 @@ const Login = (props) => {
       });
 
       if (response.status === 200) {
-        await setData(await response.json());
-        if (data !== null) {
-          setLocalProfileInfo(data)
-          await dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
-          // localStorage.setItem('userData', JSON.stringify(data));
+        const responseData = await response.json();
+        setData(responseData);
+
+        if (responseData !== null && responseData !== 'undefined' && responseData !== undefined) {
           return true;
         } else {
-          localStorage.setItem('userData', null);
-          return false
+          return false;
         }
       } else {
-        throw new Error('Something went wrong!');
+        console.log('Login failed. Status:', response.status);
+        return false;
       }
     } catch (err) {
-      console.log(err);
+      console.log('Error:', err);
+      return false;
     }
-  }
+  };
 
   const onChange = (e) => {
     setformValues({ ...formValues, [ e.target.name ]: e.target.value });

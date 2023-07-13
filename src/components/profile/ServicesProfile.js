@@ -6,9 +6,10 @@ const ServicesProfile = () => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const { profileInfo } = useContext(ProfileInfoContext);
 
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+  // const [ serviceId, setServiceId ] = useState(0);
+  const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({
     name: "",
@@ -19,17 +20,40 @@ const ServicesProfile = () => {
     image: "",
   })
 
-  const editServiceModeHandler = () => {
+  const editServicesModeHandler = () => {
     setEditServicesMode(!editServicesMode)
   }
 
-  const [ serviceId, setServiceId ] = useState(0);
+  const fetchServices = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/business/getBusinessServices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email })
+      });
+
+      if (response.ok) {
+        const servicesData = await response.json();
+        console.log(servicesData)
+        if (servicesData !== null) {
+          setServices(servicesData);
+        } else {
+          console.log("else ")
+          setServices(servicesData);
+        }
+      } else {
+        console.log("not ok ")
+        setServices([]);
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      setServices([]);
+    }
+  };
 
   useEffect(() => {
-    if (profileInfo && profileInfo.services && profileInfo.services.length > 0) {
-      setServiceId(profileInfo.services[ profileInfo.services.length - 1 ].id + 1);
-    }
-  }, [ profileInfo ]);
+    fetchServices();
+  }, [ profileInfo.email ]);
 
   const handleInputServiceChange = (e) => {
     const { name, value } = e.target;
@@ -41,27 +65,49 @@ const ServicesProfile = () => {
 
   const submitServiceForm = (e) => {
     e.preventDefault()
-    setServiceId((serviceId + 1))
+    // setServiceId((serviceId + 1))
     const newService = {
-      id: serviceId,
+      // id: serviceId,
       ...service,
     }
-    const updatedServices = [ ...localProfileInfo.services, newService ]
-    setLocalProfileInfo(prev => ({
-      ...prev,
-      services: [ ...prev.services, newService ]
-    }));
-    dispatch({ type: 'UPDATE_SERVICES', payload: updatedServices });
+    addServiceHandler(newService)
   }
 
-  const deleteServiceHandler = (serviceId) => {
-    const updatedServices = localProfileInfo.services.filter(service => service.id !== serviceId
-    )
-    setLocalProfileInfo(prev => ({
-      ...prev,
-      services: updatedServices
-    }));
-    dispatch({ type: 'DELETE_SERVICE', payload: updatedServices });
+  const addServiceHandler = async (service) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/addService', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email, service })
+      });
+
+      if (response.ok) {
+        console.log('Service added successfully');
+        fetchServices();
+      } else {
+        console.log('Failed to add service');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const deleteServiceHandler = async (serviceId) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/deleteService', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email, serviceId })
+      });
+
+      if (response.ok) {
+        fetchServices();
+      } else {
+        console.log('Failed to delete service');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   const servicesListInputs = [
@@ -176,7 +222,7 @@ const ServicesProfile = () => {
               </div>
               { !editServicesMode
                 && <div>
-                  <button className="border-0" onClick={ editServiceModeHandler } >
+                  <button className="border-0" onClick={ editServicesModeHandler } >
                     <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                     <lord-icon
                       src="https://cdn.lordicon.com/puvaffet.json"
@@ -192,7 +238,7 @@ const ServicesProfile = () => {
           </div>
           <table className="table table-striped table-hover">
             <thead>
-              { localProfileInfo.services.length > 0
+              { services.length > 0
                 &&
                 <tr className="table-secondary ">
                   <th className="text-center  " scope="col">
@@ -214,47 +260,49 @@ const ServicesProfile = () => {
               }
             </thead>
             <tbody>
-              { localProfileInfo.services.length > 0 ? (
-                localProfileInfo.services.map((service) => (
-                  <tr key={ service.id } className="table-secondary">
+              { services.length > 0
+                ?
+                (
+                  services.map((service) => (
+                    <tr key={ service._id } className="table-secondary">
 
-                    <td className="text-center">{ service.name }</td>
-                    <td className="text-center">{ service.price }</td>
-                    <td className="text-center">{ service.duration }</td>
+                      <td className="text-center">{ service.name }</td>
+                      <td className="text-center">{ service.price }</td>
+                      <td className="text-center">{ service.duration }</td>
 
-                    { editServicesMode &&
-                      <td className="text-center">
-                        <button className="btn p-0 m-0"
-                          onClick={ () => {
-                            deleteServiceHandler(service.id);
-                          } }
-                        >
-                          <lord-icon
-                            src="https://cdn.lordicon.com/gsqxdxog.json"
-                            trigger="hover"
-                            colors="primary:#c71f16,secondary:#000000"
-                            stroke="100"
-                            styles="width:250px;height:250px"
-                          ></lord-icon>
-                        </button>
-                      </td>
-                    }
+                      { editServicesMode &&
+                        <td className="text-center">
+                          <button className="btn p-0 m-0"
+                            onClick={ () => {
+                              deleteServiceHandler(service.id);
+                            } }
+                          >
+                            <lord-icon
+                              src="https://cdn.lordicon.com/gsqxdxog.json"
+                              trigger="hover"
+                              colors="primary:#c71f16,secondary:#000000"
+                              stroke="100"
+                              styles="width:250px;height:250px"
+                            ></lord-icon>
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">No Services</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="text-center">No Services</td>
-                </tr>
-              ) }
+                ) }
             </tbody>
-          </table >
+          </table>
           {
             editServicesMode
             &&
             <div className="d-flex justify-content-center ">
               <button className="mb-3 text-center col-4 btn btn-primary"
                 type="button"
-                onClick={ editServiceModeHandler }
+                onClick={ editServicesModeHandler }
               >
                 Save changes
               </button>

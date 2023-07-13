@@ -5,8 +5,8 @@ import "bootstrap/dist/css/bootstrap.css";
 
 const Layout = (props) => {
 
-  const logOff2 = (value) => {
-    props.setToLogout(value)
+  const logOff2 = () => {
+    props.setToLogout()
   }
 
   const ifWelcomeDontShowComponent = window.location.pathname !== '/Welcome'
@@ -14,7 +14,10 @@ const Layout = (props) => {
   return (
     <main>
       { ifWelcomeDontShowComponent &&
-        <Navbar setLogOut2={ logOff2 } />
+        <Navbar
+          setLogOut2={ logOff2 }
+          { ...props }
+        />
       }
       <div className='min-vh-100'>
 
