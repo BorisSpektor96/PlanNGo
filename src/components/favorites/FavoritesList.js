@@ -1,40 +1,69 @@
+import { useContext, useState } from "react";
 import FavoriteItem from "./FavoriteItem";
 import "./favoritesList.css"
-const FavoritesList =(props)=>{
-    const favList = [
-        {
-          id: "123",
-          businessName: "Business Name1",
-          serviceName:"hair salon",
-          businessDescription: "This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.",
-          tel: "+9720541245678",
-          address: "somewhere around the world",
-          email: "mail@gmail.com",
-        },
-        {
-          id: "456",
-          businessName: "Business Name2",
-          serviceName:"nail salon",
+import { ProfileInfoContext } from "../../ProfileInfoContext";
+import { useEffect } from "react";
 
-          businessDescription: "This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.",
-          tel: "+9720541245678",
-          address: "somewhere around the world",
-          email: "mail@gmail.com",
-        },
-      ]
+const FavoritesList = () => {
 
-return(
+  const { profileInfo } = useContext(ProfileInfoContext);
+
+  const [ favorites, setFavorites ] = useState([]);
+
+  useEffect(() => {
+    fetchFavorites()
+    console.log(favorites)
+  }, [ profileInfo.email ])
+
+  useEffect(() => {
+    console.log(profileInfo)
+  }, []);
+
+  const fetchFavorites = async () => {
+    console.log("profileInfo.email", profileInfo.email)
+    try {
+      const response = await fetch('http://localhost:3001/users/getFavorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email })
+      });
+      if (response.ok) {
+        const favoritesData = await response.json();
+        console.log(favoritesData)
+
+        if (favoritesData !== null) {
+          setFavorites(favoritesData);
+        } else {
+          setFavorites(favoritesData);
+        }
+      } else {
+        setFavorites([]);
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      setFavorites([]);
+    }
+  };
+
+  return (
     <div class="d-flex justify-content-center mt-4">
       <ul className="border list-group list-group-flush">
-      <p class="d-flex justify-content-center m-1">Favorites</p>
-
-        {favList.map((item) => (
-          <FavoriteItem
-            key={item.id}
-            name={item.businessName}
-            service={item.serviceName}
-          />
-        ))}
+        <p class="d-flex justify-content-center m-1">Favorites</p>
+        { favorites.length > 0 ?
+          (<>
+            { favorites.map((item) => (
+              <FavoriteItem
+                key={ item.id }
+                name={ item.business_name }
+                service={ item.businessType }
+              />
+            )) }
+          </>)
+          :
+          (<>
+            <p>There is no favorite businesses</p>
+          </>)
+        }
       </ul>
     </div>
   );

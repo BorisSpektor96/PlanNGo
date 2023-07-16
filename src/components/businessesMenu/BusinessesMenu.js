@@ -29,7 +29,7 @@ const BusinessesMenu = () => {
           business_name: data[ key ].business_name,
           fullname: data[ key ].fullname,
           tel: data[ key ].business_phone,
-          email: data[ key ].business_email,
+          email: data[ key ].email,
           address: data[ key ].address,
           service: data[ key ].business_type,
           isBusiness: data[ key ].isBusiness,

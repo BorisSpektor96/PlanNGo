@@ -1,10 +1,11 @@
 const FavoriteItem = (props) => {
+
   return (
     <li className="d-flex border m-1  align-items-center">
 
       <div className="d-flex align-items-baseline ">
-        <p className="m-3"> {props.name}</p>
-        <p>{props.service}</p>
+        <p className="m-3"> { props.name }</p>
+        <p>{ props.service }</p>
       </div>
       <div>
         <button className="btn ">

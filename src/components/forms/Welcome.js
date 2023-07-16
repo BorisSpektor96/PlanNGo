@@ -1,10 +1,15 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useContext } from "react";
 import Login from "./Login";
 import Register from "./Register";
 import styles from "./Welcome.module.css";
 import MainBusinessForm from "./businessRegister/MainBusinessForm";
 
-const Welcome = (props) => {
+import { AuthContext } from '../../AuthContext';
+
+const Welcome = () => {
+
+  const { isLoggedIn } = useContext(AuthContext);
+
   const [ loginIsShown, setLoginIsShown ] = useState(false);
   const [ RegisterIsShown, setRegisterIsShown ] = useState(false);
   const [ BusinessRegisterIsShown, setBusinessRegisterIsShown ] = useState(false);
@@ -26,20 +31,10 @@ const Welcome = (props) => {
     setBusinessRegisterIsShown(false);
   };
 
-  const setToLoggedIn = () => {
-    props.setToLogin();
-    console.log("Welcome Component");
-  };
-
   return (
     <Fragment>
       { loginIsShown && (
         <Login
-          // setToLoggedIn2={ setToLoggedIn }
-          // onClose={ hideFormHandler }
-          // hideForm={ hideFormHandler }
-          setToLoggedIn={ setToLoggedIn }
-          // setToLogin={ props.setToLogin }
           onClose={ hideFormHandler }
           hideForm={ hideFormHandler }
         />
@@ -48,44 +43,51 @@ const Welcome = (props) => {
       { BusinessRegisterIsShown && (
         <MainBusinessForm onClose={ hideFormHandler } />
       ) }
-
-      <div className={ styles.container }>
-        <div className="header">
-          <h1 className="header display-4 text-center">Welcome </h1>
-        </div>
-
-        <div className={ styles.Bcontainer }>
-          <div className={ styles.B2 }>
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={ showLoginHandler }
-            >
-              Login
-            </button>
-          </div>
-
-          <div className={ styles.B2 }>
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={ showRegisterHandler }
-            >
-              Register
-            </button>
-          </div>
-
-          <div className={ styles.B2 }>
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={ showBusinessRegisterHandler }
-            >
-              Business Register
-            </button>
+      { isLoggedIn ?
+        <div className={ styles.container }>
+          <div className="header">
+            <h1 className="header display-4 text-center">Welcome </h1>
           </div>
         </div>
-      </div>
+        :
+        <div className={ styles.container }>
+          <div className="header">
+            <h1 className="header display-4 text-center">Login / Register </h1>
+          </div>
+
+          <div className={ styles.Bcontainer }>
+            <div className={ styles.B2 }>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={ showLoginHandler }
+              >
+                Login
+              </button>
+            </div>
+
+            <div className={ styles.B2 }>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={ showRegisterHandler }
+              >
+                Register
+              </button>
+            </div>
+
+            <div className={ styles.B2 }>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={ showBusinessRegisterHandler }
+              >
+                Business Register
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </Fragment>
   );
 };

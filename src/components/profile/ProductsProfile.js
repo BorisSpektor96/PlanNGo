@@ -9,11 +9,11 @@ const ProductsProfile = () => {
 
   const { profileInfo } = useContext(ProfileInfoContext);
 
-  // const [ productId, setProductId ] = useState(0);
+  const [ productId, setProductId ] = useState(0);
   const [ products, setProducts ] = useState([]);
 
   const [ product, setProduct ] = useState({
-    // id: productId,
+    id: 0,
     name: "",
     quantity: 0,
     price: 0,
@@ -32,9 +32,17 @@ const ProductsProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email })
       });
-
+      console.log("profileInfo.email", profileInfo.email)
       if (response.ok) {
         const productsData = await response.json();
+        console.log(productsData)
+        if (productsData.length > 0) {
+          for (let p of productsData) {
+            if (p.id >= productId) {
+              setProductId(p.id + 1)
+            }
+          }
+        }
         if (productsData !== null) {
           setProducts(productsData);
         } else {
@@ -50,11 +58,12 @@ const ProductsProfile = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    if (profileInfo.isBusiness) {
+      fetchProducts();
+    }
   }, [ profileInfo.email ]);
 
   const inputProductHandlerChange = (e) => {
-
     const { name, value } = e.target
     setProduct(prevData => ({
       ...prevData,
@@ -64,10 +73,10 @@ const ProductsProfile = () => {
 
   const submitProductForm = (e) => {
     e.preventDefault()
-    // setProductId((productId + 1))
+    setProductId(productId + 1)
     const newProduct = {
-      // id: productId,
-      ...product
+      ...product,
+      id: productId,
     }
     addProductHandler(newProduct)
   }
@@ -203,8 +212,8 @@ const ProductsProfile = () => {
       {
         profileInfo.isBusiness
         &&
-        <div className="p-0 d-flex flex-column m-3">
-          <div className="border border-primary">
+        <div className="row p-0 m-3">
+          <div className="card border border-primary">
             <div className="card-header d-flex justify-content-around p-1">
               <div className="d-flex align-items-center">
                 Products Details
@@ -227,7 +236,8 @@ const ProductsProfile = () => {
           </div>
           <table className="table table-striped table-hover">
             <thead>
-              { products.length > 0 && (
+              { products.length > 0
+                &&
                 <tr className="table-secondary">
                   <th className="text-center" scope="col">
                     #
@@ -248,16 +258,16 @@ const ProductsProfile = () => {
                     <th scope="col">Remove</th>
                   }
                 </tr>
-              ) }
+              }
             </thead>
             <tbody>
               { products.length > 0
                 ?
                 (
                   products.map((product) => (
-                    <tr tr key={ product._id } className="table-secondary" >
+                    <tr tr key={ product.productId } className="table-secondary" >
 
-                      <td className="text-center">{ product._id }</td>
+                      <td className="text-center">{ product.id }</td>
                       <td className="text-center">{ product.name }</td>
                       <td className="text-center">{ product.price }</td>
                       <td className="text-center">{ product.quantity }</td>
@@ -309,7 +319,7 @@ const ProductsProfile = () => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-11">
+      <div className="col-11">
 
         { showProductAddInputs }
         { showProductsInTable }

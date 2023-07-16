@@ -3,31 +3,15 @@ import Navbar from './Navbar';
 import { Outlet } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
 
-const Layout = (props) => {
-
-  const logOff2 = () => {
-    props.setToLogout()
-  }
-
-  const ifWelcomeDontShowComponent = window.location.pathname !== '/Welcome'
+const Layout = () => {
 
   return (
     <main>
-      { ifWelcomeDontShowComponent &&
-        <Navbar
-          setLogOut2={ logOff2 }
-          { ...props }
-        />
-      }
+      <Navbar />
       <div className='min-vh-100'>
-
         <Outlet />
-
       </div>
-      { ifWelcomeDontShowComponent &&
-        <Footer />
-      }
-
+      <Footer />
     </main >
   );
 

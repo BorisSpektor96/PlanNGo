@@ -1,28 +1,12 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  fullName: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-    , unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  phoneNumber: {
-    type: String,
-    required: true
-  },
-  isBusiness: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
+  fullName: String,
+  email: String,
+  password: String,
+  phoneNumber: String,
+  isBusiness: Boolean,
+  favorites: Array,
   img: {
     data: Buffer,
     contentType: String

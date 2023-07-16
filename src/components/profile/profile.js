@@ -14,31 +14,29 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
-    // setLocalProfileInfo(JSON.parse(localStorage.getItem('userData')));
-    // console.log(localProfileInfo)
-    console.log(profileInfo)
+    console.log(localProfileInfo)
   }, [])
 
   return (
-    <>
-      <div className="mt-4 mb-4">
+    < >
+      <div className="mt-4 mb-4" >
         <AccountProfile
-          localProfileInfo={ localProfileInfo }
+        // localProfileInfo={ localProfileInfo }
         />
-      </div>
+      </div >
 
       <div className="mt-4 mb-4">
         <ProductsProfile
-          localProfileInfo={ localProfileInfo }
+        // localProfileInfo={ localProfileInfo }
         />
       </div>
 
       <div className="mt-4 mb-4">
         <ServicesProfile
-          localProfileInfo={ localProfileInfo }
+        // localProfileInfo={ localProfileInfo }
         />
       </div>
-    </>
+    </ >
   )
 
 }

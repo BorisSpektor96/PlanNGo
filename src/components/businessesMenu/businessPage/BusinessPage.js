@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import styles from "./BusinessPage.module.css";
 import Review from "../../review/Review";
@@ -6,8 +6,16 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
+import { ProfileInfoContext } from "../../../ProfileInfoContext";
+import { useEffect } from "react";
 
 const BusinessPage = (props) => {
+
+  const location = useLocation();
+  const businessDetails = location.state;
+
+  const { profileInfo } = useContext(ProfileInfoContext)
+
   const [ isFavorite, setIsFavorite ] = useState(false);
 
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
@@ -15,7 +23,31 @@ const BusinessPage = (props) => {
 
   const addToFavoritesHandler = () => {
     setIsFavorite(!isFavorite);
+    addBusinessToFavorite()
   };
+
+  const addBusinessToFavorite = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/users/addToFavorite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail: profileInfo.email,
+          businessEmail: businessDetails.email
+        })
+      });
+      console.log("logged user", profileInfo)
+      console.log("business deteils", businessDetails)
+      if (response.ok) {
+        alert('added to favorites successfully');
+      } else {
+        console.log('Failed to add to favorites');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
   const scheduleOpenView = () => {
     setCalendarIsShown(true);
     console.log(calendarIsShown);
@@ -31,9 +63,10 @@ const BusinessPage = (props) => {
     setAddReviewIsShown(false);
   };
 
-  const location = useLocation();
-  const businessDetails = location.state;
-  console.log(businessDetails)
+  useEffect(() => {
+    console.log(businessDetails)
+    console.log("logged user", profileInfo)
+  }, [])
 
   const pathToBackMenu = "/BusinessesMenu";
 

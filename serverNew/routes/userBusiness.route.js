@@ -196,7 +196,7 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const productIndex = user.products.findIndex(product => product._id.oid === productId);
+    const productIndex = user.products.findIndex(product => product.id == productId);
     if (productIndex === -1) {
       return res.status(404).json({ message: 'Product not found' });
     }

@@ -5,10 +5,12 @@ import { useState, useEffect, useContext } from "react";
 
 // ******************
 import { ProfileInfoContext } from '../../ProfileInfoContext'
+import { AuthContext } from '../../AuthContext';
 // ******************
 
 const Login = (props) => {
 
+  const { login } = useContext(AuthContext);
   // ******************
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
@@ -18,7 +20,6 @@ const Login = (props) => {
     email: "",
     password: "",
   });
-  // ******************
 
   useEffect(() => {
     const storedData = localStorage.getItem('userData');
@@ -33,21 +34,18 @@ const Login = (props) => {
 
   useEffect(() => {
     setLocalProfileInfo(data);
+    console.log(localProfileInfo)
     localStorage.setItem('userData', JSON.stringify(data))
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
-    console.log(profileInfo)
-    console.log(data)
   }, [ data ]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     try {
       const isLoginSuccessful = await userLogin();
 
       if (isLoginSuccessful) {
         console.log('Good information');
-        window.location.href = '/BusinessesMenu'
       } else {
         console.log('Bad information');
       }
@@ -55,11 +53,6 @@ const Login = (props) => {
       console.log('Error:', error);
     }
   };
-
-  const setToLoggedIn3 = () => {
-    props.setToLoggedIn()
-    props.hideForm()
-  }
 
   const userLogin = async () => {
     try {
@@ -74,9 +67,12 @@ const Login = (props) => {
 
       if (response.status === 200) {
         const responseData = await response.json();
+        console.log(responseData)
         setData(responseData);
 
         if (responseData !== null && responseData !== 'undefined' && responseData !== undefined) {
+          login(responseData)
+          props.hideForm()
           return true;
         } else {
           return false;
@@ -125,7 +121,6 @@ const Login = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          // dal
           onClick={ props.onClose }
         ></button>
       </div>

@@ -4,21 +4,17 @@ import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from "react-router-dom";
 
+import { useContext } from 'react';
+import { AuthContext } from '../../AuthContext';
+
 const MainNavbar = (props) => {
 
-  const logOff3 = () => {
-    props.setLogOut2(false)
-  }
-
+  const { isLoggedIn, logout } = useContext(AuthContext);
 
   let NavTabs = []
 
-  if (props.loggedIn) {
+  if (isLoggedIn) {
     NavTabs = [
-      // {
-      //   tabName: 'Welcome',
-      //   pathName: '/'
-      // },
       {
         tabName: 'Home',
         pathName: '/businessesMenu'
@@ -27,10 +23,13 @@ const MainNavbar = (props) => {
         tabName: 'Favorites',
         pathName: '/FavoritesList'
       },
+    ];
+  } else {
+    NavTabs = [
       {
-        tabName: 'Massages',
-        pathName: '/Welcome'
-      },
+        tabName: 'Login / Register',
+        pathName: '/'
+      }
     ];
   }
 
@@ -68,25 +67,26 @@ const MainNavbar = (props) => {
             <Nav className="justify-content-center">
               { listOfNavTabs }
             </Nav>
-
-            <Nav className="justify-content-end flex-grow-1 pe-3">
-              <ul className="navbar-nav d-flex">
-                <li className="nav-item me-1 my-1">
-                  <Link className="btn btn-outline-primary" to="/Profile">
-                    Profile
-                  </Link>
-                </li>
-                <li className="nav-item me-1 my-1">
-                  <button onClick={ logOff3 }
-                    type="button"
-                    className="btn btn-outline-danger"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-
-            </Nav>
+            {
+              isLoggedIn &&
+              <Nav className="justify-content-end flex-grow-1 pe-3">
+                <ul className="navbar-nav d-flex">
+                  <li className="nav-item me-1 my-1">
+                    <Link className="btn btn-outline-primary" to="/Profile">
+                      Profile
+                    </Link>
+                  </li>
+                  <li className="nav-item me-1 my-1">
+                    <button onClick={ logout }
+                      type="button"
+                      className="btn btn-outline-danger"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </Nav>
+            }
 
           </Offcanvas.Body>
 

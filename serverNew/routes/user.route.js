@@ -1,5 +1,6 @@
 import express from "express";
 import userModel from '../models/User.js'
+import userBusinessModel from '../models/BusinessUser.js'
 
 const userRouter = express.Router();
 
@@ -21,6 +22,42 @@ userRouter.post('/signup', async (req, res) => {
   }
 });
 
+userRouter.post("/getFavorites", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const { favorites } = await userModel.findOne({ email: email }, { favorites: 1 });
+    if (favorites) {
+      console.log(favorites);
+      res.json(favorites);
+    } else {
+      console.log("Favorites not found");
+      res.json([]);
+    }
+  } catch (err) {
+    res.send("Error " + err);
+  }
+});
+
+userRouter.post('/addToFavorite', async (req, res) => {
+  try {
+    const { userEmail, businessEmail } = req.body
+    console.log(userEmail)
+    console.log(businessEmail)
+    const business = await userBusinessModel.findOne({ email: businessEmail })
+    const user = await userModel.findOne({ email: userEmail })
+    const favBusiness = {
+      business_name: business.business_name,
+      email: business.email,
+      businessType: business.business_type
+    }
+    user.favorites.push(favBusiness)
+    user.save()
+    res.json(favBusiness)
+  } catch (err) {
+    res.send("Error " + err)
+  }
+})
+
 userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -37,10 +74,8 @@ userRouter.post("/checkEmail", async (req, res) => {
     const user = await userModel.findOne({ email: email });
 
     if (user) {
-      // Email exists in the database
       res.json({ exists: true });
     } else {
-      // Email does not exist in the database
       res.json({ exists: false });
     }
   } catch (err) {

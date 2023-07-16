@@ -34,11 +34,10 @@ const ServicesProfile = () => {
 
       if (response.ok) {
         const servicesData = await response.json();
-        console.log(servicesData)
+
         if (servicesData !== null) {
           setServices(servicesData);
         } else {
-          console.log("else ")
           setServices(servicesData);
         }
       } else {
@@ -52,8 +51,10 @@ const ServicesProfile = () => {
   };
 
   useEffect(() => {
-    fetchServices();
-  }, [ profileInfo.email ]);
+    if (profileInfo.isBusiness) {
+      fetchServices();
+    }
+  }, [ editServicesMode, profileInfo ]);
 
   const handleInputServiceChange = (e) => {
     const { name, value } = e.target;
@@ -214,8 +215,8 @@ const ServicesProfile = () => {
     <>
       { profileInfo.isBusiness
         &&
-        <div className="p-0 d-flex flex-column m-3">
-          <div className="col card border-primary">
+        <div className="row p-0 m-3">
+          <div className=" card border-primary">
             <div className="card-header d-flex justify-content-around p-1">
               <div className="d-flex align-items-center">
                 Services Details
@@ -315,7 +316,7 @@ const ServicesProfile = () => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-11 rounded">
+      <div className="col-11 rounded">
 
         { showServiceAddInputs }
         { showServicesInTable }
