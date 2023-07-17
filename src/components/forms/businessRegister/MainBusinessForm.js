@@ -25,11 +25,10 @@ class MainBusinessForm extends Component {
       email: "",
       password: "",
       fullname: "",
-      personal_phone: "",
+      phoneNumber: "",
       isBusiness: true,
       userType: "B",
       address: "",
-      business_phone: "",
       business_name: "",
       business_description: "",
       businessType: "",
@@ -37,6 +36,7 @@ class MainBusinessForm extends Component {
       products: [],
       business_photo_gallery: [],
       errors: {}, // Add a new "errors" field to store validation errors
+      reviews: []
     };
 
     // Bind the submission to handleChange()
@@ -68,25 +68,23 @@ class MainBusinessForm extends Component {
         password: name === "password" ? value : prevState.password,
         confirmPassword:
           name === "confirmPassword" ? value : prevState.confirmPassword,
-        personal_phone:
-          name === "personal_phone" ? value : prevState.personal_phone,
+        phoneNumber:
+          name === "phoneNumber" ? value : prevState.phoneNumber,
       }));
     } else if (currentStep === 2) {
       this.setState((prevState) => ({
         ...prevState,
         business_name:
           name === "business_name" ? value : prevState.business_name,
-        business_phone:
-          name === "business_phone" ? value : prevState.business_phone,
         business_description:
-          name === "business_description" ? value: prevState.business_description,
-        address: 
+          name === "business_description" ? value : prevState.business_description,
+        address:
           name === "address" ? value : prevState.address,
-          businessType:
-           name === 'businessType' ? value : prevState.businessType,
-          business_photo_gallery: 
+        businessType:
+          name === 'businessType' ? value : prevState.businessType,
+        business_photo_gallery:
           name === 'business_photo_gallery' ? value : prevState.business_photo_gallery,
-    
+
       }));
     }
   }
@@ -99,11 +97,11 @@ class MainBusinessForm extends Component {
         },
         body: JSON.stringify({ email }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-  
+
       const data = await response.json();
       return data.exists; // Assuming the response from the server contains a field 'exists' indicating email existence
     } catch (error) {
@@ -118,10 +116,10 @@ class MainBusinessForm extends Component {
 
     // Check the fields based on the current step
     if (currentStep === 1) {
-       const emailExists = await this.checkEmailExists(formData.email);
-    if (emailExists) {
-      errors.email = "Email already exists";
-    }
+      const emailExists = await this.checkEmailExists(formData.email);
+      if (emailExists) {
+        errors.email = "Email already exists";
+      }
       if (formData.fullname.trim() === "") {
         errors.fullname = "Full Name is required";
       }
@@ -139,21 +137,14 @@ class MainBusinessForm extends Component {
       }
       if (
         !/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/.test(
-          formData.personal_phone
+          formData.phoneNumber
         )
       ) {
-        errors.personal_phone = "Invalid phone number.";
+        errors.phoneNumber = "Invalid phone number.";
       }
     } else if (currentStep === 2) {
       if (formData.business_name.trim() === "") {
         errors.business_name = "Business Name is required";
-      }
-      if (
-        !/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/.test(
-          formData.business_phone
-        )
-      ) {
-        errors.business_phone = "Invalid phone number.";
       }
       // ... Validate other fields for Step 2
     }
@@ -217,20 +208,22 @@ class MainBusinessForm extends Component {
       };
     });
   };
-
   handleInsertImage = (selectedFiles) => {
     this.setState((prevState) => {
       const business_photo_gallery = [
         ...prevState.business_photo_gallery,
         ...selectedFiles,
       ];
-      return business_photo_gallery;
+
+      return {
+        business_photo_gallery,
+      };
     });
   };
   handleDeleteImage = (index) => {
-  
+
     this.setState((state) => {
-      const business_photo_gallery = [...state.business_photo_gallery];
+      const business_photo_gallery = [ ...state.business_photo_gallery ];
       business_photo_gallery.splice(index, 1);
       return {
         business_photo_gallery,
@@ -298,7 +291,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={this._prev}>
+        <Button color="secondary float-left" onClick={ this._prev }>
           Previous
         </Button>
       );
@@ -310,7 +303,7 @@ class MainBusinessForm extends Component {
   handleNext = async () => {
     // Validate the form fields
     const isValid = await this.validateFields();
-  
+
     if (isValid) {
       // Move to the next step if the form is valid
       this._next();
@@ -327,7 +320,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 3, render the "next" button with the appropriate style
     if (currentStep < 4) {
       return (
-        <Button color={buttonClass} onClick={this._next}>
+        <Button color={ buttonClass } onClick={ this._next }>
           Next
         </Button>
       );
@@ -352,61 +345,61 @@ class MainBusinessForm extends Component {
 
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={this.handleSubmit}>
+        <Form className="pb-5" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={this.props.onClose}
+              onClick={ this.props.onClose }
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={this.state.currentStep} />
+                <MultiStepProgressBar currentStep={ this.state.currentStep } />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                errors={this.state.errors} // Pass the errors object to the component
-                formInput={this.state}
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                errors={ this.state.errors } // Pass the errors object to the component
+                formInput={ this.state }
               />
               <BusinessInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                handleBusinessType={this.handleBusinessType}
-                handleInsertImage={this.handleInsertImage}
-                handleDeleteImage={this.handleDeleteImage}
-                business_photo_gallery={this.state.business_photo_gallery}
-                formInput={this.state}
-                errors={this.state.errors} // Pass the errors object to the component
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                handleBusinessType={ this.handleBusinessType }
+                handleInsertImage={ this.handleInsertImage }
+                handleDeleteImage={ this.handleDeleteImage }
+                business_photo_gallery={ this.state.business_photo_gallery }
+                formInput={ this.state }
+                errors={ this.state.errors } // Pass the errors object to the component
               />
               <Services
-                currentStep={this.state.currentStep}
-                handleServices={this.handleServices}
-                deleteServicesHandler={this.deleteServicesHandler}
-                services={this.state.services}
+                currentStep={ this.state.currentStep }
+                handleServices={ this.handleServices }
+                deleteServicesHandler={ this.deleteServicesHandler }
+                services={ this.state.services }
               />
               <Products
-                currentStep={this.state.currentStep}
-                handleProducts={this.handleProducts}
-                deleteProductHandler={this.deleteProductHandler}
-                products={this.state.products}
+                currentStep={ this.state.currentStep }
+                handleProducts={ this.handleProducts }
+                deleteProductHandler={ this.deleteProductHandler }
+                products={ this.state.products }
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              {this.previousButton}
-              {currentStep < 4 && (
-                <Button color="primary float-right" onClick={this.handleNext}>
+              { this.previousButton }
+              { currentStep < 4 && (
+                <Button color="primary float-right" onClick={ this.handleNext }>
                   Next
                 </Button>
-              )}
-              {currentStep === 4 && (
+              ) }
+              { currentStep === 4 && (
                 <Button color="primary float-right">Submit</Button>
-              )}
+              ) }
             </CardFooter>
           </Card>
         </Form>

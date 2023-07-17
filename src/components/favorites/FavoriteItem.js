@@ -1,3 +1,4 @@
+
 const FavoriteItem = (props) => {
 
   return (
@@ -19,7 +20,9 @@ const FavoriteItem = (props) => {
         </button>
       </div>
       <div>
-        <button className="btn ">
+        <button className="btn " value={ props.id } onClick={ () => {
+          props.deleteFavItem(props.id)
+        } }>
           <lord-icon
             src="https://cdn.lordicon.com/gclzwloa.json"
             trigger="hover"

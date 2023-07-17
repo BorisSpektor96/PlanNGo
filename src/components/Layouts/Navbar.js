@@ -4,10 +4,10 @@ import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from "react-router-dom";
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../AuthContext';
 
-const MainNavbar = (props) => {
+const MainNavbar = () => {
 
   const { isLoggedIn, logout } = useContext(AuthContext);
 
@@ -32,6 +32,13 @@ const MainNavbar = (props) => {
       }
     ];
   }
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      console.log("appppppp")
+
+    }
+  }, [ isLoggedIn ])
 
   const listOfNavTabs = (
     <ul className="navbar-nav">

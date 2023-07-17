@@ -35,18 +35,17 @@ const ProfileInfoProvider = ({ children }) => {
     email: "context@example.com",
     password: "Context123!",
     fullname: "useContext",
-    personal_phone: "1234567890",
+    phoneNumber: "1234567890",
     isBusiness: true,
     userType: "B",
     address: "123 Main context Street",
-    business_phone: "9876543210",
     business_name: "Hair Salon",
     business_description: "A trendy hair salon offering a range of services.",
     business_type: "hair salon",
     services: [],
     products: [],
-    business_photo_gallery: [],
     reviews: [],
+    profileImg: "http://bootdey.com/img/Content/avatar/avatar1.png"
   }
 
   const [ profileInfo, dispatch ] = useReducer(

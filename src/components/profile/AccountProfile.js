@@ -9,16 +9,9 @@ const AccountProfile = () => {
 
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
 
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(ProfileInfoContext);
+  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
-  const [ profile, setProfile ] = useState({
-    fullname: "state",
-    email: "state@state.com",
-    address: "state street city",
-    business_name: "useState",
-    personal_phone: "123465789",
-    business_description: "saddsa"
-  });
+  const [ imgUrl, setImgUrl ] = useState("")
 
   const editHandler = () => {
     setEditAccountMode(!editAccountMode)
@@ -29,10 +22,6 @@ const AccountProfile = () => {
       ...localProfileInfo,
       [ e.target.name ]: e.target.value
     });
-    setProfile({
-      ...profile,
-      [ e.target.name ]: e.target.value
-    })
   };
 
   const fetchProfile = async () => {
@@ -42,19 +31,23 @@ const AccountProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email })
       });
-
       if (response.ok) {
         const user = await response.json();
-
+        console.log(user)
         if (user !== null) {
-          setProfile(user)
-          setLocalProfileInfo(profileInfo)
+          dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
+          setLocalProfileInfo(user)
+
+          setImgUrl(localProfileInfo.profileImg)
+
+          console.log("localProfileInfo", localProfileInfo)
+          console.log("imgUrl", imgUrl)
+
         } else {
-          setProfile(user)
-          setLocalProfileInfo(profileInfo)
+          setLocalProfileInfo(user)
         }
       } else {
-        setProfile({})
+        alert("cannot reload the profile")
       }
     } catch (error) {
       console.log('Error:', error);
@@ -69,16 +62,20 @@ const AccountProfile = () => {
     e.preventDefault();
     const fullname = e.target.fullname.value
     const email = e.target.email.value
-    const business_name = e.target.business_name.value
     const address = e.target.address.value
     const personal_phone = e.target.personal_phone.value
-    const business_description = e.target.business_description.value
-
+    if (profileInfo.isBusiness) {
+      const business_name = e.target.business_name.value
+      const business_description = e.target.business_description.value
+      updateProfile(fullname, email, address, personal_phone, business_name, business_description)
+    } else {
+      updateProfile(fullname, email, address, personal_phone)
+    }
     setEditAccountMode(!editAccountMode);
-    updateProfile(fullname, email, business_name, address, personal_phone, business_description)
+
   };
 
-  const updateProfile = async (fullname, email, business_name, address, phone, description) => {
+  const updateProfile = async (fullname, email, address, phone, business_name, description) => {
     try {
       const response = await fetch('http://localhost:3001/business/updateUserProfile', {
         method: 'POST',
@@ -97,9 +94,8 @@ const AccountProfile = () => {
       if (response.ok) {
         const newProfile = await response.json();
         if (newProfile !== null) {
-          setProfile(newProfile)
-        } else {
-          setProfile(newProfile)
+          alert('profile is updated')
+          setLocalProfileInfo(newProfile)
         }
       } else {
         console.log("not ok ")
@@ -109,11 +105,8 @@ const AccountProfile = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: localProfileInfo });
-  }, [])
-
-  const listOfInfoAndInput = [
+  const [ filteredList, setFilteredList ] = useState([])
+  let listOfInfoAndInput = [
     {
       id: 'fullname',
       name: 'fullname',
@@ -165,43 +158,56 @@ const AccountProfile = () => {
     },
   ]
 
+  useEffect(() => {
+    if (!profileInfo.isBusiness) {
+      setFilteredList(listOfInfoAndInput.filter(input => (
+        input.name !== 'business_name' &&
+        input.name !== 'business_description' &&
+        input.name !== 'address'
+      )))
+    } else {
+      setFilteredList(listOfInfoAndInput)
+    }
+  }, [ profileInfo.email ])
+
   const showLabelInputList = (
     <form onSubmit={ submitAccountForm }>
       <div>
-
         <div className="row gap-3 ps-3 mb-3 justify-content-center">
-          { listOfInfoAndInput.map((input, key) => (
+          { filteredList.map((input, key) => (
             <div className="" key={ key }>
-              { input.name !== 'business_name' && input.name !== 'business_description' && !profileInfo.isBusiness ? (
-                editAccountMode ? (
-                  <FormInput
-                    key={ key }
-                    { ...input }
-                    value={ localProfileInfo[ input.name ] }
-                    onChange={ handlerInputProfileEdit }
-                  />
-                ) : (
-                  <div className="">
-                    <label className="form-label" htmlFor={ input.id }>
-                      { input.label }
-                    </label>
-                    <div className="">{ localProfileInfo[ input.name ] }</div>
-                  </div>
-                )
-              ) : null }
+              { editAccountMode ? (
+                <FormInput
+                  key={ key }
+                  { ...input }
+                  value={ localProfileInfo[ input.name ] }
+                  onChange={ handlerInputProfileEdit }
+                />
+              ) : (
+                <div>
+                  <label className="form-label" htmlFor={ input.id }>
+                    { input.label }
+                  </label>
+                  { localProfileInfo != null && <div>
+                    <div>{ localProfileInfo[ input.name ] }</div>
+                  </div> }
+                </div>
+              ) }
             </div>
-          )) }
+          ))
+          }
         </div>
 
-
-        { editAccountMode &&
-          <div className="d-flex justify-content-center ">
-            <button className="mb-3 text-center btn btn-primary" type="submit" >Save changes</button>
+        { editAccountMode && (
+          <div className="d-flex justify-content-center">
+            <button className="mb-3 text-center btn btn-primary" type="submit">
+              Save changes
+            </button>
           </div>
-        }
-      </div >
-    </form >
-  )
+        ) }
+      </div>
+    </form>
+  );
 
   return (
 
@@ -213,7 +219,7 @@ const AccountProfile = () => {
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Profile Picture</div>
               <div className="card-body text-center">
-                <img className="img-fluid rounded-circle mb-4" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
+                <img className="img-fluid rounded-circle mb-4" src={ imgUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" } alt="" />
                 <div className="small font-italic text-muted mb-4">
                   <button className="btn btn-primary" type="button">Upload new image</button>
                 </div>

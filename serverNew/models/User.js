@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  fullName: String,
+  fullname: String,
   email: String,
   password: String,
   phoneNumber: String,
   isBusiness: Boolean,
   favorites: Array,
-  img: {
-    data: Buffer,
-    contentType: String
-  }
+  userType: String,
+  profileImg: { type: String, required: false }
 }, { collection: 'users', versionKey: false },
 );
 

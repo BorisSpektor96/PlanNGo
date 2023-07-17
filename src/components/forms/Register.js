@@ -1,45 +1,61 @@
 import { useState } from "react";
 import Modal from "../UI/Modal";
+import { useNavigate } from "react-router-dom";
 
 import FormInput from "./FormInput";
 const Register = (props) => {
-  const [ RememberMe, RememberMehandler ] = useState(false);
 
+  const navigate = useNavigate()
+
+  const [ RememberMe, RememberMehandler ] = useState(false);
+  const [ previewUrl, setPreviewUrl ] = useState("");
   const [ formValues, setformValues ] = useState({
     fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    userType: "user",
+    userType: "U",
+    isBusiness: false,
+    profileImg: {},
+    favorites: [],
   });
+
+
 
   const DBreq = async (e) => {
     try {
-      const response = await fetch('http://localhost:3001/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formValues),
+      const formData = new FormData();
+      formData.append("profileImg", formValues.profileImg);
+      formData.append("email", formValues.email);
+      formData.append("password", formValues.password);
+      formData.append("fullName", formValues.fullName);
+      formData.append("phoneNumber", formValues.phoneNumber);
+      formData.append("userType", formValues.userType);
+      formData.append("isBusiness", formValues.isBusiness);
+
+      const response = await fetch("http://localhost:3001/users/signup", {
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Something went wrong!');
+        throw new Error("Something went wrong!");
       }
 
       const data = await response.json();
-      console.log('User registered successfully:', data);
+      console.log("User registered successfully:", data);
 
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.error("Registration failed:", error);
     }
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     console.log(formValues);
-    DBreq();
+    await DBreq();
+    window.location.href = '/Welcome';
   };
 
   const inputs = [
@@ -105,6 +121,17 @@ const Register = (props) => {
   const onChange = (e) => {
     setformValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
+  const onFileChange = (e) => {
+    const selectedFile = e.target.files[ 0 ];
+    if (selectedFile) {
+      setformValues({ ...formValues, profileImg: selectedFile });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
   return (
     <Modal>
       <div className="d-flex flex-row justify-content-end p-1 w-100 p-0 ">
@@ -112,13 +139,28 @@ const Register = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          // dal
           onClick={ props.onClose }
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
       <form className=" p-1" onSubmit={ submitHandler }>
+        <div className="col-xl-4">
+          <div className="card mb-4 mb-xl-0">
+            <div className="card-header">Profile Picture</div>
+            <div className="card-body text-center">
+              <img
+                className="img-fluid mb-4"
+                src={ previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" }
+                alt=""
+              />
+
+              <div className="form-group">
+                <input type="file" name="profileImg" onChange={ onFileChange } />
+              </div>
+            </div>
+          </div>
+        </div>
         { inputs.map((input) => (
           <FormInput
             key={ input.id }
@@ -127,6 +169,7 @@ const Register = (props) => {
             onChange={ onChange }
           />
         )) }
+
         <div className="row mb-4">
           <div className="col d-flex ">
             <div className="form-check">

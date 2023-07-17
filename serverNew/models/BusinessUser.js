@@ -5,7 +5,7 @@ const businessSchema = new mongoose.Schema(
     email: String,
     password: String,
     fullname: String,
-    personal_phone: String,
+    phoneNumber: String,
     isBusiness: Boolean,
     userType: String,
     address: String,
@@ -21,6 +21,7 @@ const businessSchema = new mongoose.Schema(
   { collection: "users", versionKey: false }
 );
 
+// businessType: String,
 const userBusinessModel = mongoose.model('Business', businessSchema);
 
 export default userBusinessModel;

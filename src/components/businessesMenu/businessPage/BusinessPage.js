@@ -7,9 +7,8 @@ import { useLocation } from "react-router-dom";
 import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
 import { ProfileInfoContext } from "../../../ProfileInfoContext";
-import { useEffect } from "react";
 
-const BusinessPage = (props) => {
+const BusinessPage = () => {
 
   const location = useLocation();
   const businessDetails = location.state;
@@ -36,8 +35,8 @@ const BusinessPage = (props) => {
           businessEmail: businessDetails.email
         })
       });
-      console.log("logged user", profileInfo)
-      console.log("business deteils", businessDetails)
+      console.log(profileInfo.email)
+      console.log(businessDetails.email)
       if (response.ok) {
         alert('added to favorites successfully');
       } else {
@@ -49,9 +48,12 @@ const BusinessPage = (props) => {
   };
 
   const scheduleOpenView = () => {
-    setCalendarIsShown(true);
-    console.log(calendarIsShown);
+    showCalendarHandler()
   };
+
+  const showCalendarHandler = () => {
+    setCalendarIsShown(true)
+  }
   const hideCalendarHandler = () => {
     setCalendarIsShown(false);
   };
@@ -62,11 +64,6 @@ const BusinessPage = (props) => {
   const hideFormHandler = () => {
     setAddReviewIsShown(false);
   };
-
-  useEffect(() => {
-    console.log(businessDetails)
-    console.log("logged user", profileInfo)
-  }, [])
 
   const pathToBackMenu = "/BusinessesMenu";
 

@@ -28,7 +28,7 @@ const BusinessesMenu = () => {
           id: data[ key ]._id,
           business_name: data[ key ].business_name,
           fullname: data[ key ].fullname,
-          tel: data[ key ].business_phone,
+          tel: data[ key ].phoneNumber,
           email: data[ key ].email,
           address: data[ key ].address,
           service: data[ key ].business_type,
@@ -40,7 +40,6 @@ const BusinessesMenu = () => {
           reviews: data[ key ].reviews
         });
       }
-      console.log(loadedBusiness)
       setListOfBusinesses(loadedBusiness);
     } catch (error) {
       console.log(error.message)

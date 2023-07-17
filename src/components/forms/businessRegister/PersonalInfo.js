@@ -46,9 +46,9 @@ const PersonalInfo = (props) => {
     },
     {
       id: 5,
-      name: "personal_phone",
+      name: "phoneNumber",
       type: "text",
-      placeholder: "personal_phone",
+      placeholder: "phoneNumber",
       label: "personal_phone",
       errorMessage: "Invalid phone number.",
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
@@ -62,31 +62,31 @@ const PersonalInfo = (props) => {
     <>
       <p className="text-center display-6">Personal Information</p>
       <form>
-        {inputs.map((input) => (
-          <div key={input.id}>
-            <Label className="mt-2 mb-0" for={input.name}>
-              {input.label}
+        { inputs.map((input) => (
+          <div key={ input.id }>
+            <Label className="mt-2 mb-0" for={ input.name }>
+              { input.label }
             </Label>
             <Input
-              type={input.type}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={props.formInput[input.name]}
-              onChange={props.handleChange}
-              invalid={props.errors[input.name] !== undefined}
+              type={ input.type }
+              name={ input.name }
+              placeholder={ input.placeholder }
+              value={ props.formInput[ input.name ] }
+              onChange={ props.handleChange }
+              invalid={ props.errors[ input.name ] !== undefined }
             />
-            {props.errors[input.name] && (
+            { props.errors[ input.name ] && (
               <p
-                style={{
+                style={ {
                   fontSize: "12px",
                   color: "red",
-                }}
+                } }
               >
-                {props.errors[input.name]}
+                { props.errors[ input.name ] }
               </p>
-            )}
+            ) }
           </div>
-        ))}
+        )) }
       </form>
     </>
   );

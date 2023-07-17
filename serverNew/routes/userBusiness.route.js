@@ -17,34 +17,34 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     email,
     password,
     fullname,
-    personal_phone,
+    phoneNumber,
     isBusiness,
     userType,
     address,
-    business_phone,
     business_name,
     business_description,
     businessType,
     services,
     products,
     business_photo_gallery,
+    reviews
   } = req.body;
 
   const newBusinessUser = new userBusinessModel({
     email,
     password,
     fullname,
-    personal_phone,
+    phoneNumber,
     isBusiness,
     userType,
     address,
-    business_phone,
     business_name,
     business_description,
     businessType,
     services,
     products,
     business_photo_gallery,
+    reviews
   });
 
   try {
@@ -66,13 +66,13 @@ userBusinessRouter.post('/getBusinessProfile', async (req, res) => {
 });
 
 userBusinessRouter.post('/updateUserProfile', async (req, res) => {
-  const { email, fullname, emailNew, business_name, address, business_phone, business_description } = req.body
+  const { email, fullname, emailNew, business_name, address, phoneNumber, business_description } = req.body
   const user = await userBusinessModel.findOne({ email: email })
   user.fullname = fullname
   user.email = emailNew
   user.business_name = business_name
   user.address = address
-  user.business_phone = business_phone
+  user.phoneNumber = phoneNumber
   user.business_description = business_description
 
   user.save()
@@ -82,17 +82,6 @@ userBusinessRouter.post('/updateUserProfile', async (req, res) => {
   } catch (err) {
     res.send("Error " + err);
   }
-});
-
-userBusinessRouter.post("/newBusinessUser", async (req, res) => {
-  const user = {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    age: req.body.age,
-    gender: req.body.gender,
-  };
-  const result = await users.insertOne(user);
-  res.status(200).json(result);
 });
 
 userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
@@ -148,12 +137,10 @@ userBusinessRouter.post('/deleteService', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    // Find the index of the service within the user's services array
     const serviceIndex = user.services.findIndex(service => service._id.oid === serviceId);
     if (serviceIndex === -1) {
       return res.status(404).json({ message: 'Service not found' });
     }
-    // Remove the service from the user's services array
     user.services.splice(serviceIndex, 1);
     await user.save();
 

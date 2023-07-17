@@ -34,7 +34,6 @@ const Login = (props) => {
 
   useEffect(() => {
     setLocalProfileInfo(data);
-    console.log(localProfileInfo)
     localStorage.setItem('userData', JSON.stringify(data))
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
   }, [ data ]);

@@ -29,7 +29,6 @@ const FavoritesList = () => {
       });
       if (response.ok) {
         const favoritesData = await response.json();
-        console.log(favoritesData)
 
         if (favoritesData !== null) {
           setFavorites(favoritesData);
@@ -45,6 +44,25 @@ const FavoritesList = () => {
     }
   };
 
+  const deleteFavoriteHandler = async (favId) => {
+    try {
+      const response = await fetch('http://localhost:3001/users/deleteFromFavoriteById', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: profileInfo.email, favoriteId: favId })
+      });
+
+      if (response.ok) {
+        fetchFavorites();
+        alert('favorite is successfully deleted')
+      } else {
+        alert('Failed to delete favorite business');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
   return (
     <div class="d-flex justify-content-center mt-4">
       <ul className="border list-group list-group-flush">
@@ -54,8 +72,10 @@ const FavoritesList = () => {
             { favorites.map((item) => (
               <FavoriteItem
                 key={ item.id }
+                id={ item.id }
                 name={ item.business_name }
                 service={ item.businessType }
+                deleteFavItem={ deleteFavoriteHandler }
               />
             )) }
           </>)

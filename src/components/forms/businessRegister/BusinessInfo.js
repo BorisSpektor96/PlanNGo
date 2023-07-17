@@ -1,11 +1,11 @@
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { Input, Label } from "reactstrap";
 
 const BusinessInfo = (props) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedBusinessType, setSelectedBusinessType] = useState(null);
+  const [ selectedImage, setSelectedImage ] = useState(null);
+  const [ selectedBusinessType, setSelectedBusinessType ] = useState(null);
 
   useEffect(() => {
     if (props.formInput.businessType) {
@@ -14,7 +14,7 @@ const BusinessInfo = (props) => {
         label: props.formInput.businessType,
       });
     }
-  }, [props.formInput.businessType]);
+  }, [ props.formInput.businessType ]);
 
 
   const handleBusinessTypeChange = (selectedOption) => {
@@ -23,7 +23,7 @@ const BusinessInfo = (props) => {
   };
 
 
-  
+
   const options = [
     { value: "barber shop", label: "barber shop", name: "businessType" },
     { value: "nail tech", label: "nail tech", name: "businessType" },
@@ -39,16 +39,6 @@ const BusinessInfo = (props) => {
       name: "business_name",
       errorMessage: "must provide a business name",
       pattern: "^[a-zA-Z0-9 ]+$",
-      required: true,
-      type: "text",
-    },
-    {
-      id: "business_phone",
-      label: "Business Phone Number",
-      placeholder: "Enter business phone number",
-      name: "business_phone",
-      errorMessage: "invalid phone number.",
-      pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
       required: true,
       type: "text",
     },
@@ -80,39 +70,39 @@ const BusinessInfo = (props) => {
     <>
       <p className="text-center display-6">Business Information</p>
       <form className="form-check p-0">
-        {inputs.map((input) => (
-          <div key={input.id}>
-            <Label className="mt-2 mb-0" for={input.name}>
-              {input.label}
+        { inputs.map((input) => (
+          <div key={ input.id }>
+            <Label className="mt-2 mb-0" for={ input.name }>
+              { input.label }
             </Label>
             <Input
-              type={input.type}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={props.formInput[input.name]}
-              onChange={props.handleChange}
-              invalid={props.errors[input.name] !== undefined}
+              type={ input.type }
+              name={ input.name }
+              placeholder={ input.placeholder }
+              value={ props.formInput[ input.name ] }
+              onChange={ props.handleChange }
+              invalid={ props.errors[ input.name ] !== undefined }
             />
-            {props.errors[input.name] && (
+            { props.errors[ input.name ] && (
               <p
-                style={{
+                style={ {
                   fontSize: "12px",
                   padding: "3px",
                   color: "red",
-                }}
+                } }
               >
-                {props.errors[input.name]}
+                { props.errors[ input.name ] }
               </p>
-            )}
+            ) }
           </div>
-        ))}
+        )) }
 
         <div className="p-2">
-  <Select
-            options={options}
-            value={selectedBusinessType}
-            onChange={handleBusinessTypeChange}
-            autoFocus={true}
+          <Select
+            options={ options }
+            value={ selectedBusinessType }
+            onChange={ handleBusinessTypeChange }
+            autoFocus={ true }
             className="custom-select text-center form-control"
             placeholder="Select business type"
           />
@@ -127,35 +117,35 @@ const BusinessInfo = (props) => {
             type="file"
             name="business_photo_gallery"
             label="choose image"
-            onChange={(event) =>
+            onChange={ (event) =>
               props.handleInsertImage(Array.from(event.target.files))
             }
             multiple // Allow multiple file selection
           />
 
-          {props.business_photo_gallery && (
+          { props.business_photo_gallery && (
             <div className="d-flex justify-content-around">
-              {/* Display selected images */}
-              {props.business_photo_gallery.map((image, index) => (
-                <div key={index}>
+              {/* Display selected images */ }
+              { props.business_photo_gallery.map((image, index) => (
+                <div key={ index }>
                   <img
                     alt="not found"
-                    width={"50px"}
-                    height={"50px"}
-                    src={URL.createObjectURL(image)}
+                    width={ "50px" }
+                    height={ "50px" }
+                    src={ URL.createObjectURL(image) }
                   />
                   <br />
                   <button
-                  type="button"
+                    type="button"
                     className="btn btn-outline-danger"
-                    onClick={() => props.handleDeleteImage(index)}
+                    onClick={ () => props.handleDeleteImage(index) }
                   >
                     Remove
                   </button>
                 </div>
-              ))}
+              )) }
             </div>
-          )}
+          ) }
         </div>
       </form>
     </>
