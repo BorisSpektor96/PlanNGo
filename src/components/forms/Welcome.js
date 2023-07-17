@@ -5,9 +5,13 @@ import styles from "./Welcome.module.css";
 import MainBusinessForm from "./businessRegister/MainBusinessForm";
 
 import { AuthContext } from '../../AuthContext';
+import { useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
 
 const Welcome = () => {
 
+  const navigate = useNavigate();
   const { isLoggedIn } = useContext(AuthContext);
 
   const [ loginIsShown, setLoginIsShown ] = useState(false);
@@ -31,18 +35,35 @@ const Welcome = () => {
     setBusinessRegisterIsShown(false);
   };
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/businessesMenu')
+    }
+  }, [ isLoggedIn ])
+
   return (
     <Fragment>
-      { loginIsShown && (
+      {
+        loginIsShown &&
         <Login
           onClose={ hideFormHandler }
           hideForm={ hideFormHandler }
         />
-      ) }
-      { RegisterIsShown && <Register onClose={ hideFormHandler } /> }
-      { BusinessRegisterIsShown && (
-        <MainBusinessForm onClose={ hideFormHandler } />
-      ) }
+      }
+      {
+        RegisterIsShown &&
+        <Register
+          onClose={ hideFormHandler }
+          hideForm={ hideFormHandler }
+        />
+      }
+      {
+        BusinessRegisterIsShown &&
+        <MainBusinessForm
+          onClose={ hideFormHandler }
+          hideForm={ hideFormHandler }
+        />
+      }
       { isLoggedIn ?
         <div className={ styles.container }>
           <div className="header">

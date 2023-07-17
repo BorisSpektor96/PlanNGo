@@ -38,7 +38,6 @@ class MainBusinessForm extends Component {
       errors: {}, // Add a new "errors" field to store validation errors
       reviews: []
     };
-
     // Bind the submission to handleChange()
     this.handleChange = this.handleChange.bind(this);
     this.handleServices = this.handleServices.bind(this);
@@ -53,7 +52,6 @@ class MainBusinessForm extends Component {
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
   }
-
   // Use the submitted data to set the state
   handleChange(event) {
     event.preventDefault();
@@ -252,7 +250,7 @@ class MainBusinessForm extends Component {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-
+      this.props.hideForm()
       const data = await response.json();
       console.log("User registered successfully:", data);
     } catch (error) {

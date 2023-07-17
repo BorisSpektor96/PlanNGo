@@ -7,8 +7,10 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../AuthContext';
 
-const MainNavbar = () => {
+import { useNavigate } from 'react-router-dom';
 
+const MainNavbar = () => {
+  const navigate = useNavigate()
   const { isLoggedIn, logout } = useContext(AuthContext);
 
   let NavTabs = []
@@ -35,8 +37,7 @@ const MainNavbar = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log("appppppp")
-
+      navigate('/Welcome')
     }
   }, [ isLoggedIn ])
 

@@ -42,7 +42,7 @@ const Register = (props) => {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-
+      props.hideForm()
       const data = await response.json();
       console.log("User registered successfully:", data);
 
