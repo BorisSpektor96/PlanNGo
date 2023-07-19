@@ -1,8 +1,11 @@
 import Modal from "../UI/Modal";
 import StarRating from "./StarRating";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ProfileInfoContext } from "../../ProfileInfoContext";
+
 
 const AddReview = (props) => {
+
   const [ reviewContent, setReviewContent ] = useState("");
   const [ reviewRate, setreviewRate ] = useState("");
   function starHandler(value) {
@@ -13,10 +16,11 @@ const AddReview = (props) => {
   };
 
   const handleSubmit = (event) => {
+    console.log(props.profileInfo.fullName)
     event.preventDefault();
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    postReviewToBusiness("User Name", reviewContent, reviewRate, reviewDate)
+    postReviewToBusiness(props.profileInfo.fullName, reviewContent, reviewRate, reviewDate)
   };
 
   const postReviewToBusiness = async (reviewer, content, rating, date) => {
@@ -28,6 +32,7 @@ const AddReview = (props) => {
         rating: rating,
         date: date
       };
+      console.log(formValues)
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
         headers: {
@@ -41,7 +46,6 @@ const AddReview = (props) => {
       }
       const data = await response.json();
       alert(`review added successfully`);
-      console.log('User entered review successfully:', data);
     } catch (error) {
       console.error('Add review failed:', error);
     }

@@ -16,7 +16,6 @@ const BusinessInfo = (props) => {
     }
   }, [ props.formInput.businessType ]);
 
-
   const handleBusinessTypeChange = (selectedOption) => {
     setSelectedBusinessType(selectedOption);
     props.handleBusinessType(selectedOption.value);
@@ -115,36 +114,30 @@ const BusinessInfo = (props) => {
           <input
             className="custom-file-input"
             type="file"
-            name="business_photo_gallery"
+            name="profileImg"
             label="choose image"
-            onChange={ (event) =>
-              props.handleInsertImage(Array.from(event.target.files))
-            }
-            multiple // Allow multiple file selection
-          />
+            onChange={props.handleInsertImage}   
+                    />
 
-          { props.business_photo_gallery && (
+          { props.profileImg && (
             <div className="d-flex justify-content-around">
               {/* Display selected images */ }
-              { props.business_photo_gallery.map((image, index) => (
-                <div key={ index }>
+             
                   <img
                     alt="not found"
                     width={ "50px" }
                     height={ "50px" }
-                    src={ URL.createObjectURL(image) }
-                  />
+                    src={`data:image/jpeg;base64,${props.profileImg}`}                   />
                   <br />
                   <button
                     type="button"
                     className="btn btn-outline-danger"
-                    onClick={ () => props.handleDeleteImage(index) }
+                    onClick={ () => props.handleDeleteImage() }
                   >
                     Remove
                   </button>
                 </div>
-              )) }
-            </div>
+          
           ) }
         </div>
       </form>

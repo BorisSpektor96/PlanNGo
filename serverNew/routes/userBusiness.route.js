@@ -26,8 +26,9 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     businessType,
     services,
     products,
-    business_photo_gallery,
-    reviews
+    profileImg,
+    reviews,
+    appointmentsDef
   } = req.body;
 
   const newBusinessUser = new userBusinessModel({
@@ -43,10 +44,10 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     businessType,
     services,
     products,
-    business_photo_gallery,
-    reviews
+    profileImg,
+    reviews,
+    appointmentsDef
   });
-
   try {
     const savedUser = await newBusinessUser.save();
     res.status(200).json(savedUser);
@@ -54,7 +55,6 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 userBusinessRouter.post('/getBusinessProfile', async (req, res) => {
   const { email } = req.body
   const user = await userBusinessModel.findOne({ email: email })
@@ -65,7 +65,7 @@ userBusinessRouter.post('/getBusinessProfile', async (req, res) => {
   }
 });
 
-userBusinessRouter.post('/updateUserProfile', async (req, res) => {
+userBusinessRouter.post('/updateBusinessProfile', async (req, res) => {
   const { email, fullname, emailNew, business_name, address, phoneNumber, business_description } = req.body
   const user = await userBusinessModel.findOne({ email: email })
   user.fullname = fullname
@@ -86,8 +86,7 @@ userBusinessRouter.post('/updateUserProfile', async (req, res) => {
 
 userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
   const { email, reviewer, date, content, rating } = req.body
-
-  const user = await userBusinessModel.findOne({ business_email: email });
+  const user = await userBusinessModel.findOne({ email: email });
   try {
     if (user) {
       user.reviews.push({ reviewer, date, content, rating });

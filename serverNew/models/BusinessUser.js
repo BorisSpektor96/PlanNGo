@@ -15,13 +15,13 @@ const businessSchema = new mongoose.Schema(
     business_type: String,
     services: Array,
     products: Array,
-    business_photo_gallery: Array,
-    reviews: Array
+    profileImg: String,
+    reviews: Array,
+    appointmentsDef: Array
   },
   { collection: "users", versionKey: false }
 );
 
-// businessType: String,
 const userBusinessModel = mongoose.model('Business', businessSchema);
 
 export default userBusinessModel;

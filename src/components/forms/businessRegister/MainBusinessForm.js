@@ -10,13 +10,13 @@ import {
   CardFooter,
 } from "reactstrap";
 import Modal from "../../UI/Modal";
-
+import dayjs from "dayjs";
 import BusinessInfo from "./BusinessInfo";
 import PersonalInfo from "./PersonalInfo";
 import Products from "./Products";
 import Services from "./Services";
 import MultiStepProgressBar from "./MultiStepProgressBar";
-
+import AppointmentsDef from "./AppointmentsDef";
 class MainBusinessForm extends Component {
   constructor(props) {
     super(props);
@@ -34,9 +34,15 @@ class MainBusinessForm extends Component {
       businessType: "",
       services: [],
       products: [],
-      business_photo_gallery: [],
+      profileImg: "",
       errors: {}, // Add a new "errors" field to store validation errors
-      reviews: []
+      reviews: [],
+      appointmentsDef: {
+        fixedBreak: [{}],
+        fixedDaysOff: [],
+        OneTimeDayOff: [],
+        appointments: [],
+      },
     };
     // Bind the submission to handleChange()
     this.handleChange = this.handleChange.bind(this);
@@ -45,8 +51,11 @@ class MainBusinessForm extends Component {
     this.handleProducts = this.handleProducts.bind(this);
     this.deleteProductHandler = this.deleteProductHandler.bind(this);
     this.handleBusinessType = this.handleBusinessType.bind(this);
-    this.handleInsertImage = this.handleInsertImage.bind(this);
     this.handleDeleteImage = this.handleDeleteImage.bind(this);
+    this.handleInsertImage = this.handleInsertImage.bind(this);
+    this.handleAddBreak = this.handleAddBreak.bind(this);
+    this.handleDeleteBreak = this.handleDeleteBreak.bind(this);
+    this.handleDayCheckboxChange = this.handleDayCheckboxChange.bind(this);
 
     // Bind new functions for next and previous
     this._next = this._next.bind(this);
@@ -66,8 +75,7 @@ class MainBusinessForm extends Component {
         password: name === "password" ? value : prevState.password,
         confirmPassword:
           name === "confirmPassword" ? value : prevState.confirmPassword,
-        phoneNumber:
-          name === "phoneNumber" ? value : prevState.phoneNumber,
+        phoneNumber: name === "phoneNumber" ? value : prevState.phoneNumber,
       }));
     } else if (currentStep === 2) {
       this.setState((prevState) => ({
@@ -75,14 +83,11 @@ class MainBusinessForm extends Component {
         business_name:
           name === "business_name" ? value : prevState.business_name,
         business_description:
-          name === "business_description" ? value : prevState.business_description,
-        address:
-          name === "address" ? value : prevState.address,
-        businessType:
-          name === 'businessType' ? value : prevState.businessType,
-        business_photo_gallery:
-          name === 'business_photo_gallery' ? value : prevState.business_photo_gallery,
-
+          name === "business_description"
+            ? value
+            : prevState.business_description,
+        address: name === "address" ? value : prevState.address,
+        businessType: name === "businessType" ? value : prevState.businessType,
       }));
     }
   }
@@ -125,7 +130,9 @@ class MainBusinessForm extends Component {
         errors.email = "Email is required";
       }
       if (
-        !/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/.test(formData.password)
+        !/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/.test(
+          formData.password
+        )
       ) {
         errors.password =
           "Password should be 8-20 characters and include at least 1 letter, 1 number, and 1 special character!";
@@ -181,18 +188,55 @@ class MainBusinessForm extends Component {
       };
     });
   };
+  handleInsertImage(event) {
+    const imageFile = event.target.files[0];
 
-  handleProducts(productId, price, description, name, quantity, photo) {
-    this.setState((state) => {
-      const products = [
-        ...state.products,
-        { productId, price, description, name, quantity, photo },
-      ];
+    if (!imageFile) {
+      return;
+    }
 
-      return {
-        products,
-      };
-    });
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const imageData = reader.result.split(",")[1]; // Extract the base64 data part
+      this.setState({ profileImg: imageData }); // Set the base64 string in the state
+    };
+
+    reader.readAsDataURL(imageFile); // Use readAsDataURL to read the file as base64 data
+  }
+
+  handleDeleteImage = () => {
+    this.state.profileImg = "";
+  };
+
+  handleProducts(productId, price, description, name, quantity, photoFile) {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const photoData = reader.result.split(",")[1]; // Extract the base64 data part
+      // Rest of your code ...
+
+      this.setState((state) => {
+        const products = [
+          ...state.products,
+          {
+            productId,
+            price,
+            description,
+            name,
+            quantity,
+            photo: photoData, // Set the base64 string instead of the Blob
+          },
+        ];
+        return {
+          products,
+        };
+      });
+    };
+
+    if (photoFile) {
+      reader.readAsDataURL(photoFile); // Use readAsDataURL to read the file as base64 data
+    }
   }
 
   deleteProductHandler = (serialID) => {
@@ -206,35 +250,81 @@ class MainBusinessForm extends Component {
       };
     });
   };
-  handleInsertImage = (selectedFiles) => {
+
+  /*************************AppointmentsDef*************************/
+
+  handleAddBreak = (startTime, endTime) => {
+    const formattedStartTime = dayjs(startTime, "HH:mm", true);
+    const formattedEndTime = dayjs(endTime, "HH:mm", true);
+  
+    if (formattedEndTime.isValid() && formattedEndTime.isAfter(formattedStartTime)) {
+      const breakTimeRange = {
+        start: formattedStartTime.format("HH:mm"),
+        end: formattedEndTime.format("HH:mm"),
+      };
+  
+      this.setState((prevState) => ({
+        ...prevState,
+        appointmentsDef: {
+          ...prevState.appointmentsDef,
+          fixedBreak: [...prevState.appointmentsDef.fixedBreak, breakTimeRange],
+        },
+      }));
+    } else {
+      alert("Invalid break time range. End time should be after start time.");
+    }
+  };
+
+  handleDeleteBreak = (index) => {
     this.setState((prevState) => {
-      const business_photo_gallery = [
-        ...prevState.business_photo_gallery,
-        ...selectedFiles,
-      ];
-
+      const updatedBreaks = [...prevState.appointmentsDef.fixedBreak];
+      updatedBreaks.splice(index, 1);
       return {
-        business_photo_gallery,
+        ...prevState,
+        appointmentsDef: {
+          ...prevState.appointmentsDef,
+          fixedBreak: updatedBreaks,
+        },
       };
     });
   };
-  handleDeleteImage = (index) => {
-
-    this.setState((state) => {
-      const business_photo_gallery = [ ...state.business_photo_gallery ];
-      business_photo_gallery.splice(index, 1);
-      return {
-        business_photo_gallery,
-      };
-    });
+  handleDayCheckboxChange = (day) => {
+    this.setState(
+      (prevState) => {
+        if (prevState.appointmentsDef.fixedDaysOff.includes(day)) {
+          return {
+            ...prevState,
+            appointmentsDef: {
+              ...prevState.appointmentsDef,
+              fixedDaysOff: prevState.appointmentsDef.fixedDaysOff.filter(
+                (selectedDay) => selectedDay !== day
+              ),
+            },
+          };
+        } else {
+          return {
+            ...prevState,
+            appointmentsDef: {
+              ...prevState.appointmentsDef,
+              fixedDaysOff: [...prevState.appointmentsDef.fixedDaysOff, day],
+            },
+          };
+        }
+      },
+      () => {
+        // Callback function that runs after the state has been updated
+        console.log(
+          "Updated fixedDaysOff:",
+          this.state.appointmentsDef.fixedDaysOff
+        );
+      }
+    );
   };
+  /*************************AppointmentsDef*************************/
 
   handleSubmit = async (e) => {
     e.preventDefault();
-
     const { currentStep, errors, confirmPassword, ...formData } = this.state;
-    console.log(formData);
-
     try {
       const response = await fetch(
         "http://localhost:3001/business/newBusinessUser",
@@ -250,9 +340,10 @@ class MainBusinessForm extends Component {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-      this.props.hideForm()
+      this.props.hideForm();
       const data = await response.json();
       console.log("User registered successfully:", data);
+      console.log(data);
     } catch (error) {
       console.error("Registration failed:", error);
     }
@@ -263,7 +354,7 @@ class MainBusinessForm extends Component {
     let currentStep = this.state.currentStep;
 
     // If the current step is 1 or 2, then add one on "next" button click
-    if (currentStep > 0 && currentStep < 4) {
+    if (currentStep > 0 && currentStep < 5) {
       currentStep += 1;
     }
     this.setState({
@@ -289,7 +380,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={ this._prev }>
+        <Button color="secondary float-left" onClick={this._prev}>
           Previous
         </Button>
       );
@@ -316,9 +407,9 @@ class MainBusinessForm extends Component {
     const buttonClass = "primary float-right";
 
     // If the current step is not 3, render the "next" button with the appropriate style
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       return (
-        <Button color={ buttonClass } onClick={ this._next }>
+        <Button color={buttonClass} onClick={this._next}>
           Next
         </Button>
       );
@@ -331,7 +422,7 @@ class MainBusinessForm extends Component {
   get submitButton() {
     let currentStep = this.state.currentStep;
     // If the current step is the last step, then render the "submit" button
-    if (currentStep > 3) {
+    if (currentStep > 4) {
       return <Button color="primary float-right">Submit</Button>;
     }
     // ...else render nothing
@@ -343,61 +434,68 @@ class MainBusinessForm extends Component {
 
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={ this.handleSubmit }>
+        <Form className="pb-5" onSubmit={this.handleSubmit}>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={ this.props.onClose }
+              onClick={this.props.onClose}
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={ this.state.currentStep } />
+                <MultiStepProgressBar currentStep={this.state.currentStep} />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                errors={ this.state.errors } // Pass the errors object to the component
-                formInput={ this.state }
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
+                errors={this.state.errors} // Pass the errors object to the component
+                formInput={this.state}
               />
               <BusinessInfo
-                currentStep={ this.state.currentStep }
-                handleChange={ this.handleChange }
-                handleBusinessType={ this.handleBusinessType }
-                handleInsertImage={ this.handleInsertImage }
-                handleDeleteImage={ this.handleDeleteImage }
-                business_photo_gallery={ this.state.business_photo_gallery }
-                formInput={ this.state }
-                errors={ this.state.errors } // Pass the errors object to the component
+                currentStep={this.state.currentStep}
+                handleChange={this.handleChange}
+                handleBusinessType={this.handleBusinessType}
+                handleInsertImage={this.handleInsertImage}
+                handleDeleteImage={this.handleDeleteImage}
+                profileImg={this.state.profileImg}
+                formInput={this.state}
+                errors={this.state.errors} // Pass the errors object to the component
               />
               <Services
-                currentStep={ this.state.currentStep }
-                handleServices={ this.handleServices }
-                deleteServicesHandler={ this.deleteServicesHandler }
-                services={ this.state.services }
+                currentStep={this.state.currentStep}
+                handleServices={this.handleServices}
+                deleteServicesHandler={this.deleteServicesHandler}
+                services={this.state.services}
               />
               <Products
-                currentStep={ this.state.currentStep }
-                handleProducts={ this.handleProducts }
-                deleteProductHandler={ this.deleteProductHandler }
-                products={ this.state.products }
+                currentStep={this.state.currentStep}
+                handleProducts={this.handleProducts}
+                deleteProductHandler={this.deleteProductHandler}
+                products={this.state.products}
+              />
+              <AppointmentsDef
+                currentStep={this.state.currentStep}
+                appointmentsDef={this.state.appointmentsDef}
+                handleDayCheckboxChange={this.handleDayCheckboxChange}
+                handleAddBreak={this.handleAddBreak}
+                handleDeleteBreak={this.handleDeleteBreak}
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              { this.previousButton }
-              { currentStep < 4 && (
-                <Button color="primary float-right" onClick={ this.handleNext }>
+              {this.previousButton}
+              {currentStep < 5 && (
+                <Button color="primary float-right" onClick={this.handleNext}>
                   Next
                 </Button>
-              ) }
-              { currentStep === 4 && (
+              )}
+              {currentStep === 5 && (
                 <Button color="primary float-right">Submit</Button>
-              ) }
+              )}
             </CardFooter>
           </Card>
         </Form>

@@ -1,4 +1,4 @@
-import { Fragment, useState, useContext } from "react";
+import { Fragment, useState, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import styles from "./BusinessPage.module.css";
 import Review from "../../review/Review";
@@ -13,7 +13,7 @@ const BusinessPage = () => {
   const location = useLocation();
   const businessDetails = location.state;
 
-  const { profileInfo } = useContext(ProfileInfoContext)
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext)
 
   const [ isFavorite, setIsFavorite ] = useState(false);
 
@@ -24,6 +24,11 @@ const BusinessPage = () => {
     setIsFavorite(!isFavorite);
     addBusinessToFavorite()
   };
+
+  useEffect(() => {
+    console.log(profileInfo.email)
+    console.log(businessDetails)
+  }, [])
 
   const addBusinessToFavorite = async () => {
     try {
@@ -86,7 +91,7 @@ const BusinessPage = () => {
 
         <div className="card border-light">
           <div className="d-flex justify-content-center">
-            <img className={ styles.img } src="./logo512.png" alt="..." />
+            <img src={ businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png" } className={ styles.img } alt="..." />
           </div>
         </div>
 
@@ -172,7 +177,13 @@ const BusinessPage = () => {
           </div>
         </div>
       </div>
-      { addReviewIsShown && <AddReview businessDetails={ businessDetails } onClose={ hideFormHandler } /> }
+      { addReviewIsShown &&
+        <AddReview
+          profileInfo={ profileInfo }
+          businessDetails={ businessDetails }
+          onClose={ hideFormHandler }
+        />
+      }
     </Fragment>
   );
 };

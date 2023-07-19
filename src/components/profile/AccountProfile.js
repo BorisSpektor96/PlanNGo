@@ -33,15 +33,12 @@ const AccountProfile = () => {
       });
       if (response.ok) {
         const user = await response.json();
-        console.log(user)
         if (user !== null) {
+
           dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
           setLocalProfileInfo(user)
-
+          console.log(localProfileInfo)
           setImgUrl(localProfileInfo.profileImg)
-
-          console.log("localProfileInfo", localProfileInfo)
-          console.log("imgUrl", imgUrl)
 
         } else {
           setLocalProfileInfo(user)
@@ -60,29 +57,58 @@ const AccountProfile = () => {
 
   const submitAccountForm = (e) => {
     e.preventDefault();
-    const fullname = e.target.fullname.value
+    const fullName = e.target.fullName.value
     const email = e.target.email.value
-    const address = e.target.address.value
-    const personal_phone = e.target.personal_phone.value
+    const phoneNumber = e.target.phoneNumber.value
     if (profileInfo.isBusiness) {
+      const address = e.target.address.value
       const business_name = e.target.business_name.value
       const business_description = e.target.business_description.value
-      updateProfile(fullname, email, address, personal_phone, business_name, business_description)
+      updateProfileBusiness(fullName, email, phoneNumber, address, business_name, business_description)
     } else {
-      updateProfile(fullname, email, address, personal_phone)
+      updateProfileUser(fullName, email, phoneNumber)
     }
     setEditAccountMode(!editAccountMode);
 
   };
-
-  const updateProfile = async (fullname, email, address, phone, business_name, description) => {
+  const updateProfileUser = async (fullName, email, phoneNumber) => {
     try {
-      const response = await fetch('http://localhost:3001/business/updateUserProfile', {
+      const response = await fetch('http://localhost:3001/users/updateUserProfile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: profileInfo.email,
-          fullname: fullname,
+          fullName: fullName,
+          phoneNumber: phoneNumber,
+          emailNew: email
+        })
+      });
+
+      if (response.ok) {
+        const newProfile = await response.json();
+        if (newProfile !== null) {
+          alert('profile is updated')
+          setLocalProfileInfo(newProfile)
+          localStorage.setItem("userData", JSON.stringify(localProfileInfo))
+          dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
+
+        }
+      } else {
+        console.log("not ok ")
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const updateProfileBusiness = async (fullName, email, phone, address, business_name, description) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/updateBusinessProfile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: profileInfo.email,
+          fullName: fullName,
           emailNew: email,
           business_name: business_name,
           address: address,
@@ -108,10 +134,10 @@ const AccountProfile = () => {
   const [ filteredList, setFilteredList ] = useState([])
   let listOfInfoAndInput = [
     {
-      id: 'fullname',
-      name: 'fullname',
+      id: 'fullName',
+      name: 'fullName',
       type: 'text',
-      label: 'fullname',
+      label: 'fullName',
       required: true,
       errorMessage: "",
     },
@@ -124,8 +150,8 @@ const AccountProfile = () => {
       errorMessage: "It should be a valid email address!",
     },
     {
-      id: 'personal_phone',
-      name: 'personal_phone',
+      id: 'phoneNumber',
+      name: 'phoneNumber',
       type: 'tel',
       label: 'Phone number',
       pattern: '^[+]?[(]?[0-9]{3}[)]?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4,6}$',
@@ -219,7 +245,7 @@ const AccountProfile = () => {
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Profile Picture</div>
               <div className="card-body text-center">
-                <img className="img-fluid rounded-circle mb-4" src={ imgUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" } alt="" />
+                <img className="img-fluid rounded-circle mb-4" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "./logo512.png" } alt="" />
                 <div className="small font-italic text-muted mb-4">
                   <button className="btn btn-primary" type="button">Upload new image</button>
                 </div>

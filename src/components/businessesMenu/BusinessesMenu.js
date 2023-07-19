@@ -2,10 +2,17 @@ import { useEffect, useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import SearchBar from "../forms/SearchBar";
 import BusinessFormat from "./BusinessFormat";
+import { ProfileInfoContext } from "../../ProfileInfoContext";
 
 const BusinessesMenu = () => {
 
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext)
   const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
+
+  useEffect(() => {
+    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
+    console.log(profileInfo)
+  }, [ profileInfo.email ])
 
   const fetchBusinessesArr = async (e) => {
     try {
@@ -33,10 +40,10 @@ const BusinessesMenu = () => {
           address: data[ key ].address,
           service: data[ key ].business_type,
           isBusiness: data[ key ].isBusiness,
-          businessDescription: data[ key ].businessDescription,
+          business_description: data[ key ].business_description,
           services: data[ key ].services,
           products: data[ key ].products,
-          businessGallery: data[ key ].business_photo_gallery,
+          profileImg: data[ key ].profileImg,
           reviews: data[ key ].reviews
         });
       }
@@ -99,16 +106,18 @@ const BusinessesMenu = () => {
         { noResults ? (
           <div>No businesses found based on the filter criteria.</div>
         ) : (
-          filteredBusinesses.map(({ id, business_name, businessDescription, tel, email, address, reviews }) => (
+          filteredBusinesses.map(({ id, business_name, business_description, tel, email, address, reviews, profileImg }) => (
             <BusinessFormat
               key={ id }
               id={ id }
               business_name={ business_name }
-              businessDescription={ businessDescription }
+              business_description={ business_description }
               tel={ tel }
               email={ email }
               address={ address }
               reviews={ reviews }
+              profileImg={ profileImg }
+              profileInfoMenu={ profileInfo }
             />
           ))
         ) }

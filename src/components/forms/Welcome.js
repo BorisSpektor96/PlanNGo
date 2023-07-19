@@ -37,7 +37,7 @@ const Welcome = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/businessesMenu')
+      navigate('/Welcome')
     }
   }, [ isLoggedIn ])
 

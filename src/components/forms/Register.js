@@ -17,45 +17,47 @@ const Register = (props) => {
     phoneNumber: "",
     userType: "U",
     isBusiness: false,
-    profileImg: {},
+    profileImg: "",
     favorites: [],
   });
 
-
-
   const DBreq = async (e) => {
     try {
-      const formData = new FormData();
-      formData.append("profileImg", formValues.profileImg);
-      formData.append("email", formValues.email);
-      formData.append("password", formValues.password);
-      formData.append("fullName", formValues.fullName);
-      formData.append("phoneNumber", formValues.phoneNumber);
-      formData.append("userType", formValues.userType);
-      formData.append("isBusiness", formValues.isBusiness);
+      const requestBody = {
+        email: formValues.email,
+        password: formValues.password,
+        fullName: formValues.fullName,
+        phoneNumber: formValues.phoneNumber,
+        userType: formValues.userType,
+        isBusiness: formValues.isBusiness,
+        profileImg: formValues.profileImg,
+      };
 
       const response = await fetch("http://localhost:3001/users/signup", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
+        console.log(response)
         throw new Error("Something went wrong!");
       }
-      props.hideForm()
+
       const data = await response.json();
       console.log("User registered successfully:", data);
+      props.hideForm()
 
     } catch (error) {
       console.error("Registration failed:", error);
     }
   };
-
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log(formValues);
     await DBreq();
-    window.location.href = '/Welcome';
   };
 
   const inputs = [
@@ -124,9 +126,12 @@ const Register = (props) => {
   const onFileChange = (e) => {
     const selectedFile = e.target.files[ 0 ];
     if (selectedFile) {
-      setformValues({ ...formValues, profileImg: selectedFile });
       const reader = new FileReader();
       reader.onloadend = () => {
+        setformValues({
+          ...formValues,
+          profileImg: reader.result.split(",")[ 1 ], // Save the base64 string
+        });
         setPreviewUrl(reader.result);
       };
       reader.readAsDataURL(selectedFile);

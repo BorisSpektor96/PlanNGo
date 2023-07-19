@@ -29,10 +29,6 @@ const Login = (props) => {
   }, [ profileInfo ]);
 
   useEffect(() => {
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
-  }, [ data ]);
-
-  useEffect(() => {
     setLocalProfileInfo(data);
     localStorage.setItem('userData', JSON.stringify(data))
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });

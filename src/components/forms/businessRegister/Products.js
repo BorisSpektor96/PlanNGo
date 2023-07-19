@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Label } from "reactstrap";
 import Select from "react-select";
 import FormInput from "../FormInput"; // Assuming the FormInput component is in a separate file
@@ -10,6 +10,9 @@ const Products = (props) => {
   const [enteredQuantity, setEnteredQuantity] = useState(1);
   const [enteredPrice, setEnteredPrice] = useState("");
   let [productId, setProductId] = useState(1);
+  useEffect(() => {
+    console.log("selected image", selectedImage);
+  }, [selectedImage]);
 
   const addProductHandler = (event) => {
     event.preventDefault(); // Prevents the page from refreshing
@@ -20,10 +23,9 @@ const Products = (props) => {
       enteredDescription,
       enteredName,
       enteredQuantity,
-      selectedImage
+      selectedImage 
     );
   };
-
   const quantityChangeHandler = (event) => {
     setEnteredQuantity(event.target.value);
   };
@@ -154,8 +156,8 @@ const Products = (props) => {
                     <img
                       className="img-thumbnail w-75 h-75"
                       alt="not found"
-                      src={URL.createObjectURL(product.photo)}
-                    />
+                      src={`data:image/jpeg;base64,${product.photo}`} 
+                      />
                   )}
                 </td>
                 <td className="text-center">

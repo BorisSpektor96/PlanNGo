@@ -1,39 +1,12 @@
 import express from "express";
 import userModel from '../models/User.js'
 import userBusinessModel from '../models/BusinessUser.js'
-import { v4 as uuidv4 } from 'uuid';
-import multer from "multer";
 
 const userRouter = express.Router();
 
 
-const DIR = './public/';
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, DIR);
-  },
-  filename: (req, file, cb) => {
-    const fileName = file.originalname.toLowerCase().split(' ').join('-');
-    cb(null, uuidv4() + '-' + fileName)
-  }
-});
-
-var upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-    }
-  }
-});
-
-userRouter.post('/signup', upload.single('profileImg'), async (req, res) => {
-  const url = req.protocol + '://' + req.get('host');
-  const { email, password, fullName, phoneNumber, userType, isBusiness } = req.body;
+userRouter.post('/signup', async (req, res) => {
+  const { email, password, fullName, phoneNumber, userType, isBusiness, profileImg } = req.body;
 
   try {
     const user = await userModel.create({
@@ -41,17 +14,36 @@ userRouter.post('/signup', upload.single('profileImg'), async (req, res) => {
       password,
       fullName,
       phoneNumber,
-      profileImg: url + '/public/' + req.file.filename,
+      profileImg, // Save the base64 string directly to the profileImg field
       userType,
       isBusiness,
     });
+
     return res.status(200).json(user);
+
   } catch (error) {
     console.error(error);
     if (error.code === 11000) {
       return res.status(400).json({ ok: false, error: 'duplicate' });
     }
     return res.status(400).send(error);
+  }
+});
+
+
+userRouter.post('/updateUserProfile', async (req, res) => {
+  const { email, fullName, emailNew, phoneNumber } = req.body
+  const user = await userModel.findOne({ email: email })
+
+  user.email = emailNew
+  user.fullName = fullName
+  user.phoneNumber = phoneNumber
+  user.save()
+
+  try {
+    return res.json(user);
+  } catch (err) {
+    res.send("Error " + err);
   }
 });
 
@@ -74,7 +66,7 @@ userRouter.post('/addToFavorite', async (req, res) => {
     const { userEmail, businessEmail } = req.body
     const business = await userBusinessModel.findOne({ email: businessEmail })
     const user = await userModel.findOne({ email: userEmail })
-    console.log(business._id.toString())
+
     const favBusiness = {
       id: business._id.toString(),
       business_name: business.business_name,
