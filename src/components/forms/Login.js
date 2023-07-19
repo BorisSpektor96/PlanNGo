@@ -140,7 +140,6 @@ const Login = (props) => {
                 value=""
                 id="form2Example31"
                 name="form2Example31"
-              // checked
               />
               <label className="form-check-label" htmlFor="form2Example31">
                 { " " }

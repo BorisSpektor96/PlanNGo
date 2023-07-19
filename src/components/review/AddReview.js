@@ -6,9 +6,16 @@ import { ProfileInfoContext } from "../../ProfileInfoContext";
 
 const AddReview = (props) => {
 
+  const [ anonymous, setAnonymous ] = useState(false)
   const [ reviewContent, setReviewContent ] = useState("");
   const [ reviewRate, setreviewRate ] = useState("");
-  function starHandler(value) {
+
+  const anonymousHandler = () => {
+    setAnonymous(!anonymous)
+    console.log(anonymous)
+  }
+
+  const starHandler = (value) => {
     setreviewRate(value.toString());
   }
   const handleReviewContent = (event) => {
@@ -17,12 +24,16 @@ const AddReview = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let name = props.profileInfo.fullName
+    if (anonymous) {
+      name = "-anonymous-"
+    }
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    postReviewToBusiness(props.profileInfo.fullName, reviewContent, reviewRate, reviewDate)
+    postReviewToBusiness(name, reviewContent, reviewRate, reviewDate)
   };
 
-  const postReviewToBusiness = async (reviewer, content, rating, date) => {
+  const postReviewToBusiness = async (reviewer, content, rating, date, anonymous) => {
     try {
       const formValues = {
         email: props.businessDetails.email,
@@ -31,6 +42,7 @@ const AddReview = (props) => {
         rating: rating,
         date: date
       };
+      console.log(formValues)
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
         headers: {
@@ -68,6 +80,19 @@ const AddReview = (props) => {
           <div className="d-flex p-2 justify-content-between">
             <label>how was your visit?</label>
             <StarRating onChange={ starHandler } />
+          </div>
+          <div className="form-check mt-2">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              value="anonymous"
+              id="anonymous"
+              name="anonymous"
+              onClick={ anonymousHandler }
+            />
+            <label className="form-check-label" htmlFor="anonymous">
+              anonymous?
+            </label>
           </div>
           <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } />
           <div className="p-2 mt-4 d-flex justify-content-center">
