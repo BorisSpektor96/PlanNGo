@@ -10,7 +10,7 @@ import Profile from './components/profile/Profile'
 import FavoritesList from './components/favorites/FavoritesList'
 
 import ProfileInfoProvider from './ProfileInfoContext';
-
+import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
 const routes = [
@@ -37,20 +37,22 @@ function App() {
 
     <AuthProvider>
       <ProfileInfoProvider>
-        <div className="main">
-          <BrowserRouter className="Routes BrowserRouter">
-            <Routes>
-              <Route
-                path='/'
-                element={
-                  <Layout />
-                }
-              >
-                { routeOfComponents }
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </div>
+        <PopupProvider>
+          <div className="main">
+            <BrowserRouter className="Routes BrowserRouter">
+              <Routes>
+                <Route
+                  path='/'
+                  element={
+                    <Layout />
+                  }
+                >
+                  { routeOfComponents }
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </div>
+        </PopupProvider>
       </ProfileInfoProvider>
     </AuthProvider>
   );

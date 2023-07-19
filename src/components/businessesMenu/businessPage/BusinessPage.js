@@ -7,8 +7,11 @@ import { useLocation } from "react-router-dom";
 import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
 import { ProfileInfoContext } from "../../../ProfileInfoContext";
+import { PopupMessageContext } from "../../../PopupMessage";
 
 const BusinessPage = () => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const location = useLocation();
   const businessDetails = location.state;
@@ -37,11 +40,9 @@ const BusinessPage = () => {
       });
       if (response.ok) {
         const data = await response.json()
-        if (data.alreadyAdded) {
-          alert(data.message);
-        } else {
-          alert(data.message);
-        }
+
+        showMessage(data.message, data.type)
+
       } else {
         console.log('Failed to add to favorites');
       }

@@ -1,10 +1,12 @@
 import Modal from "../UI/Modal";
 import StarRating from "./StarRating";
 import { useState, useContext } from "react";
-import { ProfileInfoContext } from "../../ProfileInfoContext";
 
+import { PopupMessageContext } from './../../PopupMessage';
 
 const AddReview = (props) => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ anonymous, setAnonymous ] = useState(false)
   const [ reviewContent, setReviewContent ] = useState("");
@@ -50,8 +52,10 @@ const AddReview = (props) => {
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
+
       const data = await response.json();
-      alert(`review added successfully`);
+      console.log(data.message)
+      showMessage(data.message, data.type)
     } catch (error) {
       console.error('Add review failed:', error);
     }

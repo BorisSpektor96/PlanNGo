@@ -4,7 +4,11 @@ import "./favoritesList.css"
 import { ProfileInfoContext } from "../../ProfileInfoContext";
 import { useEffect } from "react";
 
+import { PopupMessageContext } from './../../PopupMessage';
+
 const FavoritesList = () => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const { profileInfo } = useContext(ProfileInfoContext);
 
@@ -15,7 +19,6 @@ const FavoritesList = () => {
   }, [ profileInfo.email ])
 
   const fetchFavorites = async () => {
-    console.log("profileInfo.email", profileInfo.email)
     try {
       const response = await fetch('http://localhost:3001/users/getFavorites', {
         method: 'POST',
@@ -49,12 +52,7 @@ const FavoritesList = () => {
 
       if (response.ok) {
         const data = await response.json()
-        if (data.success) {
-          fetchFavorites();
-          alert(data.message)
-        } else {
-          alert(data.message);
-        }
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);
@@ -63,7 +61,7 @@ const FavoritesList = () => {
 
   return (
     <div class="d-flex justify-content-center mt-4">
-      <ul className="border border-primary rounded list-group list-group-flush">
+      <ul className="p-3 border border-primary rounded list-group list-group-flush">
         <p class="d-flex justify-content-center m-1">Favorite Businesses</p>
         { favorites.length > 0 ?
           (<>
