@@ -12,7 +12,6 @@ const AddReview = (props) => {
 
   const anonymousHandler = () => {
     setAnonymous(!anonymous)
-    console.log(anonymous)
   }
 
   const starHandler = (value) => {
