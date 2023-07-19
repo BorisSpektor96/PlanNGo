@@ -21,12 +21,13 @@ const AddReview = (props) => {
     setReviewContent(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const name = anonymous ? "-anonymous-" : props.profileInfo.fullName;
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    postReviewToBusiness(name, reviewContent, reviewRate, reviewDate)
+    await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate)
+    props.onClose();
   };
 
   const postReviewToBusiness = async (reviewer, content, rating, date, anonymous) => {
