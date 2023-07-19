@@ -98,7 +98,7 @@ const BusinessPage = () => {
           <div className="card col-lg-4 col-lg-8 border-info">
             <div className="card-body">
               <h5 className="card-title">{ businessDetails.business_name }</h5>
-              <p className="card-text">{ businessDetails.businessDescription }</p>
+              <p className="card-text">{ businessDetails.business_description }</p>
             </div>
           </div>
 
