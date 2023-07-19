@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
+import FavoritesList from "../favorites/FavoritesList";
 
 const AccountProfile = () => {
 
@@ -237,7 +238,7 @@ const AccountProfile = () => {
   return (
 
     <div className="container-xl px-4 mt-4 mb-4">
-      <div className="d-flex gap-4 flex-wrap">
+      <div className="d-flex flex-column justify-content-center gap-4 flex-wrap">
         <div className="row">
 
           <div className="d-flex col-md-5">
@@ -278,6 +279,7 @@ const AccountProfile = () => {
           </div>
 
         </div>
+        <FavoritesList />
       </div>
     </div >
   )

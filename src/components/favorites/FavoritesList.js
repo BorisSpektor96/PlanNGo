@@ -63,8 +63,8 @@ const FavoritesList = () => {
 
   return (
     <div class="d-flex justify-content-center mt-4">
-      <ul className="border list-group list-group-flush">
-        <p class="d-flex justify-content-center m-1">Favorites</p>
+      <ul className="border border-primary rounded list-group list-group-flush">
+        <p class="d-flex justify-content-center m-1">Favorite Businesses</p>
         { favorites.length > 0 ?
           (<>
             { favorites.map((item) => (

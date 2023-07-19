@@ -21,10 +21,6 @@ const MainNavbar = () => {
         tabName: 'Home',
         pathName: '/businessesMenu'
       },
-      {
-        tabName: 'Favorites',
-        pathName: '/FavoritesList'
-      },
     ];
   } else {
     NavTabs = [
