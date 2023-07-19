@@ -16,7 +16,6 @@ const AddReview = (props) => {
   };
 
   const handleSubmit = (event) => {
-    console.log(props.profileInfo.fullName)
     event.preventDefault();
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
@@ -32,7 +31,6 @@ const AddReview = (props) => {
         rating: rating,
         date: date
       };
-      console.log(formValues)
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
         headers: {

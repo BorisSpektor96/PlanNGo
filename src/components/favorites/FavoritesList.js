@@ -12,12 +12,7 @@ const FavoritesList = () => {
 
   useEffect(() => {
     fetchFavorites()
-    console.log(favorites)
   }, [ profileInfo.email ])
-
-  useEffect(() => {
-    console.log(profileInfo)
-  }, []);
 
   const fetchFavorites = async () => {
     console.log("profileInfo.email", profileInfo.email)
@@ -53,10 +48,13 @@ const FavoritesList = () => {
       });
 
       if (response.ok) {
-        fetchFavorites();
-        alert('favorite is successfully deleted')
-      } else {
-        alert('Failed to delete favorite business');
+        const data = await response.json()
+        if (data.success) {
+          fetchFavorites();
+          alert(data.message)
+        } else {
+          alert(data.message);
+        }
       }
     } catch (error) {
       console.log('Error:', error);

@@ -4,13 +4,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import styles from "./BusinessFormat.module.css"
 import { useState } from "react";
 
-// import { ProfileInfoContext } from "../../ProfileInfoContext";
-// import { useContext } from "react";
-import { useEffect } from "react";
-
 const BusinessFormat = (props) => {
 
-  // const { profileInfo } = useContext(ProfileInfoContext)
 
   const [ businessLogin, setBusinessLogin ] = useState(true)
 

@@ -37,7 +37,6 @@ const AccountProfile = () => {
 
           dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
           setLocalProfileInfo(user)
-          console.log(localProfileInfo)
           setImgUrl(localProfileInfo.profileImg)
 
         } else {

@@ -25,11 +25,6 @@ const BusinessPage = () => {
     addBusinessToFavorite()
   };
 
-  useEffect(() => {
-    console.log(profileInfo.email)
-    console.log(businessDetails)
-  }, [])
-
   const addBusinessToFavorite = async () => {
     try {
       const response = await fetch('http://localhost:3001/users/addToFavorite', {
@@ -40,10 +35,13 @@ const BusinessPage = () => {
           businessEmail: businessDetails.email
         })
       });
-      console.log(profileInfo.email)
-      console.log(businessDetails.email)
       if (response.ok) {
-        alert('added to favorites successfully');
+        const data = await response.json()
+        if (data.alreadyAdded) {
+          alert(data.message);
+        } else {
+          alert(data.message);
+        }
       } else {
         console.log('Failed to add to favorites');
       }

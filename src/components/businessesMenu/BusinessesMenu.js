@@ -11,7 +11,6 @@ const BusinessesMenu = () => {
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
-    console.log(profileInfo)
   }, [ profileInfo.email ])
 
   const fetchBusinessesArr = async (e) => {
