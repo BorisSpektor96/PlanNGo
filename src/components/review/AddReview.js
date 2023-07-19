@@ -23,10 +23,7 @@ const AddReview = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let name = props.profileInfo.fullName
-    if (anonymous) {
-      name = "-anonymous-"
-    }
+    const name = anonymous ? "-anonymous-" : props.profileInfo.fullName;
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
     postReviewToBusiness(name, reviewContent, reviewRate, reviewDate)
@@ -41,7 +38,6 @@ const AddReview = (props) => {
         rating: rating,
         date: date
       };
-      console.log(formValues)
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
         headers: {
