@@ -2,8 +2,11 @@ import FormInput from "../forms/FormInput"
 import { useState, useContext, useEffect } from "react";
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
+import { PopupMessageContext } from "../../PopupMessage";
 
 const ProductsProfile = () => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
 
@@ -89,11 +92,13 @@ const ProductsProfile = () => {
         body: JSON.stringify({ email: profileInfo.email, product })
       });
 
+      const data = await response.json()
+
       if (response.ok) {
-        alert('product added successfully');
+        showMessage(data.message, data.type)
         fetchProducts();
       } else {
-        console.log('Failed to add product');
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);
@@ -107,11 +112,12 @@ const ProductsProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email, productId })
       });
-
+      const data = await response.json()
       if (response.ok) {
+        showMessage(data.message, data.type)
         fetchProducts();
       } else {
-        console.log('Failed to delete product');
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);

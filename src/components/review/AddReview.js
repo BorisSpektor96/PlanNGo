@@ -54,7 +54,6 @@ const AddReview = (props) => {
       }
 
       const data = await response.json();
-      console.log(data.message)
       showMessage(data.message, data.type)
     } catch (error) {
       console.error('Add review failed:', error);

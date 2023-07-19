@@ -19,7 +19,7 @@ userRouter.post('/signup', async (req, res) => {
       isBusiness,
     });
 
-    return res.status(200).json(user);
+    res.status(200).json({ user: user, message: "Signed Up Succesfully ", type: "Success" });
 
   } catch (error) {
     console.error(error);
@@ -41,8 +41,9 @@ userRouter.post('/updateUserProfile', async (req, res) => {
   user.save()
 
   try {
-    return res.json(user);
-  } catch (err) {
+    res.json({ user: user, message: "Profile Updated Succesfully ", type: "Success" });
+  } catch (error) {
+    res.json({ error: error, message: "Profile Not Updated ", type: "Error" });
     res.send("Error " + err);
   }
 });
@@ -111,9 +112,9 @@ userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const loggedUser = await userModel.findOne({ email: email, password: password });
-    res.json(loggedUser);
-  } catch (err) {
-    res.send("Error " + err);
+    res.json({ user: loggedUser, message: "Login Success", type: "Success" });
+  } catch (error) {
+    res.json({ error: error, message: "Login Success", type: "Error" });
   }
 });
 
@@ -142,36 +143,3 @@ userRouter.get("/getAllUsers", async (req, res) => {
 });
 
 export default userRouter;
-
-// userRouter.post("/getUserByEmail", async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     const user = await userModel.findOne({ email: email });
-
-//     if (user) {
-//       // User with the specified email found in the database
-//       res.json(user);
-//     } else {
-//       // User with the specified email not found in the database
-//       res.json(null);
-//     }
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
-
-// userRouter.post("/checkEmail", async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     const user = await userModel.findOne({ email: email });
-
-//     if (user) {
-//       res.json({ exists: true });
-//     } else {
-//       res.json({ exists: false });
-//     }
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });

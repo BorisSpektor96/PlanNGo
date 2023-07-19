@@ -48,18 +48,20 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     reviews,
     appointmentsDef
   });
+
   try {
     const savedUser = await newBusinessUser.save();
-    res.status(200).json(savedUser);
+    res.status(200).json({ user: savedUser, message: "Business register Succesfully", type: "Success" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, message: "Business register Succesfully", type: "Success" });
   }
 });
+
 userBusinessRouter.post('/getBusinessProfile', async (req, res) => {
   const { email } = req.body
   const user = await userBusinessModel.findOne({ email: email })
   try {
-    return res.json(user);
+    res.json(user);
   } catch (err) {
     res.send("Error " + err);
   }
@@ -78,9 +80,9 @@ userBusinessRouter.post('/updateBusinessProfile', async (req, res) => {
   user.save()
 
   try {
-    return res.json(user);
-  } catch (err) {
-    res.send("Error " + err);
+    res.json({ user: user, message: "Profile Updated Succesfully", type: "Success" });
+  } catch (error) {
+    res.json({ error: error, message: "Profile Not Updated ", type: "Error" });
   }
 });
 
@@ -94,11 +96,11 @@ userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
 
       res.status(200).json({ message: "Review added successfully", type: "Success" });
     } else {
-      res.status(404).json({ message: "User not found" });
+      res.status(400).json({ message: "Review Not Added / User not found", type: "Warning" });
     }
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message: "Error adding review", error });
+    res.status(500).json({ message: "Error adding review", error: error, type: "Error" });
   }
 });
 
@@ -122,8 +124,8 @@ userBusinessRouter.post('/addService', async (req, res) => {
 
     user.services.push(service);
     await user.save();
+    res.status(200).json({ message: 'Service added successfully', type: "Success" });
 
-    res.status(200).json({ message: 'Service added successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to add service', error });
   }
@@ -134,16 +136,16 @@ userBusinessRouter.post('/deleteService', async (req, res) => {
   try {
     const user = await userBusinessModel.findOne({ email: email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found', type: "Error" });
     }
     const serviceIndex = user.services.findIndex(service => service._id.oid === serviceId);
     if (serviceIndex === -1) {
-      return res.status(404).json({ message: 'Service not found' });
+      return res.status(404).json({ message: 'Service not found', type: "Error" });
     }
     user.services.splice(serviceIndex, 1);
     await user.save();
 
-    res.status(200).json({ message: 'Service deleted successfully' });
+    res.status(200).json({ message: 'Service deleted successfully', type: "Success" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete service', error });
   }
@@ -153,7 +155,7 @@ userBusinessRouter.post('/getBusinessProducts', async (req, res) => {
   const { email } = req.body
   const user = await userBusinessModel.findOne({ email: email }).select('products')
   try {
-    return res.json(user.products);
+    res.json(user.products);
   } catch (err) {
     res.send("Error " + err);
   }
@@ -164,14 +166,14 @@ userBusinessRouter.post('/addProduct', async (req, res) => {
   try {
     const user = await userBusinessModel.findOne({ email: email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found', type: "Error" });
     }
     user.products.push(product);
 
     await user.save();
-    res.status(200).json({ message: 'Service added successfully' });
+    res.status(200).json({ message: 'Service added successfully', type: "Success" });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to add service', error });
+    res.status(500).json({ message: 'Failed to add service', error: error, type: "Error" });
   }
 });
 
@@ -184,14 +186,14 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
     }
     const productIndex = user.products.findIndex(product => product.id == productId);
     if (productIndex === -1) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found', type: "Error" });
     }
     user.products.splice(productIndex, 1);
 
     await user.save();
-    res.status(200).json({ message: 'Product deleted successfully' });
+    res.status(200).json({ message: 'Product deleted successfully', type: "Succes" });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to delete Product', error });
+    res.status(500).json({ message: 'Failed to delete Product', error: error, type: "Error" });
   }
 });
 

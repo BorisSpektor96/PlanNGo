@@ -1,8 +1,11 @@
 import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import { ProfileInfoContext } from '../../ProfileInfoContext';
+import { PopupMessageContext } from "../../PopupMessage";
 
 const ServicesProfile = () => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
 
@@ -81,12 +84,13 @@ const ServicesProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email, service })
       });
+      const data = await response.json()
 
       if (response.ok) {
-        console.log('Service added successfully');
+        showMessage(data.showMessage, data.type)
         fetchServices();
       } else {
-        console.log('Failed to add service');
+        showMessage(data.showMessage, data.type)
       }
     } catch (error) {
       console.log('Error:', error);
@@ -100,11 +104,12 @@ const ServicesProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email, serviceId })
       });
-
+      const data = await response.json()
       if (response.ok) {
+        showMessage(data.showMessage, data.type)
         fetchServices();
       } else {
-        console.log('Failed to delete service');
+        showMessage(data.showMessage, data.type)
       }
     } catch (error) {
       console.log('Error:', error);

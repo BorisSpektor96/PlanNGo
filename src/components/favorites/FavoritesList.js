@@ -53,6 +53,7 @@ const FavoritesList = () => {
       if (response.ok) {
         const data = await response.json()
         showMessage(data.message, data.type)
+        fetchFavorites()
       }
     } catch (error) {
       console.log('Error:', error);

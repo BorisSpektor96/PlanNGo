@@ -17,8 +17,14 @@ import Products from "./Products";
 import Services from "./Services";
 import MultiStepProgressBar from "./MultiStepProgressBar";
 import AppointmentsDef from "./AppointmentsDef";
+
+import { PopupMessageContext } from "../../../PopupMessage";
+import { useContext } from "react";
+
 class MainBusinessForm extends Component {
+
   constructor(props) {
+
     super(props);
     this.state = {
       currentStep: 1,
@@ -38,7 +44,7 @@ class MainBusinessForm extends Component {
       errors: {}, // Add a new "errors" field to store validation errors
       reviews: [],
       appointmentsDef: {
-        fixedBreak: [{}],
+        fixedBreak: [ {} ],
         fixedDaysOff: [],
         OneTimeDayOff: [],
         appointments: [],
@@ -189,7 +195,7 @@ class MainBusinessForm extends Component {
     });
   };
   handleInsertImage(event) {
-    const imageFile = event.target.files[0];
+    const imageFile = event.target.files[ 0 ];
 
     if (!imageFile) {
       return;
@@ -198,7 +204,7 @@ class MainBusinessForm extends Component {
     const reader = new FileReader();
 
     reader.onload = () => {
-      const imageData = reader.result.split(",")[1]; // Extract the base64 data part
+      const imageData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
       this.setState({ profileImg: imageData }); // Set the base64 string in the state
     };
 
@@ -213,7 +219,7 @@ class MainBusinessForm extends Component {
     const reader = new FileReader();
 
     reader.onload = () => {
-      const photoData = reader.result.split(",")[1]; // Extract the base64 data part
+      const photoData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
       // Rest of your code ...
 
       this.setState((state) => {
@@ -256,18 +262,18 @@ class MainBusinessForm extends Component {
   handleAddBreak = (startTime, endTime) => {
     const formattedStartTime = dayjs(startTime, "HH:mm", true);
     const formattedEndTime = dayjs(endTime, "HH:mm", true);
-  
+
     if (formattedEndTime.isValid() && formattedEndTime.isAfter(formattedStartTime)) {
       const breakTimeRange = {
         start: formattedStartTime.format("HH:mm"),
         end: formattedEndTime.format("HH:mm"),
       };
-  
+
       this.setState((prevState) => ({
         ...prevState,
         appointmentsDef: {
           ...prevState.appointmentsDef,
-          fixedBreak: [...prevState.appointmentsDef.fixedBreak, breakTimeRange],
+          fixedBreak: [ ...prevState.appointmentsDef.fixedBreak, breakTimeRange ],
         },
       }));
     } else {
@@ -277,7 +283,7 @@ class MainBusinessForm extends Component {
 
   handleDeleteBreak = (index) => {
     this.setState((prevState) => {
-      const updatedBreaks = [...prevState.appointmentsDef.fixedBreak];
+      const updatedBreaks = [ ...prevState.appointmentsDef.fixedBreak ];
       updatedBreaks.splice(index, 1);
       return {
         ...prevState,
@@ -306,7 +312,7 @@ class MainBusinessForm extends Component {
             ...prevState,
             appointmentsDef: {
               ...prevState.appointmentsDef,
-              fixedDaysOff: [...prevState.appointmentsDef.fixedDaysOff, day],
+              fixedDaysOff: [ ...prevState.appointmentsDef.fixedDaysOff, day ],
             },
           };
         }
@@ -323,6 +329,8 @@ class MainBusinessForm extends Component {
   /*************************AppointmentsDef*************************/
 
   handleSubmit = async (e) => {
+    const { showMessage } = useContext(PopupMessageContext)
+
     e.preventDefault();
     const { currentStep, errors, confirmPassword, ...formData } = this.state;
     try {
@@ -340,10 +348,11 @@ class MainBusinessForm extends Component {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-      this.props.hideForm();
+
       const data = await response.json();
-      console.log("User registered successfully:", data);
-      console.log(data);
+      showMessage(data.message, data.type)
+      this.props.hideForm();
+
     } catch (error) {
       console.error("Registration failed:", error);
     }
@@ -380,7 +389,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={this._prev}>
+        <Button color="secondary float-left" onClick={ this._prev }>
           Previous
         </Button>
       );
@@ -409,7 +418,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 3, render the "next" button with the appropriate style
     if (currentStep < 5) {
       return (
-        <Button color={buttonClass} onClick={this._next}>
+        <Button color={ buttonClass } onClick={ this._next }>
           Next
         </Button>
       );
@@ -434,68 +443,68 @@ class MainBusinessForm extends Component {
 
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={this.handleSubmit}>
+        <Form className="pb-5" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={this.props.onClose}
+              onClick={ this.props.onClose }
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={this.state.currentStep} />
+                <MultiStepProgressBar currentStep={ this.state.currentStep } />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                errors={this.state.errors} // Pass the errors object to the component
-                formInput={this.state}
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                errors={ this.state.errors } // Pass the errors object to the component
+                formInput={ this.state }
               />
               <BusinessInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                handleBusinessType={this.handleBusinessType}
-                handleInsertImage={this.handleInsertImage}
-                handleDeleteImage={this.handleDeleteImage}
-                profileImg={this.state.profileImg}
-                formInput={this.state}
-                errors={this.state.errors} // Pass the errors object to the component
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                handleBusinessType={ this.handleBusinessType }
+                handleInsertImage={ this.handleInsertImage }
+                handleDeleteImage={ this.handleDeleteImage }
+                profileImg={ this.state.profileImg }
+                formInput={ this.state }
+                errors={ this.state.errors } // Pass the errors object to the component
               />
               <Services
-                currentStep={this.state.currentStep}
-                handleServices={this.handleServices}
-                deleteServicesHandler={this.deleteServicesHandler}
-                services={this.state.services}
+                currentStep={ this.state.currentStep }
+                handleServices={ this.handleServices }
+                deleteServicesHandler={ this.deleteServicesHandler }
+                services={ this.state.services }
               />
               <Products
-                currentStep={this.state.currentStep}
-                handleProducts={this.handleProducts}
-                deleteProductHandler={this.deleteProductHandler}
-                products={this.state.products}
+                currentStep={ this.state.currentStep }
+                handleProducts={ this.handleProducts }
+                deleteProductHandler={ this.deleteProductHandler }
+                products={ this.state.products }
               />
               <AppointmentsDef
-                currentStep={this.state.currentStep}
-                appointmentsDef={this.state.appointmentsDef}
-                handleDayCheckboxChange={this.handleDayCheckboxChange}
-                handleAddBreak={this.handleAddBreak}
-                handleDeleteBreak={this.handleDeleteBreak}
+                currentStep={ this.state.currentStep }
+                appointmentsDef={ this.state.appointmentsDef }
+                handleDayCheckboxChange={ this.handleDayCheckboxChange }
+                handleAddBreak={ this.handleAddBreak }
+                handleDeleteBreak={ this.handleDeleteBreak }
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              {this.previousButton}
-              {currentStep < 5 && (
-                <Button color="primary float-right" onClick={this.handleNext}>
+              { this.previousButton }
+              { currentStep < 5 && (
+                <Button color="primary float-right" onClick={ this.handleNext }>
                   Next
                 </Button>
-              )}
-              {currentStep === 5 && (
+              ) }
+              { currentStep === 5 && (
                 <Button color="primary float-right">Submit</Button>
-              )}
+              ) }
             </CardFooter>
           </Card>
         </Form>

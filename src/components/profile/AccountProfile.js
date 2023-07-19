@@ -3,8 +3,11 @@ import FormInput from "../forms/FormInput"
 import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 import FavoritesList from "../favorites/FavoritesList";
+import { PopupMessageContext } from "../../PopupMessage";
 
 const AccountProfile = () => {
+
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ editAccountMode, setEditAccountMode ] = useState(false)
 
@@ -35,7 +38,6 @@ const AccountProfile = () => {
       if (response.ok) {
         const user = await response.json();
         if (user !== null) {
-
           dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
           setLocalProfileInfo(user)
           setImgUrl(localProfileInfo.profileImg)
@@ -84,17 +86,21 @@ const AccountProfile = () => {
         })
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const newProfile = await response.json();
-        if (newProfile !== null) {
-          alert('profile is updated')
-          setLocalProfileInfo(newProfile)
+
+        if (data.user !== null) {
+
+          showMessage(data.message, data.type)
+
+          setLocalProfileInfo(data.user)
           localStorage.setItem("userData", JSON.stringify(localProfileInfo))
           dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
 
         }
       } else {
-        console.log("not ok ")
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);
@@ -117,14 +123,15 @@ const AccountProfile = () => {
         })
       });
 
+      const data = await response.json();
       if (response.ok) {
-        const newProfile = await response.json();
-        if (newProfile !== null) {
-          alert('profile is updated')
-          setLocalProfileInfo(newProfile)
+        if (data.user !== null) {
+
+          showMessage(data.message, data.type)
+          setLocalProfileInfo(data.user)
         }
       } else {
-        console.log("not ok ")
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);

@@ -3,15 +3,15 @@ import "bootstrap/dist/css/bootstrap.css";
 import FormInput from "./FormInput";
 import { useState, useEffect, useContext } from "react";
 
-// ******************
 import { ProfileInfoContext } from '../../ProfileInfoContext'
 import { AuthContext } from '../../AuthContext';
-// ******************
+import { PopupMessageContext } from "../../PopupMessage";
 
 const Login = (props) => {
 
+  const { showMessage } = useContext(PopupMessageContext)
   const { login } = useContext(AuthContext);
-  // ******************
+
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
   const [ data, setData ] = useState();
@@ -61,19 +61,19 @@ const Login = (props) => {
       });
 
       if (response.status === 200) {
-        const responseData = await response.json();
-        console.log(responseData)
-        setData(responseData);
+        const data = await response.json();
+        if (data !== null && data !== 'undefined' && data !== undefined) {
 
-        if (responseData !== null && responseData !== 'undefined' && responseData !== undefined) {
-          login(responseData)
+          showMessage(data.message, data.type)
+          setData(data.user);
+          login(data.user)
           props.hideForm()
           return true;
         } else {
           return false;
         }
       } else {
-        console.log('Login failed. Status:', response.status);
+        showMessage(data.message, data.type)
         return false;
       }
     } catch (err) {

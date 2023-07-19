@@ -38,13 +38,12 @@ const BusinessPage = () => {
           businessEmail: businessDetails.email
         })
       });
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
 
         showMessage(data.message, data.type)
-
       } else {
-        console.log('Failed to add to favorites');
+        showMessage(data.message, data.type)
       }
     } catch (error) {
       console.log('Error:', error);

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Modal from "../UI/Modal";
 import { useNavigate } from "react-router-dom";
-
 import FormInput from "./FormInput";
+import { PopupMessageContext } from "../../PopupMessage";
+import { useContext } from "react";
+
 const Register = (props) => {
 
-  const navigate = useNavigate()
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ RememberMe, RememberMehandler ] = useState(false);
   const [ previewUrl, setPreviewUrl ] = useState("");
@@ -47,7 +49,7 @@ const Register = (props) => {
       }
 
       const data = await response.json();
-      console.log("User registered successfully:", data);
+      showMessage(data.message, data.type)
       props.hideForm()
 
     } catch (error) {
