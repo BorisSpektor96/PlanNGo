@@ -87,17 +87,6 @@ const BusinessPage = () => {
     setAddReviewIsShown(false);
   };
 
-  useEffect(() => {
-    profileInfo.favorites.forEach(favorite => {
-      console.log(favorite)
-      if (favorite.email === businessDetails.email) {
-        setIsFavorite(true)
-      } else {
-        setIsFavorite(false)
-      }
-    });
-  }, [])
-
   const pathToBackMenu = "/BusinessesMenu";
 
   return (

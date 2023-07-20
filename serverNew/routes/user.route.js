@@ -30,17 +30,31 @@ userRouter.post('/signup', async (req, res) => {
   }
 });
 
+userRouter.post('/imgUpdate', async (req, res) => {
+  const { email, profileImg } = req.body
+  const user = await userModel.findOne({ email: email })
+  try {
+
+    user.profileImg = profileImg
+    user.save()
+
+    res.json({ user: user, message: "Image Profile Updated Succesfully ", type: "Success" });
+  } catch (error) {
+    res.json({ error: error, message: "Image Profile Not Updated ", type: "Error" });
+
+  }
+})
 
 userRouter.post('/updateUserProfile', async (req, res) => {
   const { email, fullName, emailNew, phoneNumber } = req.body
   const user = await userModel.findOne({ email: email })
 
-  user.email = emailNew
-  user.fullName = fullName
-  user.phoneNumber = phoneNumber
-  user.save()
-
   try {
+    user.email = emailNew
+    user.fullName = fullName
+    user.phoneNumber = phoneNumber
+    user.save()
+
     res.json({ user: user, message: "Profile Updated Succesfully ", type: "Success" });
   } catch (error) {
     res.json({ error: error, message: "Profile Not Updated ", type: "Error" });
@@ -92,7 +106,6 @@ userRouter.post('/deleteFromFavoriteById', async (req, res) => {
   try {
     const { userEmail, favoriteId } = req.body;
     const user = await userModel.findOne({ email: userEmail });
-    console.log(favoriteId)
     const favoriteIndex = user.favorites.findIndex(favorite => favorite.id === favoriteId);
 
     if (favoriteIndex !== -1) {

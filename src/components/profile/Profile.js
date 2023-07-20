@@ -3,14 +3,12 @@ import ProductsProfile from "./ProductsProfile";
 import AccountProfile from "./AccountProfile";
 
 import './profile.css'
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { ProfileInfoContext } from '../../ProfileInfoContext'
 
 const Profile = () => {
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+  const { dispatch } = useContext(ProfileInfoContext);
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
@@ -20,19 +18,16 @@ const Profile = () => {
     < >
       <div className="mt-4 mb-4" >
         <AccountProfile
-        // localProfileInfo={ localProfileInfo }
         />
       </div >
 
       <div className="mt-4 mb-4">
         <ProductsProfile
-        // localProfileInfo={ localProfileInfo }
         />
       </div>
 
       <div className="mt-4 mb-4">
         <ServicesProfile
-        // localProfileInfo={ localProfileInfo }
         />
       </div>
     </ >

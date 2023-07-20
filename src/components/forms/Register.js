@@ -125,6 +125,7 @@ const Register = (props) => {
   const onChange = (e) => {
     setformValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
+
   const onFileChange = (e) => {
     const selectedFile = e.target.files[ 0 ];
     if (selectedFile) {
@@ -139,6 +140,7 @@ const Register = (props) => {
       reader.readAsDataURL(selectedFile);
     }
   };
+
   return (
     <Modal>
       <div className="d-flex flex-row justify-content-end p-1 w-100 p-0 ">

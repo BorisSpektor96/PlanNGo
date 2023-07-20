@@ -15,10 +15,16 @@ const AccountProfile = () => {
 
   const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
 
+  const [ editImgProfile, setEditImgProfile ] = useState(false)
+
   const [ imgUrl, setImgUrl ] = useState("")
 
-  const editHandler = () => {
+  const editAccountHandler = () => {
     setEditAccountMode(!editAccountMode)
+  }
+
+  const editImgHandler = () => {
+    setEditImgProfile(!editImgProfile)
   }
 
   const handlerInputProfileEdit = (e) => {
@@ -40,7 +46,7 @@ const AccountProfile = () => {
         if (user !== null) {
           dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
           setLocalProfileInfo(user)
-          setImgUrl(localProfileInfo.profileImg)
+          setImgUrl(user.profileImg)
 
         } else {
           setLocalProfileInfo(user)
@@ -242,33 +248,96 @@ const AccountProfile = () => {
     </form>
   );
 
+  const imgUploadHandler = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await fetch('http://localhost:3001/users/imgUpdate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: localProfileInfo.email,
+          profileImg: imgUrl
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.user !== null) {
+          console.log(data.user)
+          showMessage(data.message, data.type)
+          setLocalProfileInfo(data.user)
+          editImgHandler()
+        }
+      } else {
+        showMessage(data.message, data.type)
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  }
+
+  const onFileChange = (e) => {
+    const selectedFile = e.target.files[ 0 ];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgUrl(reader.result.split(",")[ 1 ])
+      };
+      reader.readAsDataURL(selectedFile);
+      console.log(imgUrl)
+    }
+  };
+
   return (
 
     <div className="container-xl px-4 mt-4 mb-4">
-      <div className="d-flex flex-column justify-content-center gap-4 flex-wrap">
-        <div className="row">
+      <div className="d-flex flex-column flex-wrap">
+        <div className="d-flex flex-wrap gap-4 justify-content-around">
 
-          <div className="d-flex col-md-5">
-            <div className="card mb-4 mb-xl-0">
-              <div className="card-header">Profile Picture</div>
+          <div className="col-md-5 d-flex justify-content-center">
+            <div className="card">
+              <div className="card-header d-flex justify-content-around mb-2">
+                <div className="d-flex align-items-center">Profile Picture</div>
+                { !editImgProfile &&
+                  <div className="d-flex justify-content-end">
+                    <button className="border-0" onClick={ editImgHandler }>
+                      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                      <lord-icon
+                        src="https://cdn.lordicon.com/puvaffet.json"
+                        trigger="loop"
+                        stroke="85"
+                        colors="primary:#121331,secondary:#2516c7"
+                        styles="width:250px;height:250px">
+                      </lord-icon>
+                    </button>
+                  </div>
+                }
+              </div>
               <div className="card-body text-center">
-                <img className="img-fluid rounded-circle mb-4" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "./logo512.png" } alt="" />
-                <div className="small font-italic text-muted mb-4">
-                  <button className="btn btn-primary" type="button">Upload new image</button>
+
+                <img className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
+                <div className="small font-italic text-muted">
+                  { editImgProfile &&
+                    <form className="d-flex flex-column" onSubmit={ imgUploadHandler }>
+                      <input type="file" name="profileImg" onChange={ onFileChange } />
+                      <button className="mt-3 btn btn-primary" type="submit">Upload new image</button>
+                    </form>
+                  }
+
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="d-flex col-md-7">
+          <div className="col-md-5 d-flex justify-content-center">
             <div className="card">
-              <div className="card-header d-flex justify-content-around mb-3">
+              <div className="card-header d-flex justify-content-around mb-2">
                 <div className="d-flex align-items-center">
                   Account Details
                 </div>
                 { !editAccountMode &&
                   <div className="d-flex justify-content-end">
-                    <button className="border-0" onClick={ editHandler }>
+                    <button className="border-0" onClick={ editAccountHandler }>
                       <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                       <lord-icon
                         src="https://cdn.lordicon.com/puvaffet.json"

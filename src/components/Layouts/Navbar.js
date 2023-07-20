@@ -49,7 +49,7 @@ const MainNavbar = () => {
     </ul>
   );
 
-  const expand = 'lg'
+  const expand = 'md'
 
   return (
     <Navbar key={ expand } bg="dark" expand={ expand } className="navbar-dark">
