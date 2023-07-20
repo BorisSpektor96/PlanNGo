@@ -1,47 +1,44 @@
 import React, { useState } from "react";
-import { FormGroup, Button, Label } from "reactstrap";
-import FormInput from "../FormInput"; // Assuming the FormInput component is in a separate file
+import { Button } from "reactstrap";
+import FormInput from "../FormInput";
 
 const Services = (props) => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredPrice, setEnteredPrice] = useState("");
-  const [enteredDuration, SetEnteredDuration] = useState("");
-  const [enteredType, SetEnteredType] = useState("");
-  let [serviceId, SetserviceId] = useState(1);
+  const [enteredDuration, setEnteredDuration] = useState(30); // Default duration is set to 30 minutes
+  const [enteredType, setEnteredType] = useState("");
+  const [serviceId, setServiceId] = useState(1);
 
   const addServiceHandler = (event) => {
-    event.preventDefault(); // Prevents the page from refreshing
-    SetserviceId(serviceId + 1);
-    props.handleServices(enteredType, enteredName, enteredPrice, enteredDuration, serviceId);
-  };
-
-  const nameChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const priceChangeHandler = (event) => {
-    setEnteredPrice(event.target.value);
-  };
-
-  const typeChangeHandler = (event) => {
-    SetEnteredType(event.target.value);
-  };
-
-  const durationHandler = (event) => {
-    SetEnteredDuration(event.target.value);
+    event.preventDefault();
+    setServiceId(serviceId + 1);
+    props.handleServices(
+      enteredType,
+      enteredName,
+      enteredPrice,
+      enteredDuration,
+      serviceId
+    );
+    // Clear the input fields after adding a service
+    setEnteredName("");
+    setEnteredPrice("");
+    setEnteredDuration(0.5); // Reset duration to the default (30 minutes)
+    setEnteredType("");
   };
 
   if (props.currentStep !== 3) {
     return null;
   }
 
-  const inputs = [
+  const durationOptions = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4,4.5,5];
+
+  const formInputs = [
     {
       id: "name",
       label: "Service Name",
       placeholder: "Enter Service Name",
       value: enteredName,
-      onChange: nameChangeHandler,
+      onChange: (event) => setEnteredName(event.target.value),
       errorMessage: "missing service name",
       pattern: "^[a-zA-Z0-9 ]+$",
       required: true,
@@ -51,7 +48,7 @@ const Services = (props) => {
       label: "Service Type",
       placeholder: "Enter Service Type",
       value: enteredType,
-      onChange: typeChangeHandler,
+      onChange: (event) => setEnteredType(event.target.value),
       required: true,
     },
     {
@@ -59,19 +56,16 @@ const Services = (props) => {
       label: "Price",
       placeholder: "Enter Price",
       value: enteredPrice,
-      onChange: priceChangeHandler,
+      onChange: (event) => setEnteredPrice(event.target.value),
       errorMessage: "must be a number",
       pattern: "^\\d+$",
       required: true,
     },
     {
       id: "duration",
-      label: "Duration (enter min)",
-      placeholder: "Enter Duration",
+      label: "Duration (enter in hours)",
       value: enteredDuration,
-      onChange: durationHandler,
-      errorMessage: "must be a number",
-      pattern: "^\\d+$",
+      onChange: (event) => setEnteredDuration(event.target.value),
       required: true,
     },
   ];
@@ -80,11 +74,29 @@ const Services = (props) => {
     <div>
       <p className="display-6 text-center">Add Your Services</p>
       <form className="form-check p-0">
-        {inputs.map((input) => (
-          <FormInput
-            key={input.id}
-            {...input}
-          />
+        {formInputs.map((input) => (
+          <React.Fragment key={input.id}>
+            {input.id === "duration" ? (
+              <div className="form-group">
+                <label htmlFor="duration">{input.label}</label>
+                <select
+                  id="duration"
+                  className="form-control"
+                  value={enteredDuration}
+                  onChange={input.onChange}
+                  required={input.required}
+                >
+                  {durationOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option} hours
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <FormInput {...input} />
+            )}
+          </React.Fragment>
         ))}
 
         <Button
@@ -99,7 +111,7 @@ const Services = (props) => {
           <thead>
             {props.services.length > 0 && (
               <tr className="table-secondary ">
-                <th className="text-center  " scope="col">
+                <th className="text-center" scope="col">
                   Service Name
                 </th>
                 <th className="text-center" scope="col">

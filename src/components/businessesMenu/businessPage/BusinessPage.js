@@ -91,7 +91,7 @@ const BusinessPage = () => {
 
   return (
     <Fragment>
-      { calendarIsShown && <Calendar onClose={ hideCalendarHandler } /> }
+      { calendarIsShown && <Calendar businessDetails={ businessDetails } onClose={ hideCalendarHandler } /> }
 
       <div className="d-flex justify-content-between pt-3 ps-5 p-1">
         <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>

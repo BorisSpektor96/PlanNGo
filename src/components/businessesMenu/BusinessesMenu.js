@@ -105,18 +105,10 @@ const BusinessesMenu = () => {
         { noResults ? (
           <div>No businesses found based on the filter criteria.</div>
         ) : (
-          filteredBusinesses.map(({ id, business_name, business_description, tel, email, address, reviews, profileImg }) => (
+          filteredBusinesses.map((business) => (
             <BusinessFormat
-              key={ id }
-              id={ id }
-              business_name={ business_name }
-              business_description={ business_description }
-              tel={ tel }
-              email={ email }
-              address={ address }
-              reviews={ reviews }
-              profileImg={ profileImg }
-              profileInfoMenu={ profileInfo }
+              key={ business.id }
+              { ...business }
             />
           ))
         ) }

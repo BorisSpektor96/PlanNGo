@@ -6,12 +6,18 @@ import Modal from '../UI/Modal';
 const AppointmentCalendar = (props) => {
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
+  const [ selectedService, setSelectedService ] = useState({});
   const [ Schedule, setSchedule ] = useState(false);
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setSelectedTime("");
   };
+
+  const setServiceAndShowCalendar = (service) => {
+    setSelectedService(service)
+    console.log(selectedService)
+  }
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
@@ -76,6 +82,35 @@ const AppointmentCalendar = (props) => {
     return <div className='d-flex justify-content-center flex-wrap'>{ availableTimes }</div>;
   };
 
+  const servicesShow = () => {
+
+    const services = props.businessDetails.services
+
+    return (
+      <div className="d-flex">
+        <div className="d-flex flex-wrap gap-2 justify-content-center align-items-center">
+          { services.map((service) => (
+            <div className="card" key={ service.id }>
+              <div className="card-body">
+                <h5 className="card-title">{ service.name }</h5>
+                <p className="card-text">
+                  <strong>Service Type:</strong> { service.serviceType }
+                  <br />
+                  <strong>Price:</strong> ${ service.price }
+                  <br />
+                  <strong>Duration:</strong> { service.duration } hour(s)
+                </p>
+              </div>
+              <div className='p-2 d-flex justify-content-center'>
+                <button onClick={ () => { setServiceAndShowCalendar(service) } } className='btn btn-success'>Take</button>
+              </div>
+            </div>
+          )) }
+        </div>
+      </div>
+    )
+  }
+
 
   return (
     <Modal onClose={ props.onClose }>
@@ -88,6 +123,7 @@ const AppointmentCalendar = (props) => {
           onClick={ props.onClose }
         ></button>
       </div>
+      { servicesShow() }
       <div className='d-flex flex-wrap justify-content-center gap-4'>
         <Calendar className="m-2"
           value={ selectedDate }
@@ -96,17 +132,22 @@ const AppointmentCalendar = (props) => {
           maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
         />
         { selectedDate && (
-          <div className='m-2'>
-            <p className='d-flex justify-content-center fs-5 text-dark badge bg-warning'>Available times for { selectedDate.toLocaleDateString() }:</p>
-            { renderAvailableTimes() }
-            { !selectedTime && <p className='d-flex justify-content-center fs-6 badge bg-danger'>Please select a time.</p> }
-            { selectedTime && (
-              <p className='d-flex justify-content-center fs-6 badge bg-success'>
-                You have selected { selectedDate.toLocaleDateString() } at{ ' ' }
-                { selectedTime }.
-              </p>
-            ) }
-          </div>
+          <>
+            <div>
+
+            </div>
+            <div className='m-2'>
+              <p className='d-flex justify-content-center fs-5 text-dark badge bg-warning'>Available times for { selectedDate.toLocaleDateString() }:</p>
+              { renderAvailableTimes() }
+              { !selectedTime && <p className='d-flex justify-content-center fs-6 badge bg-danger'>Please select a time.</p> }
+              { selectedTime && (
+                <p className='d-flex justify-content-center fs-6 badge bg-success'>
+                  You have selected { selectedDate.toLocaleDateString() } at{ ' ' }
+                  { selectedTime }.
+                </p>
+              ) }
+            </div>
+          </>
         ) }
       </div>
       <div className='d-flex justify-content-center'>
