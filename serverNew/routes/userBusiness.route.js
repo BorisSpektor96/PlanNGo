@@ -145,7 +145,7 @@ userBusinessRouter.post('/deleteService', async (req, res) => {
     user.services.splice(serviceIndex, 1);
     await user.save();
 
-    res.status(200).json({ message: 'Service deleted successfully', type: "Success" });
+    res.status(200).json({ message: 'Service deleted successfully', type: "Info" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete service', error });
   }
@@ -191,7 +191,7 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
     user.products.splice(productIndex, 1);
 
     await user.save();
-    res.status(200).json({ message: 'Product deleted successfully', type: "Succes" });
+    res.status(200).json({ message: 'Product deleted successfully', type: "Info" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete Product', error: error, type: "Error" });
   }
