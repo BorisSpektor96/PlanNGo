@@ -10,7 +10,7 @@ const FavoritesList = () => {
 
   const { showMessage } = useContext(PopupMessageContext)
 
-  const { profileInfo } = useContext(ProfileInfoContext);
+  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
 
   const [ favorites, setFavorites ] = useState([]);
 
@@ -54,6 +54,7 @@ const FavoritesList = () => {
         const data = await response.json()
         showMessage(data.message, data.type)
         fetchFavorites()
+        await dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
       }
     } catch (error) {
       console.log('Error:', error);

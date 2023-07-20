@@ -80,8 +80,8 @@ userRouter.post('/addToFavorite', async (req, res) => {
       businessType: business.business_type
     }
     user.favorites.push(favBusiness)
-    user.save()
-    res.json({ message: 'Business Added succesfully favorites.', type: "Success" })
+    await user.save()
+    res.json({ user: user.favorites, message: 'Business Added succesfully favorites.', type: "Success" })
   } catch (err) {
     res.json({ message: 'Error Occurred.', type: "Error" })
     res.send("Error " + err)
@@ -92,13 +92,13 @@ userRouter.post('/deleteFromFavoriteById', async (req, res) => {
   try {
     const { userEmail, favoriteId } = req.body;
     const user = await userModel.findOne({ email: userEmail });
-
+    console.log(favoriteId)
     const favoriteIndex = user.favorites.findIndex(favorite => favorite.id === favoriteId);
 
     if (favoriteIndex !== -1) {
       user.favorites.splice(favoriteIndex, 1);
-      res.json({ message: "Favorite Business is Successfully Deleted", type: "Success" });
       await user.save();
+      res.json({ user: user, message: "Successfully Deleted from Favorites", type: "Info" });
     } else {
       res.json({ message: "Failed To Delete From Favorites Business ", type: "Error" });
     }

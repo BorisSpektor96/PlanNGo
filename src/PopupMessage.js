@@ -36,7 +36,14 @@ const PopupProvider = ({ children }) => {
     <PopupMessageContext.Provider value={ { showMessage } }>
       { children }
       { isVisible &&
-        <div style={ { position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 999 } }>
+        <div className='border rounded border-dark'
+          style={ {
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 999
+          } }>
           <Alert
             key={ style.title }
             startDecorator={ React.cloneElement(style.icon, {

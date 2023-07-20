@@ -20,17 +20,21 @@ const Review = (props) => {
     <Fragment>
       <p>The average is  { averageRating } stars.</p>
       { props.reviews.map((review, index) => (
-        <div className="container" key={ index }>
+        <div className="container rounded mb-1" key={ index }>
+
           <div className="Rname">{ review.reviewer }</div>
+
           <div className="Rating_date">
             <div className="rating">
               <StarRating initialRating={ review.rating } disableOnChange={ true } />
             </div>
             <div className="date">{ review.date }</div>
           </div>
+
           <div className="Rcontent">
             <p>{ review.content }</p>
           </div>
+
         </div>
       )) }
     </Fragment>

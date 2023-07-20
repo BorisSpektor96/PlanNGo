@@ -23,11 +23,6 @@ const BusinessPage = () => {
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
   const [ calendarIsShown, setCalendarIsShown ] = useState(false);
 
-  const addToFavoritesHandler = () => {
-    setIsFavorite(!isFavorite);
-    addBusinessToFavorite()
-  };
-
   const addBusinessToFavorite = async () => {
     try {
       const response = await fetch('http://localhost:3001/users/addToFavorite', {
@@ -40,10 +35,34 @@ const BusinessPage = () => {
       });
       const data = await response.json()
       if (response.ok) {
-
+        setIsFavorite(true)
         showMessage(data.message, data.type)
+        await dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
       } else {
         showMessage(data.message, data.type)
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const deleteBusinessFromFavorites = async () => {
+    console.log(businessDetails)
+    try {
+      const response = await fetch('http://localhost:3001/users/deleteFromFavoriteById', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail: profileInfo.email,
+          favoriteId: businessDetails.id
+        })
+      });
+      const data = await response.json()
+
+      if (response.ok) {
+        setIsFavorite(false)
+        showMessage(data.message, data.type)
+        dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
       }
     } catch (error) {
       console.log('Error:', error);
@@ -68,6 +87,17 @@ const BusinessPage = () => {
     setAddReviewIsShown(false);
   };
 
+  useEffect(() => {
+    profileInfo.favorites.forEach(favorite => {
+      console.log(favorite)
+      if (favorite.email === businessDetails.email) {
+        setIsFavorite(true)
+      } else {
+        setIsFavorite(false)
+      }
+    });
+  }, [])
+
   const pathToBackMenu = "/BusinessesMenu";
 
   return (
@@ -87,6 +117,7 @@ const BusinessPage = () => {
 
       <div className="d-flex flex-wrap justify-content-around p-2 mt-1 mb-5">
 
+
         <div className="card border-light">
           <div className="d-flex justify-content-center">
             <img src={ businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png" } className={ styles.img } alt="..." />
@@ -95,7 +126,7 @@ const BusinessPage = () => {
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
 
-          <div className="card col-lg-4 col-lg-8 border-info">
+          <div className="card col-lg-5 border-info">
             <div className="card-body">
               <h5 className="card-title">{ businessDetails.business_name }</h5>
               <p className="card-text">{ businessDetails.business_description }</p>
@@ -148,31 +179,48 @@ const BusinessPage = () => {
               ></lord-icon>
               <p className="m-0 ms-2">Add Review</p>
             </button>
-
-            <button
-              className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
-                }` }
-              onClick={ addToFavoritesHandler }
-            >
-              <lord-icon
-                src="https://cdn.lordicon.com/ytuosppc.json"
-                trigger="loop"
-                delay="1200"
-                colors={ isFavorite ? "primary:#c71f16,secondary:#c71f16" : "primary:#4030e8,secondary:#c71f16" }
-                stroke="80"
-                styles="width:350px;height:350px;"
+            { isFavorite ?
+              (<button
+                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }` }
+                onClick={ deleteBusinessFromFavorites }
               >
-              </lord-icon>
-              <p className="m-0 ">{ isFavorite ? "" : "Add to favorites" }</p>
-            </button>
+                <lord-icon
+                  src="https://cdn.lordicon.com/ytuosppc.json"
+                  trigger="loop"
+                  delay="1200"
+                  colors="primary:#c71f16,secondary:#c71f16"
+                  stroke="80"
+                  styles="width:350px;height:350px;"
+                >
+                </lord-icon>
+              </button>)
+              :
+              (<button
+                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }` }
+                onClick={ addBusinessToFavorite }
+              >
+                <lord-icon
+                  src="https://cdn.lordicon.com/ytuosppc.json"
+                  trigger="loop"
+                  delay="1200"
+                  colors="primary:#4030e8,secondary:#c71f16"
+                  stroke="80"
+                  styles="width:350px;height:350px;"
+                >
+                </lord-icon>
+                <p className="m-0 ">Add to favorites</p>
+              </button>)
+            }
           </div>
 
-          <div>
-            <div className="mt-5">
-              <h3>Reviews</h3>
-            </div>
-            <Review reviews={ businessDetails.reviews } />
+        </div>
+        <div className="d-flex flex-column col-10 mt-4">
+          <div  >
+            <h3>Reviews</h3>
           </div>
+          <Review reviews={ businessDetails.reviews } />
         </div>
       </div>
       { addReviewIsShown &&

@@ -10,6 +10,8 @@ const profileInfoReducer = (state, action) => {
       return { ...state, products: action.payload };
     case 'UPDATE_SERVICES':
       return { ...state, services: action.payload };
+    case 'UPDATE_FAVORITES':
+      return { ...state, favorites: action.payload };
     case 'DELETE_SERVICE':
       if (state.services.length > 0) {
         return { ...state, services: action.payload };
@@ -45,6 +47,7 @@ const ProfileInfoProvider = ({ children }) => {
     services: [],
     products: [],
     reviews: [],
+    favorites: [],
     profileImg: "http://bootdey.com/img/Content/avatar/avatar1.png"
   }
 
@@ -55,7 +58,7 @@ const ProfileInfoProvider = ({ children }) => {
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('myData'));
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: storedData });
+    // dispatch({ type: 'UPDATE_PROFILE_INFO', payload: storedData });
   }, []);
 
   return (

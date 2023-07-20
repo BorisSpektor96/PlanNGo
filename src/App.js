@@ -13,17 +13,17 @@ import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
-const routes = [
-  { path: '/', componentName: Welcome },
-  { path: '/Welcome', componentName: Welcome },
-  { path: '/Review', componentName: Review },
-  { path: '/BusinessesMenu', componentName: BusinessesMenu },
-  { path: '/BusinessPage', componentName: BusinessPage },
-  { path: '/Profile', componentName: Profile },
-  { path: '/FavoritesList', componentName: FavoritesList },
-]
-
 function App() {
+
+  const routes = [
+    { path: '/', componentName: Welcome },
+    { path: '/Welcome', componentName: Welcome },
+    { path: '/Review', componentName: Review },
+    { path: '/BusinessesMenu', componentName: BusinessesMenu },
+    { path: '/BusinessPage', componentName: BusinessPage },
+    { path: '/Profile', componentName: Profile },
+    { path: '/FavoritesList', componentName: FavoritesList },
+  ]
 
   const routeOfComponents = routes
     .map(({ path, componentName }, key) => (
