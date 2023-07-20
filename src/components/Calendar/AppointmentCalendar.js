@@ -6,7 +6,8 @@ import Modal from '../UI/Modal';
 const AppointmentCalendar = (props) => {
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
-  const [ selectedService, setSelectedService ] = useState({});
+  const [ showCalendar, setShowCalendar ] = useState(false)
+  const [ selectedService, setSelectedService ] = useState(null);
   const [ Schedule, setSchedule ] = useState(false);
 
   const handleDateSelect = (date) => {
@@ -16,25 +17,34 @@ const AppointmentCalendar = (props) => {
 
   const setServiceAndShowCalendar = (service) => {
     setSelectedService(service)
-    console.log(selectedService)
+    setShowCalendar(!showCalendar)
   }
+
+  useEffect(() => {
+    console.log("selectedService", selectedService)
+  }, [ selectedService ])
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
-    setSchedule(true)
   };
 
   const scheduleHandler = () => {
-    let newAppointment = new Date(selectedDate)
-    newAppointment.setHours(parseInt(selectedTime.slice(0, 2)));
-    newAppointment.setMinutes(parseInt(selectedTime.slice(3, 5)));
+    let newAppointment = {
+      date: new Date(selectedDate),
+      service: selectedService
+    }
+    newAppointment.date.setHours(parseInt(selectedTime.slice(0, 2)));
+    newAppointment.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
     console.log(newAppointment);
   }
 
   useEffect(() => {
-    if (selectedTime) {
+    if (selectedDate !== "" && selectedService !== null && selectedTime !== "") {
+      setSchedule(true)
+    } else {
+      setSchedule(false)
     }
-  }, [ selectedTime ])
+  }, [ selectedTime, selectedService, selectedDate ])
 
   const renderAvailableTimes = () => {
 
@@ -74,7 +84,6 @@ const AppointmentCalendar = (props) => {
       )
     })
 
-    // If no times are available, display a message indicating that there are no available times.
     if (availableTimes.length === 0) {
       return <p>No available times on this day.</p>;
     }
@@ -87,7 +96,7 @@ const AppointmentCalendar = (props) => {
     const services = props.businessDetails.services
 
     return (
-      <div className="d-flex">
+      <div className="d-flex justify-content-center">
         <div className="d-flex flex-wrap gap-2 justify-content-center align-items-center">
           { services.map((service) => (
             <div className="card" key={ service.id }>
@@ -114,7 +123,7 @@ const AppointmentCalendar = (props) => {
 
   return (
     <Modal onClose={ props.onClose }>
-      <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
+      <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
           class="btn-close"
@@ -123,20 +132,31 @@ const AppointmentCalendar = (props) => {
           onClick={ props.onClose }
         ></button>
       </div>
-      { servicesShow() }
-      <div className='d-flex flex-wrap justify-content-center gap-4'>
-        <Calendar className="m-2"
-          value={ selectedDate }
-          onChange={ handleDateSelect }
-          minDate={ new Date() }
-          maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
-        />
-        { selectedDate && (
+      {
+        selectedService === null ? servicesShow()
+          :
+          <div className='d-flex flex-column flex-wrap align-items-center gap-1'>
+            <button className='btn btn-danger mb-3'
+              type='button'
+              onClick={ () => {
+                setSelectedService(null)
+                setSchedule(false)
+              } }
+            >
+              Choose other Service
+            </button>
+            <Calendar className="mb-3"
+              value={ selectedDate }
+              onChange={ handleDateSelect }
+              minDate={ new Date() }
+              maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
+            />
+          </div>
+      }
+      <div className='d-flex flex-wrap justify-content-center gap-1'>
+        { selectedDate && selectedService !== null && (
           <>
-            <div>
-
-            </div>
-            <div className='m-2'>
+            <div className=''>
               <p className='d-flex justify-content-center fs-5 text-dark badge bg-warning'>Available times for { selectedDate.toLocaleDateString() }:</p>
               { renderAvailableTimes() }
               { !selectedTime && <p className='d-flex justify-content-center fs-6 badge bg-danger'>Please select a time.</p> }
@@ -147,11 +167,16 @@ const AppointmentCalendar = (props) => {
                 </p>
               ) }
             </div>
+            <button
+              className={ !Schedule ?
+                "btn btn-primary disabled" :
+                'btn btn-primary'
+              }
+              onClick={ () => scheduleHandler() }>
+              Schedule
+            </button>
           </>
         ) }
-      </div>
-      <div className='d-flex justify-content-center'>
-        <button className={ !Schedule ? "btn btn-primary disabled" : 'btn btn-primary' } onClick={ () => scheduleHandler() }>Schedule</button>
       </div>
     </Modal>
 

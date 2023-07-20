@@ -106,8 +106,7 @@ const BusinessPage = () => {
 
       <div className="d-flex flex-wrap justify-content-around p-2 mt-1 mb-5">
 
-
-        <div className="card border-light">
+        <div className="card mb-4 ">
           <div className="d-flex justify-content-center">
             <img src={ businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png" } className={ styles.img } alt="..." />
           </div>
