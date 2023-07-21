@@ -10,6 +10,8 @@ const AppointmentCalendar = (props) => {
   const [ selectedService, setSelectedService ] = useState(null);
   const [ Schedule, setSchedule ] = useState(false);
 
+  const [ timeList, setTimeList ] = useState([]);
+
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setSelectedTime("");
@@ -19,10 +21,6 @@ const AppointmentCalendar = (props) => {
     setSelectedService(service)
     setShowCalendar(!showCalendar)
   }
-
-  useEffect(() => {
-    console.log("selectedService", selectedService)
-  }, [ selectedService ])
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
@@ -46,28 +44,71 @@ const AppointmentCalendar = (props) => {
     }
   }, [ selectedTime, selectedService, selectedDate ])
 
+  const timeToString = (timeString) => {
+    const [ hours, minutes ] = timeString.split(":").map(Number)
+    const time = new Date()
+    time.setHours(hours, minutes, 0);
+    return time
+  }
+
+  useEffect(() => {
+    if (selectedService !== null) {
+      const start = timeToString(props.workingHours.start)
+      const end = timeToString(props.workingHours.end)
+      // timeList = timeList.filter((time) => (
+      //   time.time > props.workingHours.start
+      //   &&
+      //   time.time < props.workingHours.end
+      // ))
+      // let time = {}
+      let minutes = (selectedService.duration * 60)
+      let hours = 60 % minutes
+      const serviceDuration = (((timeToString(`${hours}:${minutes}`)).getHours()) * 60) + ((timeToString(`${hours}:${minutes}`)).getMinutes())
+
+      // console.log("serviceDuration", serviceDuration)
+      let filteredList = []
+
+      for (let i = start; i.getTime() < end.getTime(); i = new Date(i.getTime() + 60000 * serviceDuration)) {
+        const time = { time: i, isTaken: false }
+        filteredList.push(time)
+      }
+      console.log(filteredList)
+
+      filteredList = filteredList.filter((time) => (
+        time.time > new Date(10, 0, 0) && time.time < new Date(14, 0, 0)
+        // time.time > props.workingHours.start &&
+        // time.time < props.workingHours.end
+      ))
+      console.log(filteredList)
+      setTimeList(filteredList)
+    }
+  }, [ selectedService ])
+
+
+  useEffect(() => {
+    // setTimeList([
+    //   { time: "06:00", isTaken: false },
+    //   { time: "09:00", isTaken: false },
+    //   { time: "09:30", isTaken: true },
+    //   { time: "10:00", isTaken: false },
+    //   { time: "10:30", isTaken: false },
+    //   { time: "11:00", isTaken: false },
+    //   { time: "11:30", isTaken: true },
+    //   { time: "12:00", isTaken: false },
+    //   { time: "12:30", isTaken: false },
+    //   { time: "13:00", isTaken: true },
+    //   { time: "13:30", isTaken: false },
+    //   { time: "14:00", isTaken: false },
+    //   { time: "14:30", isTaken: false },
+    //   { time: "15:30", isTaken: true },
+    //   { time: "16:00", isTaken: false },
+    //   { time: "16:30", isTaken: false },
+    //   { time: "17:00", isTaken: false },
+    //   { time: "17:30", isTaken: false },
+    //   { time: "23:30", isTaken: false } ])
+  }, [ selectedService ])
+
   const renderAvailableTimes = () => {
-
-    const timeList = [
-      { time: "09:00", isTaken: false },
-      { time: "09:30", isTaken: true },
-      { time: "10:00", isTaken: false },
-      { time: "10:30", isTaken: false },
-      { time: "11:00", isTaken: false },
-      { time: "11:30", isTaken: true },
-      { time: "12:00", isTaken: false },
-      { time: "12:30", isTaken: false },
-      { time: "13:00", isTaken: true },
-      { time: "13:30", isTaken: false },
-      { time: "14:00", isTaken: false },
-      { time: "14:30", isTaken: false },
-      { time: "15:30", isTaken: true },
-      { time: "16:00", isTaken: false },
-      { time: "16:30", isTaken: false },
-      { time: "17:00", isTaken: false },
-      { time: "17:30", isTaken: false },
-
-    ]
 
     let availableTimes = timeList.map(({ time, isTaken }) => {
       if (!isTaken) {

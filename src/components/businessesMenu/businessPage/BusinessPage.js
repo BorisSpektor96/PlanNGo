@@ -22,6 +22,19 @@ const BusinessPage = () => {
 
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
   const [ calendarIsShown, setCalendarIsShown ] = useState(false);
+  const [ workingHours, setWorkingHours ] = useState('')
+
+  useEffect(() => {
+    if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
+      setWorkingHours({
+        start: businessDetails.appointmentsDef[ 0 ].businessHours.start,
+        end: businessDetails.appointmentsDef[ 0 ].businessHours.end
+      }
+      )
+    } else {
+      setWorkingHours({ start: "--:--", end: "--:--" })
+    }
+  }, [])
 
   const addBusinessToFavorite = async () => {
     try {
@@ -91,7 +104,13 @@ const BusinessPage = () => {
 
   return (
     <Fragment>
-      { calendarIsShown && <Calendar businessDetails={ businessDetails } onClose={ hideCalendarHandler } /> }
+      { calendarIsShown &&
+        <Calendar
+          workingHours={ workingHours }
+          businessDetails={ businessDetails }
+          onClose={ hideCalendarHandler }
+        />
+      }
 
       <div className="d-flex justify-content-between pt-3 ps-5 p-1">
         <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
@@ -114,10 +133,14 @@ const BusinessPage = () => {
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
 
-          <div className="card col-lg-5 border-info">
+          <div className="card border-secondary col-lg-5">
             <div className="card-body">
               <h5 className="card-title">{ businessDetails.business_name }</h5>
               <p className="card-text">{ businessDetails.business_description }</p>
+            </div>
+            <div className="d-flex flex-wrap justify-content-around bg-dark text-light align-items-cneter">
+              <h6 className="p-0 m-0">Working Hours: </h6>
+              <p className="p-0 m-0">`{ workingHours.start } - { workingHours.end }`</p>
             </div>
           </div>
 

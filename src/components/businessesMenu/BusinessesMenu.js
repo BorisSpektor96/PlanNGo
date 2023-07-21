@@ -37,13 +37,13 @@ const BusinessesMenu = () => {
           tel: data[ key ].phoneNumber,
           email: data[ key ].email,
           address: data[ key ].address,
-          service: data[ key ].business_type,
           isBusiness: data[ key ].isBusiness,
           business_description: data[ key ].business_description,
           services: data[ key ].services,
           products: data[ key ].products,
           profileImg: data[ key ].profileImg,
-          reviews: data[ key ].reviews
+          reviews: data[ key ].reviews,
+          appointmentsDef: data[ key ].appointmentsDef
         });
       }
       setListOfBusinesses(loadedBusiness);
