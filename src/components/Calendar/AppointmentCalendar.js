@@ -84,32 +84,36 @@ const AppointmentCalendar = (props) => {
     }
   }, [ selectedService ])
 
+  // useEffect(() => {
+  //   setTimeList([
+  //     { time: "06:00", isTaken: false },
+  //     { time: "09:00", isTaken: false },
+  //     { time: "09:30", isTaken: true },
+  //     { time: "10:00", isTaken: false },
+  //     { time: "10:30", isTaken: false },
+  //     { time: "11:00", isTaken: false },
+  //     { time: "11:30", isTaken: true },
+  //     { time: "12:00", isTaken: false },
+  //     { time: "12:30", isTaken: false },
+  //     { time: "13:00", isTaken: true },
+  //     { time: "13:30", isTaken: false },
+  //     { time: "14:00", isTaken: false },
+  //     { time: "14:30", isTaken: false },
+  //     { time: "15:30", isTaken: true },
+  //     { time: "16:00", isTaken: false },
+  //     { time: "16:30", isTaken: false },
+  //     { time: "17:00", isTaken: false },
+  //     { time: "17:30", isTaken: false },
+  //     { time: "23:30", isTaken: false } ])
+  // }, [])
 
   useEffect(() => {
-    // setTimeList([
-    //   { time: "06:00", isTaken: false },
-    //   { time: "09:00", isTaken: false },
-    //   { time: "09:30", isTaken: true },
-    //   { time: "10:00", isTaken: false },
-    //   { time: "10:30", isTaken: false },
-    //   { time: "11:00", isTaken: false },
-    //   { time: "11:30", isTaken: true },
-    //   { time: "12:00", isTaken: false },
-    //   { time: "12:30", isTaken: false },
-    //   { time: "13:00", isTaken: true },
-    //   { time: "13:30", isTaken: false },
-    //   { time: "14:00", isTaken: false },
-    //   { time: "14:30", isTaken: false },
-    //   { time: "15:30", isTaken: true },
-    //   { time: "16:00", isTaken: false },
-    //   { time: "16:30", isTaken: false },
-    //   { time: "17:00", isTaken: false },
-    //   { time: "17:30", isTaken: false },
-    //   { time: "23:30", isTaken: false } ])
-  }, [ selectedService ])
+    console.log(selectedService)
+    console.log(timeList); // This will log the updated timeList state after it's set.
+  }, [ timeList, selectedService ]);
+
 
   const renderAvailableTimes = () => {
-
     let availableTimes = timeList.map(({ time, isTaken }) => {
       if (!isTaken) {
         return (
