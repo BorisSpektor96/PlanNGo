@@ -16,12 +16,12 @@ const ProductsProfile = () => {
   const [ products, setProducts ] = useState([]);
 
   const [ product, setProduct ] = useState({
-    id: 0,
+    productId: 0,
     name: "",
     quantity: 0,
     price: 0,
     description: "",
-    image: "",
+    photo: "",
   })
 
   const editProductsModeHandler = () => {
@@ -35,14 +35,14 @@ const ProductsProfile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email })
       });
-      console.log("profileInfo.email", profileInfo.email)
+
       if (response.ok) {
         const productsData = await response.json();
         console.log(productsData)
         if (productsData.length > 0) {
           for (let p of productsData) {
-            if (p.id >= productId) {
-              setProductId(p.id + 1)
+            if (p.productId > productId) {
+              setProductId(++p.productId)
             }
           }
         }
@@ -68,20 +68,34 @@ const ProductsProfile = () => {
 
   const inputProductHandlerChange = (e) => {
     const { name, value } = e.target
-    setProduct(prevData => ({
-      ...prevData,
-      [ name ]: value
-    }))
+    if (e.target.name === "photo") {
+      const selectedFile = e.target.files[ 0 ];
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProduct(prevData => ({
+            ...prevData,
+            photo: reader.result.split(",")[ 1 ]
+          }))
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    } else {
+      setProduct(prevData => ({
+        ...prevData,
+        [ name ]: value
+      }))
+    }
   };
 
-  const submitProductForm = (e) => {
+  const submitProductForm = async (e) => {
     e.preventDefault()
     setProductId(productId + 1)
     const newProduct = {
       ...product,
-      id: productId,
+      productId: productId,
     }
-    addProductHandler(newProduct)
+    await addProductHandler(newProduct)
   }
 
   const addProductHandler = async (product) => {
@@ -165,7 +179,7 @@ const ProductsProfile = () => {
     },
     {
       id: "image",
-      name: "image",
+      name: "photo",
       type: "file",
       label: "Add Image",
       placeholder: "Enter Product Description: ",
@@ -219,13 +233,14 @@ const ProductsProfile = () => {
         profileInfo.isBusiness
         &&
         <div className="row p-0 m-3">
-          <div className="card border border-primary">
-            <div className="card-header d-flex justify-content-around p-1">
-              <div className="d-flex align-items-center">
+          <div className="card d-flex border-primary">
+            <div className="p-2 d-flex justify-content-around">
+              <h5 className="p-0 m-0">
                 Products Details
-              </div>
+              </h5>
               { !editProductsMode
-                && <div>
+                ?
+                <div className="d-flex justify-content-center">
                   <button className="border-0" onClick={ editProductsModeHandler }>
                     <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                     <lord-icon
@@ -237,6 +252,13 @@ const ProductsProfile = () => {
                     </lord-icon>
                   </button>
                 </div>
+                :
+                <button className="text-center col-4 btn btn-primary"
+                  type="button"
+                  onClick={ editProductsModeHandler }
+                >
+                  Save changes
+                </button>
               }
             </div>
           </div>
@@ -247,6 +269,9 @@ const ProductsProfile = () => {
                 <tr className="table-secondary">
                   <th className="text-center" scope="col">
                     #
+                  </th>
+                  <th className="text-center" scope="col">
+                    Image
                   </th>
                   <th className="text-center" scope="col">
                     Product Name
@@ -273,9 +298,16 @@ const ProductsProfile = () => {
                   products.map((product) => (
                     <tr tr key={ product.productId } className="table-secondary" >
 
-                      <td className="text-center">{ product.id }</td>
+                      <td className="text-center">{ product.productId }</td>
+                      <td className="text-center">
+                        <img
+                          className="mb-2"
+                          src={ product.photo ? `data:image/jpeg;base64,${product.photo}` : "" }
+                          alt=""
+                        />
+                      </td>
                       <td className="text-center">{ product.name }</td>
-                      <td className="text-center">{ product.price }</td>
+                      <td className="text-center">{ product.price }$</td>
                       <td className="text-center">{ product.quantity }</td>
                       <td className="text-center">{ product.description }</td>
 
@@ -283,7 +315,7 @@ const ProductsProfile = () => {
                         <td className="text-center">
                           <button className="btn p-0 m-0"
                             onClick={ () => {
-                              deleteProductHandler(product.id);
+                              deleteProductHandler(product.productId);
                             } }
                           >
                             <lord-icon
@@ -306,18 +338,6 @@ const ProductsProfile = () => {
                 ) }
             </tbody>
           </table>
-          {
-            editProductsMode
-            &&
-            <div className="d-flex justify-content-center ">
-              <button className="mb-3 text-center col-4 btn btn-primary"
-                type="button"
-                onClick={ editProductsModeHandler }
-              >
-                Save changes
-              </button>
-            </div>
-          }
         </div >
       }
     </>

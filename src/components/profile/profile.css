@@ -13,3 +13,8 @@ tr {
 .curserBtn {
   cursor: pointer;
 }
+td img {
+  width: 100%;
+  max-width: 150px;
+  min-width: 50px;
+}

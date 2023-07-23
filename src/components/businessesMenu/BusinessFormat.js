@@ -25,8 +25,8 @@ const BusinessFormat = (props) => {
 
           <div className="card col-md-3 col-10 border-light">
             <div className="card-body">
-              <h5 className="card-title">{ props.business_name }</h5>
-              <p className="card-text">{ props.business_description }</p>
+              <h5 className="card-title text-center">{ props.business_name }</h5>
+              <p className="card-text text-center">{ props.business_description }</p>
               <p className="card-text"><small className="text-muted">{ props.lastTouch }</small></p>
             </div>
           </div>
@@ -34,14 +34,14 @@ const BusinessFormat = (props) => {
           <div className="card col-md-3 col-10 border-light" >
             <div className="card text-dark">
               <div className="border-dark card-header">
-                <h5>
+                <h5 className="text-center">
                   Contact:
                 </h5>
               </div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item "><p>{ props.tel }</p></li>
-                <li className="list-group-item "><p>{ props.address }</p></li>
-                <li className="list-group-item "><p>{ props.email }</p></li>
+                <li className="list-group-item text-center"><p>{ props.tel }</p></li>
+                <li className="list-group-item text-center"><p>{ props.address }</p></li>
+                <li className="list-group-item text-center"><p>{ props.email }</p></li>
               </ul>
               <Link className="btn btn-outline-primary"
                 to={ pathToBusinessPage }

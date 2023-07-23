@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Modal from '../UI/Modal';
+import { PopupMessageContext } from "../../PopupMessage";
 
 const AppointmentCalendar = (props) => {
+
+  const { showMessage } = useContext(PopupMessageContext)
+
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
   const [ showCalendar, setShowCalendar ] = useState(false)
@@ -26,15 +30,44 @@ const AppointmentCalendar = (props) => {
     setSelectedTime(time);
   };
 
-  const scheduleHandler = () => {
+  const scheduleHandler = async () => {
     let newAppointment = {
       date: new Date(selectedDate),
       service: selectedService
-    }
+    };
     newAppointment.date.setHours(parseInt(selectedTime.slice(0, 2)));
     newAppointment.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
-    console.log(newAppointment);
-  }
+
+    try {
+      const response = await fetch("http://localhost:3001/business/addAppointment", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: props.businessDetails.email,
+          appointment: newAppointment
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        showMessage(data.message, data.type)
+        console.log('Appointment added successfully');
+      } else {
+        showMessage(data.message, data.type)
+        console.log('Failed to add appointment:', data.message);
+      }
+    } catch (error) {
+      console.log('Error:', error.message);
+    }
+    setSelectedDate("")
+    setSelectedTime("")
+    setShowCalendar(false)
+    setSelectedService(null)
+    setSchedule(false)
+    props.onClose()
+  };
 
   useEffect(() => {
     if (selectedDate !== "" && selectedService !== null && selectedTime !== "") {

@@ -313,7 +313,7 @@ const AccountProfile = () => {
                   </div>
                 }
               </div>
-              <div className="card-body text-center">
+              <div className="card-body text-center d-flex flex-column justify-content-center">
 
                 <img className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
                 <div className="small font-italic text-muted">
@@ -355,7 +355,11 @@ const AccountProfile = () => {
           </div>
 
         </div>
-        <FavoritesList />
+        {
+          !profileInfo.isBusiness
+          &&
+          <FavoritesList />
+        }
       </div>
     </div >
   )

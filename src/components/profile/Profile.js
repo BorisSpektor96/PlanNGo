@@ -22,16 +22,16 @@ const Profile = () => {
       </div >
 
       <div className="mt-4 mb-4">
-        <ProductsProfile
+        <ServicesProfile
         />
       </div>
 
       <div className="mt-4 mb-4">
-        <ServicesProfile
+        <ProductsProfile
         />
       </div>
     </ >
   )
-
 }
+
 export default Profile

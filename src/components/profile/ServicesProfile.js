@@ -221,13 +221,14 @@ const ServicesProfile = () => {
       { profileInfo.isBusiness
         &&
         <div className="row p-0 m-3">
-          <div className=" card border-primary">
-            <div className="card-header d-flex justify-content-around p-1">
-              <div className="d-flex align-items-center">
+          <div className="card d-flex border-primary">
+            <div className="p-2 d-flex justify-content-around">
+              <h5 className="p-0 m-0">
                 Services Details
-              </div>
+              </h5>
               { !editServicesMode
-                && <div>
+                ?
+                <div>
                   <button className="border-0" onClick={ editServicesModeHandler } >
                     <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
                     <lord-icon
@@ -239,6 +240,13 @@ const ServicesProfile = () => {
                     </lord-icon>
                   </button>
                 </div>
+                :
+                <button className="text-center col-4 btn btn-primary"
+                  type="button"
+                  onClick={ editServicesModeHandler }
+                >
+                  Save changes
+                </button>
               }
             </div>
           </div>
@@ -258,7 +266,7 @@ const ServicesProfile = () => {
                   </th>
                   {
                     editServicesMode &&
-                    <th scope="col">
+                    <th className="text-center" scope="col">
                       Remove
                     </th>
                   }
@@ -273,8 +281,8 @@ const ServicesProfile = () => {
                     <tr key={ service._id } className="table-secondary">
 
                       <td className="text-center">{ service.name }</td>
-                      <td className="text-center">{ service.price }</td>
-                      <td className="text-center">{ service.duration }</td>
+                      <td className="text-center">{ service.price }$</td>
+                      <td className="text-center">{ service.duration } (hour/s)</td>
 
                       { editServicesMode &&
                         <td className="text-center">
@@ -302,18 +310,6 @@ const ServicesProfile = () => {
                 ) }
             </tbody>
           </table>
-          {
-            editServicesMode
-            &&
-            <div className="d-flex justify-content-center ">
-              <button className="mb-3 text-center col-4 btn btn-primary"
-                type="button"
-                onClick={ editServicesModeHandler }
-              >
-                Save changes
-              </button>
-            </div>
-          }
         </div>
       }
     </>

@@ -228,12 +228,11 @@ class MainBusinessForm extends Component {
     this.state.profileImg = "";
   };
 
-  handleProducts(productId, price, description, name, quantity, photoFile) {
+  handleProducts(productId, price, description, name, quantity, lables, photoFile) {
     const reader = new FileReader();
 
     reader.onload = () => {
       const photoData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
-      // Rest of your code ...
 
       this.setState((state) => {
         const products = [
@@ -244,6 +243,7 @@ class MainBusinessForm extends Component {
             description,
             name,
             quantity,
+            lables,
             photo: photoData, // Set the base64 string instead of the Blob
           },
         ];
@@ -254,7 +254,7 @@ class MainBusinessForm extends Component {
     };
 
     if (photoFile) {
-      reader.readAsDataURL(photoFile); // Use readAsDataURL to read the file as base64 data
+      reader.readAsDataURL(photoFile); // Use readAsDataURL to read the file as base64 data
     }
   }
 
