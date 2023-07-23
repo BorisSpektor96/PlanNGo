@@ -55,76 +55,45 @@ const AppointmentCalendar = (props) => {
     if (selectedService !== null) {
       const start = timeToString(props.workingHours.start)
       const end = timeToString(props.workingHours.end)
-      // timeList = timeList.filter((time) => (
-      //   time.time > props.workingHours.start
-      //   &&
-      //   time.time < props.workingHours.end
-      // ))
-      // let time = {}
+
       let minutes = (selectedService.duration * 60)
-      let hours = 60 % minutes
+      let hours = Math.floor(selectedService.duration)
+      minutes = minutes - (hours * 60)
+
       const serviceDuration = (((timeToString(`${hours}:${minutes}`)).getHours()) * 60) + ((timeToString(`${hours}:${minutes}`)).getMinutes())
 
-      // console.log("serviceDuration", serviceDuration)
-      let filteredList = []
+      const filteredList = []
 
       for (let i = start; i.getTime() < end.getTime(); i = new Date(i.getTime() + 60000 * serviceDuration)) {
         const time = { time: i, isTaken: false }
         filteredList.push(time)
       }
-      console.log(filteredList)
 
-      filteredList = filteredList.filter((time) => (
-        time.time > new Date(10, 0, 0) && time.time < new Date(14, 0, 0)
-        // time.time > props.workingHours.start &&
-        // time.time < props.workingHours.end
-      ))
-      console.log(filteredList)
+      setTimeList(filteredList.filter((time) => (
+        time.time > new Date(10, 0, 0) && time.time < new Date(21, 0, 0)
+      )))
+
       setTimeList(filteredList)
+    } else {
+      setSelectedDate("")
     }
   }, [ selectedService ])
 
-  // useEffect(() => {
-  //   setTimeList([
-  //     { time: "06:00", isTaken: false },
-  //     { time: "09:00", isTaken: false },
-  //     { time: "09:30", isTaken: true },
-  //     { time: "10:00", isTaken: false },
-  //     { time: "10:30", isTaken: false },
-  //     { time: "11:00", isTaken: false },
-  //     { time: "11:30", isTaken: true },
-  //     { time: "12:00", isTaken: false },
-  //     { time: "12:30", isTaken: false },
-  //     { time: "13:00", isTaken: true },
-  //     { time: "13:30", isTaken: false },
-  //     { time: "14:00", isTaken: false },
-  //     { time: "14:30", isTaken: false },
-  //     { time: "15:30", isTaken: true },
-  //     { time: "16:00", isTaken: false },
-  //     { time: "16:30", isTaken: false },
-  //     { time: "17:00", isTaken: false },
-  //     { time: "17:30", isTaken: false },
-  //     { time: "23:30", isTaken: false } ])
-  // }, [])
-
-  useEffect(() => {
-    console.log(selectedService)
-    console.log(timeList); // This will log the updated timeList state after it's set.
-  }, [ timeList, selectedService ]);
-
-
   const renderAvailableTimes = () => {
     let availableTimes = timeList.map(({ time, isTaken }) => {
+
+      const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
       if (!isTaken) {
         return (
-          <button className='btn btn-primary m-2' key={ time } onClick={ () => handleTimeSelect(time) }>
-            { time }
+          <button className='btn btn-primary m-2' key={ time } onClick={ () => handleTimeSelect(formattedTime) }>
+            { formattedTime }
           </button>
         )
       }
       return (
-        <button className='btn btn-secondary m-2 disabled' key={ time }>
-          { time }
+        <button className='btn btn-secondary m-2 disabled' key={ formattedTime }>
+          { formattedTime }
         </button>
       )
     })
