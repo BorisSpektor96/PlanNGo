@@ -9,8 +9,8 @@ const AppointmentCalendar = (props) => {
   const [ showCalendar, setShowCalendar ] = useState(false)
   const [ selectedService, setSelectedService ] = useState(null);
   const [ Schedule, setSchedule ] = useState(false);
-
   const [ timeList, setTimeList ] = useState([]);
+  const appointmentsDef = props.appointmentsDef[ 0 ]
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -63,10 +63,16 @@ const AppointmentCalendar = (props) => {
       const serviceDuration = (((timeToString(`${hours}:${minutes}`)).getHours()) * 60) + ((timeToString(`${hours}:${minutes}`)).getMinutes())
 
       const filteredList = []
-
       for (let i = start; i.getTime() < end.getTime(); i = new Date(i.getTime() + 60000 * serviceDuration)) {
-        const time = { time: i, isTaken: false }
-        filteredList.push(time)
+        let time = {}
+        if ((timeToString(appointmentsDef.fixedBreak[ 0 ].start)).getTime() <= i.getTime() && i.getTime() < (timeToString(appointmentsDef.fixedBreak[ 0 ].end)).getTime()) {
+          time = { time: i, isTaken: true }
+        } else {
+          time = { time: i, isTaken: false }
+        }
+        if (time !== null) {
+          filteredList.push(time)
+        }
       }
 
       setTimeList(filteredList.filter((time) => (
@@ -92,7 +98,7 @@ const AppointmentCalendar = (props) => {
         )
       }
       return (
-        <button className='btn btn-secondary m-2 disabled' key={ formattedTime }>
+        <button className='btn btn-dark m-2 disabled' key={ formattedTime }>
           { formattedTime }
         </button>
       )

@@ -23,14 +23,15 @@ const BusinessPage = () => {
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
   const [ calendarIsShown, setCalendarIsShown ] = useState(false);
   const [ workingHours, setWorkingHours ] = useState('')
+  const [ appointmentsDef, setAppointmentDef ] = useState({})
 
   useEffect(() => {
     if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
       setWorkingHours({
         start: businessDetails.appointmentsDef[ 0 ].businessHours.start,
         end: businessDetails.appointmentsDef[ 0 ].businessHours.end
-      }
-      )
+      })
+      setAppointmentDef(businessDetails.appointmentsDef)
     } else {
       setWorkingHours({ start: "--:--", end: "--:--" })
     }
@@ -109,6 +110,7 @@ const BusinessPage = () => {
           workingHours={ workingHours }
           businessDetails={ businessDetails }
           onClose={ hideCalendarHandler }
+          appointmentsDef={ appointmentsDef }
         />
       }
 
