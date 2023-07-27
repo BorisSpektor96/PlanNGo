@@ -2,13 +2,19 @@
 
 const AppointmentItem = props => {
 
-
+  const date = props.item.date
+  const service = props.item.service
+  const businessDetails = props.item.businessDetails
   return (
-    <li className="d-flex justify-content-between rounded border-primary m-1 align-items-center p-2">
+    <li className="d-flex card justify-content-between rounded border-primary m-1 align-items-center p-2">
 
-      <div className="d-flex justify-content-between align-items-baseline ">
-        <p className="p-1"> { props.name }</p>
-        <p className="p-1">{ props.service }</p>
+      <div className="d-flex flex-column justify-content-between">
+        <p className="p-1">{ businessDetails.name }</p>
+        <p className="p-1"> { businessDetails.email }</p>
+        <p className="p-1"> { businessDetails.address }</p>
+      </div>
+      <div className="d-flex justify-content-between">
+        <p className="p-1">- { service.name }</p>
       </div>
       <div className="d-flex">
         <div>
@@ -23,9 +29,7 @@ const AppointmentItem = props => {
           </button>
         </div>
         <div>
-          <button className="btn " value={ props.id } onClick={ () => {
-            props.deleteFavItem(props.id)
-          } }>
+          <button className="btn ">
             <lord-icon
               src="https://cdn.lordicon.com/gclzwloa.json"
               trigger="hover"

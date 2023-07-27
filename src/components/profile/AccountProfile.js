@@ -4,6 +4,7 @@ import './profile.css'
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 import FavoritesList from "../favorites/FavoritesList";
 import { PopupMessageContext } from "../../PopupMessage";
+import AppointmentsProfile from "./AppointmentsProfile";
 
 const AccountProfile = () => {
 
@@ -315,7 +316,7 @@ const AccountProfile = () => {
               </div>
               <div className="card-body text-center d-flex flex-column justify-content-center">
 
-                <img className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
+                <img style={ { width: '100%', maxWidth: '350px' } } className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
                 <div className="small font-italic text-muted">
                   { editImgProfile &&
                     <form className="d-flex flex-column" onSubmit={ imgUploadHandler }>
@@ -355,14 +356,15 @@ const AccountProfile = () => {
           </div>
 
         </div>
-
-        <div>
+        <div className="d-flex justify-content-around flex-wrap">
           {
             !profileInfo.isBusiness
             &&
             <FavoritesList />
           }
+          <AppointmentsProfile />
         </div>
+
 
       </div>
     </div >

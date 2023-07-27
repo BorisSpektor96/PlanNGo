@@ -11,24 +11,23 @@ const Products = (props) => {
   }
 
   return (
-    <div >
-      {productList.map((product) => (
-        <div className='  card pb-2'>      
+    <div className='card border-primary p-2'>
+      { productList.map((product) => (
 
-        <div key={product.productId} >
-          <img className={style["imgi"] } src={product.photo ? `data:image/jpeg;base64,${product.photo}` : "./logo512.png"}  alt={product.name} />
-          <div className={style["card-body"]}>
-            <div className={style["text-section"]}>
-              <h5 className={style["card-title fw-bold"]}>{product.name}</h5>
-              <p className={style["card-text"]}>{product.description}</p>
+        <div className='d-flex ' key={ product.productId } >
+          <img className={ style[ "imgi" ] } src={ product.photo ? `data:image/jpeg;base64,${product.photo}` : "./logo512.png" } alt={ product.name } />
+          <div className={ style[ "card-body" ] }>
+            <div className={ style[ "text-section" ] }>
+              <h5 className={ style[ "card-title fw-bold" ] }>{ product.name }</h5>
+              <p className={ style[ "card-text" ] }>{ product.description }</p>
             </div>
-            <div className={style["cta-section"]}>
-              <div>${product.price}</div>
-              <a href="#" className="btn btn-light">Buy Now</a>
+            <div className={ style[ "cta-section" ] }>
+              <div>${ product.price }</div>
+              <button href="#" className="btn btn-success">Add</button>
             </div>
           </div>
-        </div>   </div>
-      ))}
+        </div>
+      )) }
     </div>
   );
 };
