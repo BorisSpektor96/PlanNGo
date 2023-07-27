@@ -12,7 +12,7 @@ const Register = (props) => {
   const [ RememberMe, RememberMehandler ] = useState(false);
   const [ previewUrl, setPreviewUrl ] = useState("");
   const [ formValues, setformValues ] = useState({
-    fullName: "",
+    fullname: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -20,7 +20,7 @@ const Register = (props) => {
     userType: "U",
     isBusiness: false,
     profileImg: "",
-    favorites: [],
+
   });
 
   const DBreq = async (e) => {
@@ -28,7 +28,7 @@ const Register = (props) => {
       const requestBody = {
         email: formValues.email,
         password: formValues.password,
-        fullName: formValues.fullName,
+        fullname: formValues.fullname,
         phoneNumber: formValues.phoneNumber,
         userType: formValues.userType,
         isBusiness: formValues.isBusiness,
@@ -65,12 +65,12 @@ const Register = (props) => {
   const inputs = [
     {
       id: 1,
-      name: "fullName",
+      name: "fullname",
       type: "text",
-      placeholder: "fullName",
+      placeholder: "fullname",
       errorMessage:
-        "fullName should be 3-16 characters and shouldn't include any special character!",
-      label: "fullName",
+        "fullname should be 3-16 characters and shouldn't include any special character!",
+      label: "Fullname",
       pattern: "^[A-Za-z0-9]{3,16}$",
       required: true,
     },
@@ -87,7 +87,7 @@ const Register = (props) => {
     {
       id: 3,
       name: "password",
-      type: "text",
+      type: "password",
       placeholder: "Password",
       label: "Password",
       pattern: `(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}`,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "reactstrap";
-import FormInput from "../FormInput";
+import { Input, Label } from "reactstrap";
 
 const Services = (props) => {
   const [enteredName, setEnteredName] = useState("");
@@ -11,6 +11,18 @@ const Services = (props) => {
 
   const addServiceHandler = (event) => {
     event.preventDefault();
+
+    const formIsValid = Object.values(formInputs).every(
+      (input) => input.errorMessage === ""
+    );
+
+    // If the form is not valid, log a message and return
+    if (!formIsValid) {
+      console.log("Form has errors. service not added.");
+      return;
+    }
+
+
     setServiceId(serviceId + 1);
     props.handleServices(
       enteredType,
@@ -39,7 +51,7 @@ const Services = (props) => {
       placeholder: "Enter Service Name",
       value: enteredName,
       onChange: (event) => setEnteredName(event.target.value),
-      errorMessage: "missing service name",
+      errorMessage: enteredName.trim() === "" ? "Please enter Service Name" : "",
       pattern: "^[a-zA-Z0-9 ]+$",
       required: true,
     },
@@ -49,6 +61,7 @@ const Services = (props) => {
       placeholder: "Enter Service Type",
       value: enteredType,
       onChange: (event) => setEnteredType(event.target.value),
+      errorMessage: enteredType.trim() === "" ? "Please enter Service Type" : "",
       required: true,
     },
     {
@@ -57,8 +70,11 @@ const Services = (props) => {
       placeholder: "Enter Price",
       value: enteredPrice,
       onChange: (event) => setEnteredPrice(event.target.value),
-      errorMessage: "must be a number",
-      pattern: "^\\d+$",
+      errorMessage:
+        enteredPrice.trim() === "" || isNaN(enteredPrice)
+          ? "Please enter a valid price"
+          : "",
+      pattern: "^[0-9]+$",
       required: true,
     },
     {
@@ -66,10 +82,10 @@ const Services = (props) => {
       label: "Duration (enter in hours)",
       value: enteredDuration,
       onChange: (event) => setEnteredDuration(event.target.value),
+      errorMessage: isNaN(enteredDuration) ? "Duration must be a number" : "",
       required: true,
     },
   ];
-
   return (
     <div>
       <p className="display-6 text-center">Add Your Services</p>
@@ -94,7 +110,25 @@ const Services = (props) => {
                 </select>
               </div>
             ) : (
-              <FormInput {...input} />
+              <div key={input.id}>
+                <Label className="mt-2 mb-0" for={input.id}>
+                  {input.label}
+                </Label>
+                <Input
+                  type="text"
+                  name={input.id}
+                  id={input.id}
+                  placeholder={input.placeholder}
+                  value={input.value}
+                  onChange={input.onChange}
+                  invalid={input.errorMessage && input.errorMessage.length > 0}
+                />
+                {input.errorMessage && (
+                  <p style={{ fontSize: "12px", padding: "3px", color: "red" }}>
+                    {input.errorMessage}
+                  </p>
+                )}
+              </div>
             )}
           </React.Fragment>
         ))}

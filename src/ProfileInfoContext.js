@@ -36,7 +36,7 @@ const ProfileInfoProvider = ({ children }) => {
     _id: {},
     email: "context@example.com",
     password: "Context123!",
-    fullName: "useContext",
+    fullname: "useContext",
     phoneNumber: "1234567890",
     isBusiness: true,
     userType: "B",

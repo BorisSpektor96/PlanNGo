@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Input, Label } from "reactstrap";
-import Select from "react-select";
 
 const Products = (props) => {
-  const [ selectedImage, setSelectedImage ] = useState(null);
-  const [ enteredDescription, setEnteredDescription ] = useState("");
-  const [ enteredName, setEnteredName ] = useState("");
-  const [ enterLables, setEnteredLables ] = useState("");
-  const [ enteredQuantity, setEnteredQuantity ] = useState(1);
-  const [ enteredPrice, setEnteredPrice ] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [enteredDescription, setEnteredDescription] = useState("");
+  const [enteredName, setEnteredName] = useState("");
+  const [enterLables, setEnteredLables] = useState("");
+  const [enteredQuantity, setEnteredQuantity] = useState(1);
+  const [enteredPrice, setEnteredPrice] = useState("");
 
-
-  let [ productId, setProductId ] = useState(1);
-  useEffect(() => {
-    console.log("selected image", selectedImage);
-  }, [ selectedImage ]);
+  let [productId, setProductId] = useState(1);
+  useEffect(() => {}, [selectedImage]);
 
   const addProductHandler = (event) => {
     event.preventDefault(); // Prevents the page from refreshing
 
+    // Check form validation using the every method
     const formIsValid = Object.values(inputs).every(
       (input) => input.errorMessage === ""
     );
 
+    // If the form is not valid, log a message and return
     if (!formIsValid) {
       console.log("Form has errors. Product not added.");
       return;
@@ -54,7 +52,8 @@ const Products = (props) => {
       placeholder: "Enter Product Name",
       value: enteredName,
       onChange: (event) => setEnteredName(event.target.value),
-      errorMessage: enteredName.trim() === "" ? "Please enter Product Name" : "",
+      errorMessage:
+        enteredName.trim() === "" ? "Please enter Product Name" : "",
       pattern: "^[a-zA-Z0-9 ]+$",
       required: true,
     },
@@ -84,7 +83,10 @@ const Products = (props) => {
       placeholder: "Enter Product Description",
       value: enteredDescription,
       onChange: (event) => setEnteredDescription(event.target.value),
-      errorMessage: enteredDescription.trim() === "" ? "Please enter product description" : "",
+      errorMessage:
+        enteredDescription.trim() === ""
+          ? "Please enter product description"
+          : "",
     },
     {
       id: "product_Lable",
@@ -92,7 +94,10 @@ const Products = (props) => {
       placeholder: "Enter Product labels",
       value: enterLables,
       onChange: (event) => setEnteredLables(event.target.value),
-      errorMessage: enterLables.trim() === "" ? "Please enter products labels (separated by commas)" : "",
+      errorMessage:
+        enterLables.trim() === ""
+          ? "Please enter products labels (separated by commas)"
+          : "",
     },
   ];
 
@@ -100,27 +105,27 @@ const Products = (props) => {
     <>
       <p className="text-center display-6">Products</p>
       <form className="form-check p-0">
-        { inputs.map((input) => (
-          <div key={ input.id }>
-            <Label className="mt-2 mb-0" for={ input.id }>
-              { input.label }
+        {inputs.map((input) => (
+          <div key={input.id}>
+            <Label className="mt-2 mb-0" for={input.id}>
+              {input.label}
             </Label>
             <Input
               type="text" // Assuming all inputs are of type "text" for this example
-              name={ input.id }
-              id={ input.id }
-              placeholder={ input.placeholder }
-              value={ input.value }
-              onChange={ input.onChange }
-              invalid={ input.errorMessage && input.errorMessage.length > 0 }
+              name={input.id}
+              id={input.id}
+              placeholder={input.placeholder}
+              value={input.value}
+              onChange={input.onChange}
+              invalid={input.errorMessage && input.errorMessage.length > 0}
             />
-            { input.errorMessage && (
-              <p style={ { fontSize: "12px", padding: "3px", color: "red" } }>
-                { input.errorMessage }
+            {input.errorMessage && (
+              <p style={{ fontSize: "12px", padding: "3px", color: "red" }}>
+                {input.errorMessage}
               </p>
-            ) }
+            )}
           </div>
-        )) }
+        ))}
 
         <Label className="mt-2 mb-0" htmlFor="product_photo">
           Products Picture
@@ -130,15 +135,15 @@ const Products = (props) => {
             type="file"
             name="myImage"
             label="choose image"
-            onChange={ (event) => {
-              setSelectedImage(event.target.files[ 0 ]);
-            } }
+            onChange={(event) => {
+              setSelectedImage(event.target.files[0]);
+            }}
           />
         </div>
         <div className="d-flex flex-column gap-2">
           <button
             className="btn btn-success mt-3"
-            onClick={ addProductHandler }
+            onClick={addProductHandler}
             type="submit"
           >
             Add Product
@@ -146,7 +151,7 @@ const Products = (props) => {
         </div>
         <table className="table table-striped table-hover mt-3 mb-3">
           <thead>
-            { props.products.length > 0 && (
+            {props.products.length > 0 && (
               <tr className="table-secondary">
                 <th className="text-center" scope="col">
                   #
@@ -171,33 +176,33 @@ const Products = (props) => {
                 </th>
                 <th scope="col">Remove</th>
               </tr>
-            ) }
+            )}
           </thead>
           <tbody>
-            { props.products.map((product) => (
-              <tr key={ product.productId } className="table-secondary">
-                <td className="text-center">{ product.productId }</td>
-                <td className="text-center">{ product.name }</td>
-                <td className="text-center">{ product.price }</td>
-                <td className="text-center">{ product.quantity }</td>
-                <td className="text-center">{ product.lables }</td>
-                <td className="text-center">{ product.description }</td>
+            {props.products.map((product) => (
+              <tr key={product.productId} className="table-secondary">
+                <td className="text-center">{product.productId}</td>
+                <td className="text-center">{product.name}</td>
+                <td className="text-center">{product.price}</td>
+                <td className="text-center">{product.quantity}</td>
+                <td className="text-center">{product.lables}</td>
+                <td className="text-center">{product.description}</td>
                 <td className="text-center">
-                  { selectedImage && (
+                  {selectedImage && (
                     <img
                       className="img-thumbnail w-75 h-75"
                       alt="not found"
-                      src={ `data:image/jpeg;base64,${product.photo}` }
+                      src={`data:image/jpeg;base64,${product.photo}`}
                     />
-                  ) }
+                  )}
                 </td>
                 <td className="text-center">
                   <button
                     className="btn"
                     type="button"
-                    onClick={ () => {
+                    onClick={() => {
                       props.deleteProductHandler(product.productId);
-                    } }
+                    }}
                   >
                     <lord-icon
                       src="https://cdn.lordicon.com/gsqxdxog.json"
@@ -208,7 +213,7 @@ const Products = (props) => {
                   </button>
                 </td>
               </tr>
-            )) }
+            ))}
           </tbody>
         </table>
       </form>

@@ -107,6 +107,7 @@ const BusinessPage = () => {
     <Fragment>
       { calendarIsShown &&
         <Calendar
+          profileInfo={ profileInfo }
           workingHours={ workingHours }
           businessDetails={ businessDetails }
           onClose={ hideCalendarHandler }

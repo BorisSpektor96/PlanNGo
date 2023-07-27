@@ -6,13 +6,13 @@ const userRouter = express.Router();
 
 
 userRouter.post('/signup', async (req, res) => {
-  const { email, password, fullName, phoneNumber, userType, isBusiness, profileImg } = req.body;
+  const { email, password, fullname, phoneNumber, userType, isBusiness, profileImg } = req.body;
 
   try {
     const user = await userModel.create({
       email,
       password,
-      fullName,
+      fullname,
       phoneNumber,
       profileImg, // Save the base64 string directly to the profileImg field
       userType,
@@ -27,6 +27,26 @@ userRouter.post('/signup', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'duplicate' });
     }
     return res.status(400).send(error);
+  }
+});
+
+userRouter.post("/addAppointmentToUser", async (req, res) => {
+  const { email, appointment } = req.body;
+  try {
+    const user = await userModel.findOneAndUpdate(
+      { email: email },
+      { $push: { "appointments": appointment } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found", type: "Error" });
+    }
+
+    res.status(200).json({ message: "Appointment added successfully", type: "Success" });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Failed to add appointment", error });
   }
 });
 
@@ -46,12 +66,12 @@ userRouter.post('/imgUpdate', async (req, res) => {
 })
 
 userRouter.post('/updateUserProfile', async (req, res) => {
-  const { email, fullName, emailNew, phoneNumber } = req.body
+  const { email, fullname, emailNew, phoneNumber } = req.body
   const user = await userModel.findOne({ email: email })
 
   try {
     user.email = emailNew
-    user.fullName = fullName
+    user.fullname = fullname
     user.phoneNumber = phoneNumber
     user.save()
 

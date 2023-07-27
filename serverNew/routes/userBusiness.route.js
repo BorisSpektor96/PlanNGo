@@ -199,7 +199,7 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
 
 userBusinessRouter.post("/addAppointment", async (req, res) => {
   const { email, appointment } = req.body;
-
+  console.log(appointment.date)
   try {
     const user = await userBusinessModel.findOneAndUpdate(
       { email: email },
@@ -214,7 +214,7 @@ userBusinessRouter.post("/addAppointment", async (req, res) => {
     res.status(200).json({ message: "Appointment added successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Failed to add appointment", type: "Error", error: error });
+    res.status(500).json({ message: "Failed to add appointment", error });
   }
 });
 

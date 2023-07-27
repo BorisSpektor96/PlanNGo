@@ -65,28 +65,28 @@ const AccountProfile = () => {
 
   const submitAccountForm = (e) => {
     e.preventDefault();
-    const fullName = e.target.fullName.value
+    const fullname = e.target.fullname.value
     const email = e.target.email.value
     const phoneNumber = e.target.phoneNumber.value
     if (profileInfo.isBusiness) {
       const address = e.target.address.value
       const business_name = e.target.business_name.value
       const business_description = e.target.business_description.value
-      updateProfileBusiness(fullName, email, phoneNumber, address, business_name, business_description)
+      updateProfileBusiness(fullname, email, phoneNumber, address, business_name, business_description)
     } else {
-      updateProfileUser(fullName, email, phoneNumber)
+      updateProfileUser(fullname, email, phoneNumber)
     }
     setEditAccountMode(!editAccountMode);
 
   };
-  const updateProfileUser = async (fullName, email, phoneNumber) => {
+  const updateProfileUser = async (fullname, email, phoneNumber) => {
     try {
       const response = await fetch('http://localhost:3001/users/updateUserProfile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: profileInfo.email,
-          fullName: fullName,
+          fullname: fullname,
           phoneNumber: phoneNumber,
           emailNew: email
         })
@@ -113,14 +113,14 @@ const AccountProfile = () => {
     }
   };
 
-  const updateProfileBusiness = async (fullName, email, phone, address, business_name, description) => {
+  const updateProfileBusiness = async (fullname, email, phone, address, business_name, description) => {
     try {
       const response = await fetch('http://localhost:3001/business/updateBusinessProfile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: profileInfo.email,
-          fullName: fullName,
+          fullname: fullname,
           emailNew: email,
           business_name: business_name,
           address: address,
@@ -147,10 +147,10 @@ const AccountProfile = () => {
   const [ filteredList, setFilteredList ] = useState([])
   let listOfInfoAndInput = [
     {
-      id: 'fullName',
-      name: 'fullName',
+      id: 'fullname',
+      name: 'fullname',
       type: 'text',
-      label: 'fullName',
+      label: 'Fullname',
       required: true,
       errorMessage: "",
     },
@@ -355,11 +355,15 @@ const AccountProfile = () => {
           </div>
 
         </div>
-        {
-          !profileInfo.isBusiness
-          &&
-          <FavoritesList />
-        }
+
+        <div>
+          {
+            !profileInfo.isBusiness
+            &&
+            <FavoritesList />
+          }
+        </div>
+
       </div>
     </div >
   )

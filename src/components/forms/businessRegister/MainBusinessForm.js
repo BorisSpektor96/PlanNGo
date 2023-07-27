@@ -228,11 +228,12 @@ class MainBusinessForm extends Component {
     this.state.profileImg = "";
   };
 
-  handleProducts(productId, price, description, name, quantity, lables, photoFile) {
+  handleProducts(productId, price, description, name, quantity,lables, photoFile) {
     const reader = new FileReader();
 
     reader.onload = () => {
       const photoData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
+      // Rest of your code ...
 
       this.setState((state) => {
         const products = [
@@ -254,7 +255,7 @@ class MainBusinessForm extends Component {
     };
 
     if (photoFile) {
-      reader.readAsDataURL(photoFile); // Use readAsDataURL to read the file as base64 data
+      reader.readAsDataURL(photoFile); // Use readAsDataURL to read the file as base64 data
     }
   }
 
@@ -323,21 +324,17 @@ class MainBusinessForm extends Component {
   handleAddBreak = (startTime, endTime) => {
     const formattedStartTime = dayjs(startTime, "HH:mm", true);
     const formattedEndTime = dayjs(endTime, "HH:mm", true);
-
-    if (
-      formattedEndTime.isValid() &&
-      formattedEndTime.isAfter(formattedStartTime)
-    ) {
+  
+    if (formattedEndTime.isValid() && formattedEndTime.isAfter(formattedStartTime)) {
       const breakTimeRange = {
         start: formattedStartTime.format("HH:mm"),
         end: formattedEndTime.format("HH:mm"),
       };
-
+  
       this.setState((prevState) => ({
-        ...prevState,
         appointmentsDef: {
           ...prevState.appointmentsDef,
-          fixedBreak: [ ...prevState.appointmentsDef.fixedBreak, breakTimeRange ],
+          fixedBreak: breakTimeRange, // Set the new break time range object
         },
       }));
     } else {
