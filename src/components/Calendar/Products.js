@@ -13,7 +13,6 @@ const Products = (props) => {
   return (
     <div className='card border-primary p-2'>
       { productList.map((product) => (
-
         <div className='d-flex ' key={ product.productId } >
           <img className={ style[ "imgi" ] } src={ product.photo ? `data:image/jpeg;base64,${product.photo}` : "./logo512.png" } alt={ product.name } />
           <div className={ style[ "card-body" ] }>
@@ -23,11 +22,17 @@ const Products = (props) => {
             </div>
             <div className={ style[ "cta-section" ] }>
               <div>${ product.price }</div>
-              <button href="#" className="btn btn-success">Add</button>
+              <button
+                href="#"
+                className="btn btn-success"
+                onClick={() => props.addProduct(product)} // Call the addProduct function when the button is clicked
+              >
+                Add
+              </button>
             </div>
           </div>
         </div>
-      )) }
+      ))}
     </div>
   );
 };

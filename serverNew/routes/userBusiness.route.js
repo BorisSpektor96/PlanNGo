@@ -208,7 +208,7 @@ userBusinessRouter.post("/addAppointment", async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({ message: "User not found", type: "Error" });
+      return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
 
     res.status(200).json({ message: "Appointment added successfully", type: "Success" });

@@ -39,7 +39,7 @@ const BusinessFormat = (props) => {
                 </h5>
               </div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item text-center"><p>{ props.tel }</p></li>
+                <li className="list-group-item text-center"><p>{ props.phoneNumber }</p></li>
                 <li className="list-group-item text-center"><p>{ props.address }</p></li>
                 <li className="list-group-item text-center"><p>{ props.email }</p></li>
               </ul>

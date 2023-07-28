@@ -1,45 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Modal from "../UI/Modal";
 import Products from "./Products";
+import Services from "./Services";
+import Summary from "./Summary";
+import { PopupMessageContext } from "../../PopupMessage";
 
 const AppointmentCalendar = (props) => {
+  const { showMessage } = useContext(PopupMessageContext)
 
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
-  const [ showCalendar, setShowCalendar ] = useState(false);
   const [ selectedService, setSelectedService ] = useState(null);
-  const [ Schedule, setSchedule ] = useState(false); // disable/enable the schedual button
+  const [ selectedProducts, setSelectedProducts ] = useState([]);
   const [ timeList, setTimeList ] = useState([]);
-  const [ showProducts, setShowProducts ] = useState(false);
-
+  const [ currentStep, setCurrentStep ] = useState(0);
   const appointmentsDef = props.appointmentsDef[ 0 ];
+
+  const setServiceAndShowCalendar = (service) => {
+    setSelectedService(service);
+    setCurrentStep(1);
+  };
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
-  };
-  const setServiceAndShowCalendar = (service) => {
-    setSelectedService(service);
-    setShowCalendar(!showCalendar);
+    setCurrentStep(2);
   };
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
+    setCurrentStep(3);
+  };
+
+  const handleBack = () => {
+    if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
+      setCurrentStep(0);
+      setSelectedDate("");
+      setSelectedTime("");
+    } else if (currentStep === 4) {
+      setCurrentStep(2);
+    } else if (currentStep === 5) {
+      setCurrentStep(4);
+    }
   };
   useEffect(() => {
     console.log("Selected Time:", selectedTime);
   }, [ selectedTime ]);
 
+  useEffect(() => {
+    console.log("currentStep:", currentStep);
+  }, [ currentStep ]);
+
   const isDayDisabled = (date) => {
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
     return appointmentsDef.fixedDaysOff.includes(dayName);
   };
 
-  console.log(props.profileInfo)
+  const addProduct = (product) => {
+    const updatedProducts = [ ...selectedProducts ];
+    const existingProductIndex = updatedProducts.findIndex(
+      (item) => item.productId === product.productId
+    );
+
+    if (existingProductIndex !== -1) {
+      // Product already exists, increase the amount
+      updatedProducts[ existingProductIndex ].amount++;
+    } else {
+      // Product doesn't exist, add as a new item
+      updatedProducts.push({
+        productId: product.productId,
+        name: product.name,
+        price: product.price,
+        amount: 1,
+      });
+    }
+
+    setSelectedProducts(updatedProducts);
+  };
 
   const scheduleHandler = async () => {
-
     let newAppointmentBusiness = {
       date: new Date(selectedDate),
       service: selectedService,
@@ -49,6 +89,7 @@ const AppointmentCalendar = (props) => {
         phoneNumber: props.profileInfo.phoneNumber,
       },
     };
+
     newAppointmentBusiness.date.setHours(parseInt(selectedTime.slice(0, 2)));
     newAppointmentBusiness.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
     let newAppointmentUser = {
@@ -61,6 +102,11 @@ const AppointmentCalendar = (props) => {
         address: props.businessDetails.address,
       },
     };
+
+    if (selectedProducts.length > 0) {
+      newAppointmentUser.purchase = selectedProducts;
+      newAppointmentBusiness.purchase = selectedProducts;
+    }
     newAppointmentUser.date.setHours(parseInt(selectedTime.slice(0, 2)));
     newAppointmentUser.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
     try {
@@ -82,7 +128,7 @@ const AppointmentCalendar = (props) => {
       console.log(data);
 
       if (response.ok) {
-        console.log("Appointment added successfully");
+        showMessage(data.message, data.type)
         // Now, add the appointment to the user
         const userResponse = await fetch(
           "http://localhost:3001/users/addAppointmentToUser",
@@ -102,11 +148,8 @@ const AppointmentCalendar = (props) => {
         console.log(userData);
 
         if (userResponse.ok) {
-          console.log("Appointment added to the user successfully");
-          setSchedule(false);
-          setShowProducts(true);
-          setShowCalendar(!showCalendar);
-
+          showMessage(userData.message, userData.type)
+          props.onClose()
         } else {
           console.log(
             "Failed to add appointment to the user:",
@@ -121,18 +164,6 @@ const AppointmentCalendar = (props) => {
       // Handle any network or other errors here
     }
   };
-
-  useEffect(() => {
-    if (
-      selectedDate !== "" &&
-      selectedService !== null &&
-      selectedTime !== ""
-    ) {
-      setSchedule(true);
-    } else {
-      setSchedule(false);
-    }
-  }, [ selectedTime, selectedService, selectedDate ]);
 
   const timeToString = (timeString) => {
     const [ hours, minutes ] = timeString.split(":").map(Number);
@@ -203,7 +234,6 @@ const AppointmentCalendar = (props) => {
     }
   }, [ selectedService ]);
 
-
   const renderAvailableTimes = () => {
     let availableTimes = timeList.map(({ time, isTaken }) => {
       const formattedTime = time.toLocaleTimeString([], {
@@ -246,37 +276,11 @@ const AppointmentCalendar = (props) => {
   };
 
   const servicesShow = () => {
-    const services = props.businessDetails.services;
-
     return (
-      <div className="d-flex justify-content-center">
-        <div className="d-flex flex-wrap gap-2 justify-content-center align-items-center">
-          { services.map((service) => (
-            <div className="card" key={ service.id }>
-              <div className="card-body">
-                <h5 className="card-title">{ service.name }</h5>
-                <p className="card-text">
-                  <strong>Service Type:</strong> { service.serviceType }
-                  <br />
-                  <strong>Price:</strong> ${ service.price }
-                  <br />
-                  <strong>Duration:</strong> { service.duration } hour(s)
-                </p>
-              </div>
-              <div className="p-2 d-flex justify-content-center">
-                <button
-                  onClick={ () => {
-                    setServiceAndShowCalendar(service);
-                  } }
-                  className="btn btn-success"
-                >
-                  Take
-                </button>
-              </div>
-            </div>
-          )) }
-        </div>
-      </div>
+      <Services
+        businessDetails={ props.businessDetails }
+        setServiceAndShowCalendar={ setServiceAndShowCalendar }
+      />
     );
   };
 
@@ -291,36 +295,25 @@ const AppointmentCalendar = (props) => {
           onClick={ props.onClose }
         ></button>
       </div>
-      { selectedService === null ? (
+      { currentStep === 0 ? (
         servicesShow()
       ) : (
-        <div className="d-flex flex-column flex-wrap align-items-center gap-1">
-          <button
-            className="btn btn-danger mb-3"
-            type="button"
-            onClick={ () => {
-              setSelectedService(null);
-              setSchedule(false);
-            } }
-          >
-            Choose other Service
-          </button>
-          { !showProducts &&
+        <div className="d-flex flex-column flex-wrap align-items-center gap-1 pb-2">
+          { currentStep > 0 && currentStep < 4 && (
             <Calendar
-              calendarType='Hebrew'
-
+              calendarType="Hebrew"
               locale="en-US"
               value={ selectedDate }
               onChange={ handleDateSelect }
               minDate={ new Date() }
               maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
               tileDisabled={ ({ date }) => isDayDisabled(date) }
-
-            /> }
+            />
+          ) }
         </div>
       ) }
       <div className="d-flex flex-wrap justify-content-center gap-1">
-        { !showProducts && selectedDate && selectedService !== null && (
+        { currentStep > 1 && currentStep < 4 && (
           <>
             <div className="">
               <p className="d-flex justify-content-center fs-5 text-dark badge bg-warning">
@@ -334,23 +327,67 @@ const AppointmentCalendar = (props) => {
               ) }
               { selectedTime && (
                 <p className="d-flex justify-content-center fs-6 badge bg-success">
-                  You have selected { selectedDate.toLocaleDateString() } at{ " " }
+                  You have selected { selectedDate.toLocaleDateString() }
                   { selectedTime }.
                 </p>
               ) }
             </div>
-            <button
-              className={
-                !Schedule ? "btn btn-primary disabled" : "btn btn-primary"
-              }
-              onClick={ () => scheduleHandler() }
-            >
-              Schedule
-            </button>
           </>
         ) }
       </div>
-      { showProducts && <Products businessDetails={ props.businessDetails } /> }
+      { currentStep === 4 && (
+        <Products
+          addProduct={ addProduct }
+          businessDetails={ props.businessDetails }
+        />
+      ) }
+
+      { currentStep === 5 && (
+        <div className="summary-section">
+          <Summary
+            selectedDate={ selectedDate }
+            selectedTime={ selectedTime }
+            selectedService={ selectedService }
+            selectedProducts={ selectedProducts }
+            profileInfo={ props.profileInfo }
+            businessDetails={ props.businessDetails }
+          />
+        </div>
+      ) }
+
+      { currentStep !== 0 && (
+        <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">
+          <button
+            className={
+              currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
+            }
+            onClick={ () => handleBack() }
+          >
+            back
+          </button>
+
+          <button
+            className={
+              currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
+            }
+            onClick={ () => scheduleHandler() }
+          >
+            Schedule
+          </button>
+          <button
+            className={
+              currentStep < 3 || currentStep > 4
+                ? "btn btn-primary disabled"
+                : "btn btn-primary"
+            }
+            onClick={ () => {
+              setCurrentStep(currentStep + 1);
+            } }
+          >
+            continue
+          </button>
+        </div>
+      ) }
     </Modal>
   );
 };

@@ -14,7 +14,7 @@ const AppointmentItem = props => {
         <p className="p-1"> { businessDetails.address }</p>
       </div>
       <div className="d-flex justify-content-between">
-        <p className="p-1">- { service.name }</p>
+        <p className="p-1"> { service.name }</p>
       </div>
       <div className="d-flex">
         <div>

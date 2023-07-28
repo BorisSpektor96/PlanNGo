@@ -10,7 +10,6 @@ import { ProfileInfoContext } from "../../../ProfileInfoContext";
 import { PopupMessageContext } from "../../../PopupMessage";
 
 const BusinessPage = () => {
-
   const { showMessage } = useContext(PopupMessageContext)
 
   const location = useLocation();
@@ -154,7 +153,7 @@ const BusinessPage = () => {
               </div>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item ">
-                  <p>{ businessDetails.tel }</p>
+                  <p>{ businessDetails.phoneNumber }</p>
                 </li>
                 <li className="list-group-item ">
                   <p>{ businessDetails.address }</p>
