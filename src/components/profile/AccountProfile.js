@@ -362,6 +362,8 @@ const AccountProfile = () => {
             &&
             <FavoritesList />
           }
+        </div>
+        <div className="">
           <AppointmentsProfile />
         </div>
 

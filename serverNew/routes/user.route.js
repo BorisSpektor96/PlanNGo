@@ -42,13 +42,38 @@ userRouter.post("/addAppointmentToUser", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found", type: "Error" });
     }
-
     res.status(200).json({ message: "Appointment added successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Failed to add appointment", error });
   }
 });
+
+userRouter.post("/getAppointmentsDetails", async (req, res) => {
+  const { email } = req.body
+  try {
+    const user = await userModel.findOne({ email: email }).select({ appointments: 1 })
+    if (!user) {
+      return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
+    }
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ message: error, type: "Error" })
+  }
+})
+
+userRouter.post("/removeAppointment", async (req, res) => {
+  const { email, date, businessEmail } = req.body
+  try {
+    const user = await userModel.findOne({ email: email }).select({ appointments: 1 })
+    if (!user) {
+      return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
+    }
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ message: error, type: "Error" })
+  }
+})
 
 userRouter.post('/imgUpdate', async (req, res) => {
   const { email, profileImg } = req.body

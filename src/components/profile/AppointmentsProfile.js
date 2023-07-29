@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ProfileInfoContext } from "../../ProfileInfoContext";
-import { useEffect } from "react";
 
 import { PopupMessageContext } from './../../PopupMessage';
 import AppointmentItem from "./AppointmentItem";
@@ -11,37 +10,45 @@ const AppointmentsProfile = () => {
 
   const { profileInfo, dispatch } = useContext(ProfileInfoContext);
 
-  const [ appointments, setAppointments ] = useState([
-    {
-      date: "2023-07-28T08:30:00.000Z",
-      service: {
-        serviceType: "hair",
-        name: "mans hair cut",
-        price: "35",
-        duration: "0.5",
-        id: 1
-      },
-      businessDetails: {
-        name: "johns barber shop",
-        email: "john.doe@example.com",
-        address: "123 Main Street, Cityville, Haifa"
+  const [ appointments, setAppointments ] = useState([]);
+
+  useEffect(() => {
+    getAppointmentsDetails()
+  }, [])
+
+  const getAppointmentsDetails = async () => {
+    try {
+      const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileInfo.email })
+      });
+
+      if (appointmentsData.ok) {
+        const appointment = await appointmentsData.json()
+        setAppointments(appointment.appointments)
+        appointments.forEach(item => {
+          item[ "toggle" ] = false
+          console.log(item)
+        })
       }
+    } catch (error) {
+      console.log('Error:', error);
     }
-  ]);
+  }
+
+
 
   return (
-    <div class="d-flex justify-content-center mt-4">
-      <ul className="p-3 border border-primary rounded list-group list-group-flush">
-        <p class="d-flex justify-content-center m-1">Appointments</p>
+    <div class=" justify-content-center mt-4">
+      <p class="d-flex justify-content-center m-1">Appointments</p>
+      <ul className=" list-group-flush">
         { appointments.length > 0 ?
           (<>
             { appointments.map((item) => (
               <AppointmentItem
                 item={ item }
-              // key={ item.id }
-              // id={ item.id }
-              // name={ item.business_name }
-              // service={ item.businessType }
+                profileInfo={ profileInfo }
               />
             )) }
           </>)
