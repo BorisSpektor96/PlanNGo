@@ -62,18 +62,53 @@ userRouter.post("/getAppointmentsDetails", async (req, res) => {
   }
 })
 
+
+
 userRouter.post("/removeAppointment", async (req, res) => {
-  const { email, date, businessEmail } = req.body
+  const { userEmail, date, businessEmail } = req.body;
+  console.log("================= user ===================")
+  console.log(userEmail, date, businessEmail)
   try {
-    const user = await userModel.findOne({ email: email }).select({ appointments: 1 })
-    if (!user) {
+    // const user1 = await userModel.findOne({ email: userEmail })
+    const user = await userModel.updateOne(
+      { email: userEmail },
+      { $pull: { 'appointments': { date: new Date(date), 'businessDetails.email': businessEmail } } },
+      { new: true }
+    )
+
+    console.log(user)
+    if (!user.appointments) {
       return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
     }
-    res.status(200).json(user)
+
+
+
+    // const appointmentIndex = user[ 0 ].appointments.findIndex(appointment =>
+    //   appointment.businessDetails.email === businessEmail
+    //   &&
+    //   appointment.date === date
+    // );
+
+    // if (appointmentIndex === -1) {
+    //   return res.status(404).json({ message: "Appointment not found for the given business and date", type: "Error" });
+    // }
+
+    // user[ 0 ]
+
+
+    // user[ 0 ].appointments.pull(appointmentIndex);
+    // await user.save();
+
+
+    res.status(200).json({ message: "Appointment removed successfully", type: "Success" });
   } catch (error) {
-    res.status(500).json({ message: error, type: "Error" })
+    console.error(error)
+    res.status(500).json({ message: error.message, type: "Error" });
   }
-})
+});
+
+
+
 
 userRouter.post('/imgUpdate', async (req, res) => {
   const { email, profileImg } = req.body

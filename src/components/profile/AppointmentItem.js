@@ -10,7 +10,7 @@ const AppointmentItem = props => {
   const profileInfo = props.profileInfo
 
   useEffect(() => {
-    console.log(props.item)
+    // console.log(props.item)
   }, [])
 
   const daysOfWeek = [
@@ -24,12 +24,39 @@ const AppointmentItem = props => {
   ];
 
   const removeAppointment = async () => {
+    console.log(profileInfo.email)
+    console.log(date)
+    console.log(businessDetails.email)
+
+    try {
+      const response = await fetch('http://localhost:3001/business/removeAppointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessEmail: businessDetails.email,
+          date: date,
+          userEmail: profileInfo.email
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.user !== null) {
+          // console.log(data.user)
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+
+
     try {
       const response = await fetch('http://localhost:3001/users/removeAppointment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: profileInfo.email,
+          userEmail: profileInfo.email,
           date: date,
           businessEmail: businessDetails.email
         })
@@ -38,13 +65,14 @@ const AppointmentItem = props => {
       const data = await response.json();
       if (response.ok) {
         if (data.user !== null) {
-          console.log(data.user)
+          // console.log(data.user)
         }
       } else {
       }
     } catch (error) {
       console.log('Error:', error);
     }
+
   }
 
   return (
@@ -136,8 +164,9 @@ const AppointmentItem = props => {
           </button>
           <button
             className="btn btn-danger"
+            onClick={ removeAppointment }
           >
-            Cancle
+            Cancel
           </button>
         </div>
       </li>

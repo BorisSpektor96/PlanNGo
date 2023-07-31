@@ -218,6 +218,46 @@ userBusinessRouter.post("/addAppointment", async (req, res) => {
   }
 });
 
+userBusinessRouter.post("/removeAppointment", async (req, res) => {
+  const { businessEmail, date, userEmail } = req.body;
+  console.log("================= business ===================")
+  console.log(userEmail, date, businessEmail)
+  try {
+    // const user = await userBusinessModel.findOne({ email: businessEmail }).select({ appointmentsDef: 1 });
+
+    const user = await userBusinessModel.updateOne(
+      { email: businessEmail },
+      { $pull: { 'appointmentsDef.appointments': { date: new Date(date), 'userDetails.email': userEmail } } },
+      { new: true }
+    )
+
+    console.log(user)
+    if (!user) {
+      return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
+    }
+
+    // Find the index of the appointment in the appointments array that matches the userEmail and date
+    // const appointmentIndex = user.appointmentsDef[ 0 ].appointments.findIndex(appointment =>
+    //   appointment.userDetails.email === userEmail
+    //   &&
+    //   appointment.date === date
+    // );
+
+    // if (appointmentIndex === -1) {
+    //   return res.status(404).json({ message: "Appointment not found for the given business and date", type: "Error" });
+    // }
+
+    // user.appointmentsDef[ 0 ].appointments.pull(appointmentIndex);
+    // console.log(user.appointmentsDef[ 0 ].appointments)
+    // await user.save();
+
+
+    res.status(200).json({ message: "Appointment removed successfully", type: "Success" });
+  } catch (error) {
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
 
 
 export default userBusinessRouter;

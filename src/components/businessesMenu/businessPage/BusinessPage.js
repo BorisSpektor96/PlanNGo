@@ -1,6 +1,5 @@
 import { Fragment, useState, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import styles from "./BusinessPage.module.css";
 import Review from "../../review/Review";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -8,8 +7,11 @@ import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
 import { ProfileInfoContext } from "../../../ProfileInfoContext";
 import { PopupMessageContext } from "../../../PopupMessage";
+import Recommendations from "../recommendations/Recomendations"
 
-const BusinessPage = () => {
+
+
+const BusinessPage = (props) => {
   const { showMessage } = useContext(PopupMessageContext)
 
   const location = useLocation();
@@ -17,18 +19,18 @@ const BusinessPage = () => {
 
   const { profileInfo, dispatch } = useContext(ProfileInfoContext)
 
-  const [ isFavorite, setIsFavorite ] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
-  const [ calendarIsShown, setCalendarIsShown ] = useState(false);
-  const [ workingHours, setWorkingHours ] = useState('')
-  const [ appointmentsDef, setAppointmentDef ] = useState({})
+  const [addReviewIsShown, setAddReviewIsShown] = useState(false);
+  const [calendarIsShown, setCalendarIsShown] = useState(false);
+  const [workingHours, setWorkingHours] = useState('')
+  const [appointmentsDef, setAppointmentDef] = useState({})
 
   useEffect(() => {
-    if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
+    if ("businessHours" in businessDetails.appointmentsDef[0]) {
       setWorkingHours({
-        start: businessDetails.appointmentsDef[ 0 ].businessHours.start,
-        end: businessDetails.appointmentsDef[ 0 ].businessHours.end
+        start: businessDetails.appointmentsDef[0].businessHours.start,
+        end: businessDetails.appointmentsDef[0].businessHours.end
       })
       setAppointmentDef(businessDetails.appointmentsDef)
     } else {
@@ -104,18 +106,18 @@ const BusinessPage = () => {
 
   return (
     <Fragment>
-      { calendarIsShown &&
+      {calendarIsShown &&
         <Calendar
-          profileInfo={ profileInfo }
-          workingHours={ workingHours }
-          businessDetails={ businessDetails }
-          onClose={ hideCalendarHandler }
-          appointmentsDef={ appointmentsDef }
+          profileInfo={profileInfo}
+          workingHours={workingHours}
+          businessDetails={businessDetails}
+          onClose={hideCalendarHandler}
+          appointmentsDef={appointmentsDef}
         />
       }
 
-      <div className="d-flex justify-content-between pt-3 ps-5 p-1">
-        <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
+      <div className="d-flex justify-content-between  p-3 ">
+        <Link className="btn border-dark rounded pt-2" to={pathToBackMenu}>
           <lord-icon
             src="https://cdn.lordicon.com/iiueiwdd.json"
             trigger="hover"
@@ -125,50 +127,50 @@ const BusinessPage = () => {
         </Link>
       </div>
 
-      <div className="d-flex flex-wrap justify-content-around p-2 mt-1 mb-5">
+      <div className="d-flex row flex-wrap justify-content-center  ">
 
-        <div className="card mb-4 ">
-          <div className="d-flex justify-content-center">
-            <img src={ businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png" } className={ styles.img } alt="..." />
+        <div className="  col-lg-5 m-4 pb-4">
+
+          <div className="d-flex justify-content-center pb-2  ">
+            <img className=" rounded-circle border " src={businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png"} alt="..." />
           </div>
+          <div className="d-flex  flex-column ">
+            <h5 className="card-title d-flex justify-content-center">{businessDetails.business_name}</h5>
+            <p className="card-text pt-1 d-flex justify-content-center">{businessDetails.business_description}</p>
+          </div>
+
+
+          <div class="hstack gap-1 pt-2  d-flex justify-content-center">
+
+            {businessDetails.phoneNumber}
+            <div class="vr"></div>
+
+            {businessDetails.email}
+            <div class="vr"></div>
+
+            {businessDetails.address}
+            <div class="vr"></div>
+
+
+            {workingHours.start} - {workingHours.end}
+
+          </div>
+
+
+
         </div>
+
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
 
-          <div className="card border-secondary col-lg-5">
-            <div className="card-body">
-              <h5 className="card-title">{ businessDetails.business_name }</h5>
-              <p className="card-text">{ businessDetails.business_description }</p>
-            </div>
-            <div className="d-flex flex-wrap justify-content-around bg-dark text-light align-items-cneter">
-              <h6 className="p-0 m-0">Working Hours: </h6>
-              <p className="p-0 m-0">`{ workingHours.start } - { workingHours.end }`</p>
-            </div>
-          </div>
 
-          <div className="card border-dark">
-            <div className="card text-dark">
-              <div className="border-dark card-header">
-                <h5>Contact:</h5>
-              </div>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item ">
-                  <p>{ businessDetails.phoneNumber }</p>
-                </li>
-                <li className="list-group-item ">
-                  <p>{ businessDetails.address }</p>
-                </li>
-                <li className="list-group-item ">
-                  <p>{ businessDetails.email }</p>
-                </li>
-              </ul>
-            </div>
-          </div>
+
+
 
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
             <button
               className="d-flex btn btn-outline-primary align-items-center"
-              onClick={ scheduleOpenView }
+              onClick={scheduleOpenView}
             >
               <lord-icon
                 src="https://cdn.lordicon.com/kbtmbyzy.json"
@@ -181,7 +183,7 @@ const BusinessPage = () => {
             </button>
 
             <button
-              onClick={ showAddReview }
+              onClick={showAddReview}
               className="d-flex btn btn-outline-success align-items-center"
             >
               <lord-icon
@@ -192,13 +194,16 @@ const BusinessPage = () => {
               ></lord-icon>
               <p className="m-0 ms-2">Add Review</p>
             </button>
-            { isFavorite ?
+            {isFavorite ?
               (<button
-                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
-                  }` }
-                onClick={ deleteBusinessFromFavorites }
+                className={`d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }`}
+                onClick={deleteBusinessFromFavorites}
               >
                 <lord-icon
+
+
+
                   src="https://cdn.lordicon.com/ytuosppc.json"
                   trigger="loop"
                   delay="1200"
@@ -210,9 +215,9 @@ const BusinessPage = () => {
               </button>)
               :
               (<button
-                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
-                  }` }
-                onClick={ addBusinessToFavorite }
+                className={`d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }`}
+                onClick={addBusinessToFavorite}
               >
                 <lord-icon
                   src="https://cdn.lordicon.com/ytuosppc.json"
@@ -229,20 +234,21 @@ const BusinessPage = () => {
           </div>
 
         </div>
+
         <div className="d-flex flex-column col-10 mt-4">
-          <div  >
-            <h3>Reviews</h3>
-          </div>
-          <Review reviews={ businessDetails.reviews } />
+          <Review reviews={businessDetails.reviews} />
         </div>
       </div>
-      { addReviewIsShown &&
+
+      {addReviewIsShown &&
         <AddReview
-          profileInfo={ profileInfo }
-          businessDetails={ businessDetails }
-          onClose={ hideFormHandler }
+          profileInfo={profileInfo}
+          businessDetails={businessDetails}
+          onClose={hideFormHandler}
         />
       }
+      <Recommendations />
+
     </Fragment>
   );
 };
