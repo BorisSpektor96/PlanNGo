@@ -69,36 +69,31 @@ userRouter.post("/removeAppointment", async (req, res) => {
   console.log("================= user ===================")
   console.log(userEmail, date, businessEmail)
   try {
-    // const user1 = await userModel.findOne({ email: userEmail })
-    const user = await userModel.updateOne(
-      { email: userEmail },
-      { $pull: { 'appointments': { date: new Date(date), 'businessDetails.email': businessEmail } } },
-      { new: true }
-    )
+    const user = await userModel.findOne({ email: userEmail }).select({ appointments: 1 })
 
-    console.log(user)
     if (!user.appointments) {
-      return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
+      return res.status(404).json({
+        message: "User / Appointments not found",
+        type: "Error"
+      });
     }
 
+    const appointmentIndex = user.appointments.findIndex(appointment =>
+      appointment.businessDetails.email === businessEmail
+      &&
+      appointment.date === date
+    );
 
-
-    // const appointmentIndex = user[ 0 ].appointments.findIndex(appointment =>
-    //   appointment.businessDetails.email === businessEmail
-    //   &&
-    //   appointment.date === date
-    // );
-
-    // if (appointmentIndex === -1) {
-    //   return res.status(404).json({ message: "Appointment not found for the given business and date", type: "Error" });
-    // }
-
-    // user[ 0 ]
-
-
-    // user[ 0 ].appointments.pull(appointmentIndex);
-    // await user.save();
-
+    if (appointmentIndex === -1) {
+      return res.status(404).json({
+        message: "Appointment not found for the given business and date",
+        type: "Error"
+      });
+    }
+    console.log(user.appointments[ appointmentIndex ])
+    console.log(appointmentIndex)
+    user.appointments.splice(appointmentIndex, 1)
+    await user.save()
 
     res.status(200).json({ message: "Appointment removed successfully", type: "Success" });
   } catch (error) {

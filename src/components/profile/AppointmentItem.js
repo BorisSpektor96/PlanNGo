@@ -51,27 +51,27 @@ const AppointmentItem = props => {
     }
 
 
-    try {
-      const response = await fetch('http://localhost:3001/users/removeAppointment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: profileInfo.email,
-          date: date,
-          businessEmail: businessDetails.email
-        })
-      });
+    // try {
+    //   const response = await fetch('http://localhost:3001/users/removeAppointment', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       userEmail: profileInfo.email,
+    //       date: date,
+    //       businessEmail: businessDetails.email
+    //     })
+    //   });
 
-      const data = await response.json();
-      if (response.ok) {
-        if (data.user !== null) {
-          // console.log(data.user)
-        }
-      } else {
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
+    //   const data = await response.json();
+    //   if (response.ok) {
+    //     if (data.user !== null) {
+    //       // console.log(data.user)
+    //     }
+    //   } else {
+    //   }
+    // } catch (error) {
+    //   console.log('Error:', error);
+    // }
 
   }
 
