@@ -62,9 +62,9 @@ const FavoritesList = () => {
   };
 
   return (
-    <div class="d-flex justify-content-center mt-4">
-      <ul className="p-3 border border-primary rounded list-group list-group-flush">
-        <p class="d-flex justify-content-center m-1">Favorite Businesses</p>
+    <div class="justify-content-center mt-4">
+      <h5 className="d-flex justify-content-center m-1">Favorite Businesses</h5>
+      <ul className="p-3 list-group list-group-flush">
         { favorites.length > 0 ?
           (<>
             { favorites.map((item) => (
@@ -79,7 +79,7 @@ const FavoritesList = () => {
           </>)
           :
           (<>
-            <p>There is no favorite businesses</p>
+            <p className="text-center">There is no favorite businesses</p>
           </>)
         }
       </ul>

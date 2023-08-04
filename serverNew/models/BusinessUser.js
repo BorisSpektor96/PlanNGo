@@ -17,7 +17,15 @@ const businessSchema = new mongoose.Schema(
     products: Array,
     profileImg: String,
     reviews: Array,
-    appointmentsDef: Array
+    appointmentsDef: [
+      {
+        fixedBreak: Array,
+        fixedDaysOff: Array,
+        OneTimeDayOff: Array,
+        appointments: Array,
+        businessHours: Object
+      }
+    ]
   },
   { collection: "users", versionKey: false }
 );

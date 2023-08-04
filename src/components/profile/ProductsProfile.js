@@ -38,7 +38,6 @@ const ProductsProfile = () => {
 
       if (response.ok) {
         const productsData = await response.json();
-        console.log(productsData)
         if (productsData.length > 0) {
           for (let p of productsData) {
             if (p.productId > productId) {
