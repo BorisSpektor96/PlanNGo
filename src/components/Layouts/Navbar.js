@@ -11,17 +11,31 @@ import { useNavigate } from 'react-router-dom';
 
 const MainNavbar = () => {
   const navigate = useNavigate()
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { isLoggedIn, logout, isBusiness } = useContext(AuthContext);
 
   let NavTabs = []
 
   if (isLoggedIn) {
-    NavTabs = [
-      {
-        tabName: 'Home',
-        pathName: '/businessesMenu'
-      },
-    ];
+    if (isBusiness) {
+      NavTabs = [
+        {
+          tabName: 'Home',
+          pathName: '/businessesMenu'
+        },
+        {
+          tabName: 'Business Analytics',
+          pathName: '/businessAnalytics'
+        },
+
+      ];
+    } else {
+      NavTabs = [
+        {
+          tabName: 'Home',
+          pathName: '/businessesMenu'
+        },
+      ]
+    }
   } else {
     NavTabs = [
       {

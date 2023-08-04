@@ -80,7 +80,7 @@ const AppointmentCalendar = (props) => {
   };
 
   const scheduleHandler = async () => {
-    let newAppointmentBusiness = {
+    const newAppointmentBusiness = {
       date: new Date(selectedDate),
       service: selectedService,
       userDetails: {
@@ -89,10 +89,10 @@ const AppointmentCalendar = (props) => {
         phoneNumber: props.profileInfo.phoneNumber,
       },
     };
-
     newAppointmentBusiness.date.setHours(parseInt(selectedTime.slice(0, 2)));
     newAppointmentBusiness.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
-    let newAppointmentUser = {
+
+    const newAppointmentUser = {
       date: new Date(selectedDate),
       service: selectedService,
       businessDetails: {
@@ -102,15 +102,16 @@ const AppointmentCalendar = (props) => {
         address: props.businessDetails.address,
       },
     };
+    newAppointmentUser.date.setHours(parseInt(selectedTime.slice(0, 2)));
+    newAppointmentUser.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
 
     if (selectedProducts.length > 0) {
       newAppointmentUser.purchase = selectedProducts;
       newAppointmentBusiness.purchase = selectedProducts;
     }
-    newAppointmentUser.date.setHours(parseInt(selectedTime.slice(0, 2)));
-    newAppointmentUser.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
+
     try {
-      const response = await fetch(
+      const businessResponse = await fetch(
         "http://localhost:3001/business/addAppointment",
         {
           method: "POST",
@@ -124,12 +125,11 @@ const AppointmentCalendar = (props) => {
         }
       );
 
-      const data = await response.json();
-      console.log(data);
+      const businessData = await businessResponse.json();
+      console.log("businessData" + props.businessDetails.email);
 
-      if (response.ok) {
-        showMessage(data.message, data.type)
-        // Now, add the appointment to the user
+      if (businessResponse.ok) {
+        showMessage(businessData.message, businessData.type);
         const userResponse = await fetch(
           "http://localhost:3001/users/addAppointmentToUser",
           {
@@ -145,11 +145,11 @@ const AppointmentCalendar = (props) => {
         );
 
         const userData = await userResponse.json();
-        console.log(userData);
+        console.log("userData" + props.profileInfo.email);
 
         if (userResponse.ok) {
-          showMessage(userData.message, userData.type)
-          props.onClose()
+          showMessage(userData.message, userData.type);
+          props.onClose();
         } else {
           console.log(
             "Failed to add appointment to the user:",
@@ -157,11 +157,10 @@ const AppointmentCalendar = (props) => {
           );
         }
       } else {
-        console.log("Failed to add appointment:", data.message);
+        console.log("Failed to add appointment:", businessData.message);
       }
     } catch (error) {
       console.log("Error:", error.message);
-      // Handle any network or other errors here
     }
   };
 

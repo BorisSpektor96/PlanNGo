@@ -8,6 +8,7 @@ import Layout from './components/Layouts/Layout';
 import BusinessPage from './components/businessesMenu/businessPage/BusinessPage';
 import Profile from './components/profile/Profile'
 import FavoritesList from './components/favorites/FavoritesList'
+import BusinessAnalytics from './components/businessesMenu/businessAnalytics/BusinessAnalytics'
 
 import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
@@ -23,6 +24,7 @@ function App() {
     { path: '/BusinessPage', componentName: BusinessPage },
     { path: '/Profile', componentName: Profile },
     { path: '/FavoritesList', componentName: FavoritesList },
+    { path: '/BusinessAnalytics', componentName: BusinessAnalytics },
   ]
 
   const routeOfComponents = routes
