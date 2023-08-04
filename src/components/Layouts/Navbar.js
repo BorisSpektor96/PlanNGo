@@ -19,10 +19,6 @@ const MainNavbar = () => {
     if (isBusiness) {
       NavTabs = [
         {
-          tabName: 'Home',
-          pathName: '/businessesMenu'
-        },
-        {
           tabName: 'Business Analytics',
           pathName: '/businessAnalytics'
         },
@@ -95,12 +91,13 @@ const MainNavbar = () => {
                     </Link>
                   </li>
                   <li className="nav-item me-1 my-1">
-                    <button onClick={ logout }
+                    <Link onClick={ logout }
+                      to="/Welcome"
                       type="button"
                       className="btn btn-outline-danger"
                     >
                       Logout
-                    </button>
+                    </Link>
                   </li>
                 </ul>
               </Nav>

@@ -13,7 +13,7 @@ const BusinessesMenu = () => {
     dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
   }, [ profileInfo.email ])
 
-  const fetchBusinessesArr = async (e) => {
+  const fetchBusinessesArr = async () => {
     try {
       let response = await fetch('http://localhost:3001/business/getAllUsersBusiness',
         {

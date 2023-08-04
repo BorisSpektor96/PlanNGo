@@ -5,8 +5,10 @@ import { ProfileInfoContext } from '../../ProfileInfoContext';
 import FavoritesList from "../favorites/FavoritesList";
 import { PopupMessageContext } from "../../PopupMessage";
 import AppointmentsProfile from "./AppointmentsProfile";
+import { AuthContext } from "../../AuthContext";
 
 const AccountProfile = () => {
+  const { isLoggedIn } = useContext(AuthContext)
 
   const { showMessage } = useContext(PopupMessageContext)
 
@@ -62,7 +64,10 @@ const AccountProfile = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [ profileInfo.email ]);
+  }, [ profileInfo.email, isLoggedIn ]);
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const submitAccountForm = (e) => {
     e.preventDefault();

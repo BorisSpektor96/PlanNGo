@@ -317,7 +317,7 @@ const ServicesProfile = () => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-11 rounded">
+      <div className="col-12 rounded p-4 pt-0 pb-0">
 
         { showServiceAddInputs }
         { showServicesInTable }

@@ -194,7 +194,7 @@ const ProductsProfile = () => {
         <div className={ !editProductsMode ? "hide" : "show pt-4 pb-4 card" }>
           <form onSubmit={ submitProductForm }>
             {
-              <div className="xl-12">
+              <div className="">
                 <div className="card-body d-flex flex-wrap gap-3 justify-content-center">
                   { productsListInputs.map((input, key) => (
                     < div className=" d-flex flex-wrap" key={ key } >
@@ -344,7 +344,7 @@ const ProductsProfile = () => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-11">
+      <div className="col-12 p-4 pt-0 pb-0">
 
         { showProductAddInputs }
         { showProductsInTable }

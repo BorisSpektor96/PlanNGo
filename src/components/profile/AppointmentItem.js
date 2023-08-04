@@ -90,7 +90,7 @@ const AppointmentItem = props => {
             <div className="d-flex flex-wrap">
               <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">{ !isBusiness ? 'Business:' : 'Client:' } </h6>
-                <p className="p-0 m-0"> { !isBusiness ? businessDetails.name : userDetails.name }</p>
+                <p className="p-0 m-0"> { isBusiness ? userDetails.name : businessDetails.name }</p>
               </div>
               <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">Service:</h6>
@@ -166,12 +166,24 @@ const AppointmentItem = props => {
           onClick={ () => { setToggle(!toggle) } }>
           { !toggle ? "More Info" : "Less Info" }
         </button>
-        <button
-          className="btn btn-danger"
-          onClick={ removeAppointment }
-        >
-          Cancel
-        </button>
+        {
+          date.getTime() > new Date().getTime()
+            ?
+            <button
+              className="btn btn-danger"
+              onClick={ removeAppointment }
+            >
+              Cancel
+            </button>
+            :
+            <button
+              disabled
+              className="btn btn-secondary"
+            // onClick={ removeAppointment }
+            >
+              Passed
+            </button>
+        }
       </div>
     </li>
 

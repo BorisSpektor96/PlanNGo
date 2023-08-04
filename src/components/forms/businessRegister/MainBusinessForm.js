@@ -228,7 +228,7 @@ class MainBusinessForm extends Component {
     this.state.profileImg = "";
   };
 
-  handleProducts(productId, price, description, name, quantity,lables, photoFile) {
+  handleProducts(productId, price, description, name, quantity, lables, photoFile) {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -284,8 +284,6 @@ class MainBusinessForm extends Component {
     }));
   };
 
-
-
   // Add a separate function to handle changes in opening end time
   handleOpeningEndTimeChange = (value) => {
     this.setState((prevState) => ({
@@ -324,13 +322,13 @@ class MainBusinessForm extends Component {
   handleAddBreak = (startTime, endTime) => {
     const formattedStartTime = dayjs(startTime, "HH:mm", true);
     const formattedEndTime = dayjs(endTime, "HH:mm", true);
-  
+
     if (formattedEndTime.isValid() && formattedEndTime.isAfter(formattedStartTime)) {
       const breakTimeRange = {
         start: formattedStartTime.format("HH:mm"),
         end: formattedEndTime.format("HH:mm"),
       };
-  
+
       this.setState((prevState) => ({
         appointmentsDef: {
           ...prevState.appointmentsDef,

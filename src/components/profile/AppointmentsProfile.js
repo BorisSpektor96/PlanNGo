@@ -25,7 +25,7 @@ const AppointmentsProfile = () => {
     } else {
       getAppointmentsDetailsUser()
     }
-  }, [])
+  }, [ profileInfo ])
 
 
   useEffect(() => {
@@ -49,7 +49,6 @@ const AppointmentsProfile = () => {
         setAppointments(appointment.appointments)
         appointments.forEach(item => {
           item[ "toggle" ] = false
-          console.log(item)
         })
       }
     } catch (error) {
@@ -69,7 +68,6 @@ const AppointmentsProfile = () => {
         setAppointments(appointments)
         appointments.forEach(item => {
           item[ "toggle" ] = false
-          console.log(item)
         })
       }
     } catch (error) {
@@ -79,6 +77,10 @@ const AppointmentsProfile = () => {
 
   return (
     <div className=" mt-4">
+      <div>
+
+      </div>
+
       <h5 className="d-flex justify-content-center m-1">Appointments</h5>
       <ul className="p-3 list-group list-group-flush">
         { appointments.length > 0 ?

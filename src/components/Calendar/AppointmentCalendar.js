@@ -44,13 +44,13 @@ const AppointmentCalendar = (props) => {
       setCurrentStep(4);
     }
   };
-  useEffect(() => {
-    console.log("Selected Time:", selectedTime);
-  }, [ selectedTime ]);
+  // useEffect(() => {
+  //   console.log("Selected Time:", selectedTime);
+  // }, [ selectedTime ]);
 
-  useEffect(() => {
-    console.log("currentStep:", currentStep);
-  }, [ currentStep ]);
+  // useEffect(() => {
+  //   console.log("currentStep:", currentStep);
+  // }, [ currentStep ]);
 
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
@@ -126,7 +126,7 @@ const AppointmentCalendar = (props) => {
       );
 
       const businessData = await businessResponse.json();
-      console.log("businessData" + props.businessDetails.email);
+      // console.log("businessData" + props.businessDetails.email);
 
       if (businessResponse.ok) {
         showMessage(businessData.message, businessData.type);
@@ -145,16 +145,16 @@ const AppointmentCalendar = (props) => {
         );
 
         const userData = await userResponse.json();
-        console.log("userData" + props.profileInfo.email);
+        // console.log("userData" + props.profileInfo.email);
 
         if (userResponse.ok) {
           showMessage(userData.message, userData.type);
           props.onClose();
         } else {
-          console.log(
-            "Failed to add appointment to the user:",
-            userData.message
-          );
+          // console.log(
+          //   "Failed to add appointment to the user:",
+          //   userData.message
+          // );
         }
       } else {
         console.log("Failed to add appointment:", businessData.message);
@@ -219,7 +219,6 @@ const AppointmentCalendar = (props) => {
           filteredList.push(time);
         }
       }
-
       setTimeList(
         filteredList.filter(
           (time) =>
@@ -231,7 +230,7 @@ const AppointmentCalendar = (props) => {
     } else {
       setSelectedDate("");
     }
-  }, [ selectedService ]);
+  }, [ selectedService, selectedDate ]);
 
   const renderAvailableTimes = () => {
     let availableTimes = timeList.map(({ time, isTaken }) => {
@@ -316,18 +315,17 @@ const AppointmentCalendar = (props) => {
           <>
             <div className="">
               <p className="d-flex justify-content-center fs-5 text-dark badge bg-warning">
-                Available times for { selectedDate.toLocaleDateString() }:
+                { ` Available times for ${selectedDate.getDate()}/${selectedDate.getMonth() + 1}/${selectedDate.getFullYear()}` }
               </p>
-              { renderAvailableTimes() }
+              { selectedDate && renderAvailableTimes() }
               { !selectedTime && (
                 <p className="d-flex justify-content-center fs-6 badge bg-danger">
                   Please select a time.
                 </p>
               ) }
               { selectedTime && (
-                <p className="d-flex justify-content-center fs-6 badge bg-success">
-                  You have selected { selectedDate.toLocaleDateString() }
-                  { selectedTime }.
+                <p className="d-flex justify-content-center fs-6 badge text-light bg-success">
+                  { `You have selected ${selectedDate.getDate()}/${selectedDate.getMonth() + 1}/${selectedDate.getFullYear()} ${selectedTime}` }
                 </p>
               ) }
             </div>

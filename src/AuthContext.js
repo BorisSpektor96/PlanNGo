@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+
     localStorage.removeItem('userData');
     setLoggedIn(false);
     setIsBusiness(false)
