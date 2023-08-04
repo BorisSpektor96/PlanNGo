@@ -14,10 +14,6 @@ export const AuthProvider = ({ children }) => {
     setLoggedIn(true);
   };
 
-  useEffect(() => {
-    console.log(isBusiness)
-  }, [ isBusiness ])
-
   const logout = () => {
     localStorage.removeItem('userData');
     setLoggedIn(false);
