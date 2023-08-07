@@ -25,7 +25,17 @@ const businessSchema = new mongoose.Schema(
         appointments: Array,
         businessHours: Object
       }
-    ]
+    ],
+    messages: [
+      {
+        read: Boolean,
+        UserEmail: String,
+        date: String,
+        content: String,
+        status: String,
+        subject: String,
+      }
+    ],
   },
   { collection: "users", versionKey: false }
 );

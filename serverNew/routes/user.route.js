@@ -4,6 +4,25 @@ import userBusinessModel from '../models/BusinessUser.js'
 
 const userRouter = express.Router();
 
+userRouter.post("/addMessage", async (req, res) => {
+  const { email, mmessage } = req.body;
+  try {
+    const user = await userModel.findOneAndUpdate(
+      { email: email },
+      { $push: { "messages": mmessage } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User/Business not found", type: "Error" });
+    }
+
+    res.status(200).json({ message: "message added successfully", type: "Success" });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Failed to add message", error });
+  }
+});
 
 userRouter.post('/signup', async (req, res) => {
   const { email, password, fullname, phoneNumber, userType, isBusiness, profileImg } = req.body;
@@ -62,8 +81,6 @@ userRouter.post("/getAppointmentsDetails", async (req, res) => {
   }
 })
 
-
-
 userRouter.post("/removeAppointment", async (req, res) => {
   const { userEmail, date, businessEmail } = req.body;
   console.log("================= user ===================")
@@ -102,8 +119,72 @@ userRouter.post("/removeAppointment", async (req, res) => {
   }
 });
 
+userRouter.post("/removeMessage", async (req, res) => {
+  const { email, businessEmail, date } = req.body;
+  try {
+    const user = await userModel.findOne({ email: email }).select({ messages: 1 });
 
+    if (!user || !user.messages) {
+      return res.status(404).json({
+        message: "User / Messages not found",
+        type: "Error"
+      });
+    }
 
+    const messagesIndex = user.messages.findIndex((message) =>
+      message.businessEmail === businessEmail && message.date === date
+    );
+
+    if (messagesIndex === -1) {
+      return res.status(404).json({
+        message: "Message not found for the given business and date",
+        type: "Error"
+      });
+    }
+
+    user.messages.splice(messagesIndex, 1);
+    await user.save();
+
+    res.status(200).json({ message: "Message removed successfully", type: "Success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
+userRouter.post("/markAs", async (req, res) => {
+  const { email, businessEmail, date, read } = req.body;
+  try {
+    const user = await userModel.findOne({ email: email }).select({ messages: 1 });
+
+    if (!user || !user.messages) {
+      return res.status(404).json({
+        message: "User / Messages not found",
+        type: "Error"
+      });
+    }
+
+    const message = user.messages.find((message) =>
+      message.businessEmail === businessEmail && message.date === date
+    );
+
+    if (!message) {
+      return res.status(404).json({
+        message: "Message not found for the given business and date",
+        type: "Error"
+      });
+    }
+
+    message.read = read;
+
+    await user.save();
+
+    res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
 
 userRouter.post('/imgUpdate', async (req, res) => {
   const { email, profileImg } = req.body

@@ -197,6 +197,26 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
   }
 });
 
+userBusinessRouter.post("/addMessage", async (req, res) => {
+  const { email, mmessage } = req.body;
+  try {
+    const user = await userBusinessModel.findOneAndUpdate(
+      { email: email },
+      { $push: { "messages": mmessage } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User/Business not found", type: "Error" });
+    }
+
+    res.status(200).json({ message: "message added successfully", type: "Success" });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Failed to add message", error });
+  }
+});
+
 userBusinessRouter.post("/addAppointment", async (req, res) => {
   const { email, appointment } = req.body;
   console.log(appointment.date)

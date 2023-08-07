@@ -9,6 +9,17 @@ const userSchema = new mongoose.Schema({
   favorites: Array,
   userType: String,
   appointments: Array,
+  messages: [
+    {
+      read: Boolean,
+      businessEmail: String,
+      date: String,
+      content: String,
+      status: String,
+      subject: String,
+
+    }
+  ],
   profileImg: { type: String, required: false }
 }, { collection: 'users', versionKey: false },
 );
