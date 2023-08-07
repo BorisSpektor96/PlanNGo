@@ -353,6 +353,7 @@ class MainBusinessForm extends Component {
       };
     });
   };
+
   handleDayCheckboxChange = (day) => {
     this.setState(
       (prevState) => {

@@ -9,6 +9,7 @@ import BusinessPage from './components/businessesMenu/businessPage/BusinessPage'
 import Profile from './components/profile/Profile'
 import FavoritesList from './components/favorites/FavoritesList'
 import BusinessAnalytics from './components/businessesMenu/businessAnalytics/BusinessAnalytics';
+import Messages from './components/messages/Messages'
 
 import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
@@ -25,6 +26,7 @@ function App() {
     { path: '/Profile', componentName: Profile },
     { path: '/FavoritesList', componentName: FavoritesList },
     { path: '/BusinessAnalytics', componentName: BusinessAnalytics },
+    { path: '/Messages', componentName: Messages },
   ]
 
   const routeOfComponents = routes

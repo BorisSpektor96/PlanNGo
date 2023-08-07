@@ -22,6 +22,10 @@ const MainNavbar = () => {
           tabName: 'Business Analytics',
           pathName: '/businessAnalytics'
         },
+        {
+          tabName: 'Messages',
+          pathName: '/messages'
+        },
 
       ];
     } else {

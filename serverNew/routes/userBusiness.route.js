@@ -252,6 +252,20 @@ userBusinessRouter.post("/getAppointmentsDetails", async (req, res) => {
   }
 })
 
+userBusinessRouter.post("/getAppointmentsDef", async (req, res) => {
+  const { email } = req.body
+  try {
+    const user = await userBusinessModel.findOne({ email: email })
+    if (!user) {
+      return res.status(404).json({ message: "User not found", type: "Error" });
+    }
+
+    res.status(200).json(user.appointmentsDef[ 0 ])
+  } catch (error) {
+    res.status(500).json({ message: error, type: "Error" })
+  }
+})
+
 
 userBusinessRouter.post("/removeAppointment", async (req, res) => {
   const { businessEmail, date, userEmail } = req.body;

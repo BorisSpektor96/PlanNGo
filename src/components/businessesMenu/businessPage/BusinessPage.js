@@ -92,6 +92,9 @@ const BusinessPage = () => {
   const showAddMessage = () => {
     setAddMassageIsShown(true)
   }
+  const hideMessages = () => {
+    setAddMassageIsShown(false)
+  }
   const showCalendarHandler = () => {
     setCalendarIsShown(true)
   }
@@ -253,7 +256,7 @@ const BusinessPage = () => {
           businessEmail={ businessDetails.email }
           fullname={ profileInfo.fullname }
 
-          onClose={ hideFormHandler }
+          onClose={ hideMessages }
         />
       ) }
 
