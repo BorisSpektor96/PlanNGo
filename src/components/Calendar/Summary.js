@@ -1,21 +1,27 @@
 import React from "react";
-import "./summary.css"
-const Summary = (props) => {
-  const { selectedDate, selectedTime, selectedService, selectedProducts, profileInfo, businessDetails } = props;
+import "./summary.css";
+
+const Summary = ({
+  selectedDate,
+  selectedTime,
+  selectedService,
+  selectedProducts,
+  profileInfo,
+  businessDetails,
+}) => {
+
   // Calculate the total price of selected products
   const totalProductsPrice = selectedProducts.reduce((acc, product) => {
     return acc + product.price * product.amount;
   }, 0);
 
   // Calculate the total price with tax
-  const totalWithTax = parseInt(totalProductsPrice) + parseInt(selectedService.price);
-  console.log(totalWithTax)
+  const totalWithTax =
+    parseInt(totalProductsPrice) + parseInt(selectedService.price);
   const totalWithTaxAndPercentage = (totalWithTax * 1.17).toFixed(2);
 
-
-
   return (
-    <div className="p-1  ">
+    <div className="p-1  " id='summary'>
       <hr />
       <h4 className="text-center">Appointment Summary</h4>
       <hr />
@@ -39,8 +45,7 @@ const Summary = (props) => {
         <p>Date: { selectedDate.toLocaleDateString() }</p>
         <p>Time: { selectedTime }</p>
         <p>Service: { selectedService.name }</p>
-        <p className="text-danger">payment: not yet </p>
-
+        <p className="text-danger">Payment: To be made at the business </p>
       </div>
       <hr />
 
@@ -82,16 +87,17 @@ const Summary = (props) => {
             </tfoot>
           </table>
           <div className="Ap">
-
-
-            <p className="text-danger">Your order will be ready at the business on the day of the appointment.</p>
+            <p className="text-danger">
+              Your order will be prepared for pickup at the business location on
+              the scheduled day of your appointment.
+            </p>
           </div>
+
         </div>
       ) }
+
     </div>
   );
 };
-
-
 
 export default Summary;

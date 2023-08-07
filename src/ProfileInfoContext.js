@@ -48,6 +48,8 @@ const ProfileInfoProvider = ({ children }) => {
     products: [],
     reviews: [],
     favorites: [],
+    appointmentsDef: [],
+    messages: [],
     profileImg: "http://bootdey.com/img/Content/avatar/avatar1.png"
   }
 
@@ -56,10 +58,10 @@ const ProfileInfoProvider = ({ children }) => {
     initialState
   );
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('myData'));
-    // dispatch({ type: 'UPDATE_PROFILE_INFO', payload: storedData });
-  }, []);
+  // useEffect(() => {
+  // const storedData = JSON.parse(localStorage.getItem('myData'));
+  // dispatch({ type: 'UPDATE_PROFILE_INFO', payload: storedData });
+  // }, []);
 
   return (
     <ProfileInfoContext.Provider value={ { profileInfo, dispatch } }>

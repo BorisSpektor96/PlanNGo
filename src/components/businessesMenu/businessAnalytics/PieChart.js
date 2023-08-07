@@ -1,16 +1,61 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import { useEffect, useState } from 'react';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PieChart = ()=>{
 
-    
- const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+const PieChart = ({ id, business }) => {
+  // Function to count the number of pieces sold for each product
+  const countProductPiecesSold = (business) => {
+    const productsMap = new Map();
+
+    business.products.forEach((product) => {
+      const { name, quantity } = product;
+      productsMap.set(name, { initialQuantity: Number(quantity), sold: 0 });
+    });
+
+    business.appointmentsDef[ 0 ].appointments.forEach((appointment) => {
+      if (appointment.purchase) {
+        appointment.purchase.forEach((purchase) => {
+          const { name, amount } = purchase;
+          if (productsMap.has(name)) {
+            const productData = productsMap.get(name);
+            productData.sold += Number(amount);
+          }
+        });
+      }
+    });
+
+    const result = [];
+    productsMap.forEach((data, name) => {
+      result.push({ name, sold: data.sold });
+    });
+
+    return result;
+  };
+
+  const [ productPiecesSold, setProductPiecesSold ] = useState([]);
+
+  useEffect(() => {
+    setProductPiecesSold(countProductPiecesSold(business));
+  }, [ business ]);
+
+
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Product Pieces Sold',
+      },
+    },
+  };
+
+  const data = {
+    labels: productPiecesSold.map((product) => product.name),
     datasets: [
       {
-        label: 'product',
-        data: [12, 19, 3, 5, 2, 3],
+        label: 'Product Pieces Sold',
+        data: productPiecesSold.map((product) => product.sold),
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -32,8 +77,11 @@ const PieChart = ()=>{
     ],
   };
 
-    return <div className='pt-3'>
-    <Pie data={data} />
+  return (
+    <div style={ { width: '400px', height: '400px' } }>
+      <Pie id={ id } options={ options } data={ data } />
     </div>
-}
+  );
+};
+
 export default PieChart;

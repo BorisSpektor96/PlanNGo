@@ -8,7 +8,7 @@ import AddReview from "../../review/AddReview";
 import { ProfileInfoContext } from "../../../ProfileInfoContext";
 import { PopupMessageContext } from "../../../PopupMessage";
 import Recommendations from "../recommendations/Recomendations"
-
+import MessageForm from "../../messages/MessageForm";
 
 const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
@@ -22,6 +22,8 @@ const BusinessPage = () => {
 
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
   const [ calendarIsShown, setCalendarIsShown ] = useState(false);
+  const [ AddMassageIsShown, setAddMassageIsShown ] = useState(false);
+
   const [ workingHours, setWorkingHours ] = useState('')
   const [ appointmentsDef, setAppointmentDef ] = useState({})
 
@@ -87,6 +89,9 @@ const BusinessPage = () => {
     showCalendarHandler()
   };
 
+  const showAddMessage = () => {
+    setAddMassageIsShown(true)
+  }
   const showCalendarHandler = () => {
     setCalendarIsShown(true)
   }
@@ -150,7 +155,6 @@ const BusinessPage = () => {
             { businessDetails.address }
             <div class="vr"></div>
 
-
             { workingHours.start } - { workingHours.end }
 
           </div>
@@ -185,6 +189,21 @@ const BusinessPage = () => {
               ></lord-icon>
               <p className="m-0 ms-2">Add Review</p>
             </button>
+
+            <button
+              onClick={ showAddMessage }
+              className="d-flex btn btn-outline-info align-items-center"
+            >
+              <lord-icon
+                src="https://cdn.lordicon.com/rhvddzym.json"
+                trigger="loop"
+                colors="primary:#121331,secondary:#08a88a"
+                styles="width:250px;height:250px">
+              </lord-icon>
+
+              <p className="m-0 ms-2">Send Message</p>
+            </button>
+
             { isFavorite ?
               (<button
                 className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
@@ -192,9 +211,6 @@ const BusinessPage = () => {
                 onClick={ deleteBusinessFromFavorites }
               >
                 <lord-icon
-
-
-
                   src="https://cdn.lordicon.com/ytuosppc.json"
                   trigger="loop"
                   delay="1200"
@@ -230,6 +246,16 @@ const BusinessPage = () => {
           <Review reviews={ businessDetails.reviews } />
         </div>
       </div>
+
+      { AddMassageIsShown && (
+        <MessageForm
+          userEmail={ profileInfo.email }
+          businessEmail={ businessDetails.email }
+          fullname={ profileInfo.fullname }
+
+          onClose={ hideFormHandler }
+        />
+      ) }
 
       { addReviewIsShown &&
         <AddReview

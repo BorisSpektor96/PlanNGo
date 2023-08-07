@@ -7,7 +7,6 @@
   z-index: 20;
   background-color: rgba(8, 0, 250, 0.45);
   animation: pop-up 500ms ease-in-out forwards;
-  
 }
 
 .modal {
@@ -23,8 +22,9 @@
   animation: slide-down 500ms ease-out forwards;
   overflow-y: auto;
   min-width: 350px;
-  height: 95vh;
+  max-height: 90vh;
 }
+
 
 @media (min-width: 768px) {
   .modal {
