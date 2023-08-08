@@ -12,7 +12,6 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
                 <td className="text-center">{ data.date }</td>
                 <td className="text-center">{ email }</td>
                 <td className="text-center">{ data.subject }</td>
-                <td className="text-center">{ data.status }</td>
                 <td className="text-center">
                     <input type="checkbox" class="custom-control-input" id="customSwitches"
                         checked={ data.read }

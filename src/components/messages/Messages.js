@@ -143,9 +143,16 @@ const Messages = () => {
                     <tr className="table-secondary">
                         <th className="text-center" scope="col"> # </th>
                         <th className="text-center" scope="col">date</th>
-                        <th className="text-center" scope="col">recipient </th>
+                        <th className="text-center" scope="col">
+                            {
+                                showReceived && !showSent
+                                    ? "From"
+                                    : showSent && !showReceived
+                                        ? "To"
+                                        : "From / To"
+                            }
+                        </th>
                         <th className="text-center" scope="col">subject</th>
-                        <th className="text-center" scope="col">status (forTest)</th>
                         <th className="text-center" scope="col">mark as read</th>
                         <th className="text-center" scope="col">Content</th>
                         <th className="text-center" scope="col"></th>
