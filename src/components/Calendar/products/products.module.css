@@ -2,7 +2,7 @@
     flex-direction: row;
     max-width: 35em;
     border: 0;
-    background-color: #d7d0d0;
+    background-color: #d0b1b1;
     color: #fff;
     box-shadow: 0 7px 7px rgba(0, 0, 0, 0.18);
   }
@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding: 5px;
   }
   .text-section {
     max-width: 80%;
@@ -27,6 +28,7 @@
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
+    padding: 7px;
   }
   .cta-section .btn {
     padding: 0.2em 0.5em;

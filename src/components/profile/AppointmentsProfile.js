@@ -259,68 +259,69 @@ const AppointmentsProfile = () => {
 
   return (
     <div className=" mt-4">
-      <div className="d-flex flex-column align-items-center">
-        <p className="text-center display-6">Calendar Settings</p>
-        <form>
-          <Row className="align-items-center">
+      { profileInfo.isBusiness &&
+        <div className="d-flex flex-column align-items-center">
+          <p className="text-center display-6">Calendar Settings</p>
+          <form>
+            <Row className="align-items-center">
 
-            <Col md={ 2 }>
-              <Label className="mt-2 me-1" for="fixedBreak">
-                regular Break
-              </Label>
-            </Col>
-
-            <Col md={ 3 }>
-              <div className="d-flex">
-                <Label className="mt-2 me-1">
-                  Start:
+              <Col md={ 2 }>
+                <Label className="mt-2 me-1" for="fixedBreak">
+                  regular Break
                 </Label>
-                <select
-                  className="form-control"
-                  value={ startTime }
-                  onChange={ (e) => setStartTime(e.target.value) }
+              </Col>
+
+              <Col md={ 3 }>
+                <div className="d-flex">
+                  <Label className="mt-2 me-1">
+                    Start:
+                  </Label>
+                  <select
+                    className="form-control"
+                    value={ startTime }
+                    onChange={ (e) => setStartTime(e.target.value) }
+                  >
+                    { generateStartTimeOptions().map((time) => (
+                      <option key={ time } value={ time }>
+                        { time }
+                      </option>
+                    )) }
+                  </select>
+                </div>
+              </Col>
+
+              <Col md={ 3 }>
+                <div className="d-flex">
+                  <Label className="mt-2 me-1">
+                    End:
+                  </Label>
+                  <select
+                    className="form-control"
+                    value={ endTime }
+                    onChange={ (e) => setEndTime(e.target.value) }
+                  >
+                    { generateEndTimeOptions().map((time) => (
+                      <option key={ time } value={ time }>
+                        { time }
+                      </option>
+                    )) }
+                  </select>
+                </div>
+              </Col>
+
+              <Col md={ 3 }>
+                <Button
+                  className="btn btn-success px-4"
+                  onClick={ addBreakHandler }
+                  type="button"
                 >
-                  { generateStartTimeOptions().map((time) => (
-                    <option key={ time } value={ time }>
-                      { time }
-                    </option>
-                  )) }
-                </select>
-              </div>
-            </Col>
+                  Add break
+                </Button>
+              </Col>
 
-            <Col md={ 3 }>
-              <div className="d-flex">
-                <Label className="mt-2 me-1">
-                  End:
-                </Label>
-                <select
-                  className="form-control"
-                  value={ endTime }
-                  onChange={ (e) => setEndTime(e.target.value) }
-                >
-                  { generateEndTimeOptions().map((time) => (
-                    <option key={ time } value={ time }>
-                      { time }
-                    </option>
-                  )) }
-                </select>
-              </div>
-            </Col>
+            </Row>
 
-            <Col md={ 3 }>
-              <Button
-                className="btn btn-success px-4"
-                onClick={ addBreakHandler }
-                type="button"
-              >
-                Add break
-              </Button>
-            </Col>
-
-          </Row>
-
-          {/* { appointmentsDef.fixedBreak.length > 0 && (
+            {/* { appointmentsDef.fixedBreak.length > 0 && (
             <div>
               <ul>
                 { appointmentsDef.fixedBreak.map((breakTime, index) => (
@@ -339,7 +340,7 @@ const AppointmentsProfile = () => {
               </ul>
             </div>
           ) } */}
-          {/* { props.errors && (
+            {/* { props.errors && (
             <p
               style={ {
                 fontSize: "12px",
@@ -350,83 +351,83 @@ const AppointmentsProfile = () => {
             </p>
           ) } */}
 
-          <div className="mt-2">
-            <Label className="mt-4 me-3" for="fixedBreak">
-              fixedDaysOff:
-            </Label>
-            { daysOfWeek.map((day) => (
-              <div className="form-check form-check-inline" key={ day }>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id={ day }
-                  value={ day }
-                // checked={ appointmentsDef.fixedDaysOff.includes(day) }
-                // onChange={ () => handleDayCheckboxChange(day) }
-                />
-                <label className="form-check-label" htmlFor={ day }>
-                  { day }
-                </label>
-              </div>
-            )) }
-          </div>
-
-          <div className="mt-2 pt-3">
-            <Row className="align-items-center">
-
-              <Col md={ 2 }>
-                <Label className="" for="fixedBreak">
-                  Opening hours
-                </Label>
-              </Col>
-
-              <Col md={ 3 }>
-                <div className="d-flex">
-                  <Label className="mt-2 me-1">
-                    Start:
-                  </Label>
-                  <select
-                    id="openingStartTime"
-                    className="form-control"
-                  // value={ appointmentsDef.businessHours.start }
-                  // onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
-                  >
-                    { generateStartTimeOptions().map((time) => (
-                      <option key={ time } value={ time }>
-                        { time }
-                      </option>
-                    )) }
-                  </select>
+            <div className="mt-2">
+              <Label className="mt-4 me-3" for="fixedBreak">
+                fixedDaysOff:
+              </Label>
+              { daysOfWeek.map((day) => (
+                <div className="form-check form-check-inline" key={ day }>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={ day }
+                    value={ day }
+                  // checked={ appointmentsDef.fixedDaysOff.includes(day) }
+                  // onChange={ () => handleDayCheckboxChange(day) }
+                  />
+                  <label className="form-check-label" htmlFor={ day }>
+                    { day }
+                  </label>
                 </div>
-              </Col>
-              <Col md={ 3 }>
-                <div className="d-flex">
-                  <Label className="mt-2 me-1">
-                    End:
+              )) }
+            </div>
+
+            <div className="mt-2 pt-3">
+              <Row className="align-items-center">
+
+                <Col md={ 2 }>
+                  <Label className="" for="fixedBreak">
+                    Opening hours
                   </Label>
-                  <select
-                    id="openingEndTime"
-                    className="form-control"
-                  // value={ appointmentsDef.businessHours.end }
-                  // onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
-                  >
-                    { generateEndTimeOptions().map((time) => (
-                      <option key={ time } value={ time }>
-                        { time }
-                      </option>
-                    )) }
-                  </select>
-                </div>
-              </Col>
+                </Col>
 
-            </Row>
-          </div>
-        </form>
-      </div>
+                <Col md={ 3 }>
+                  <div className="d-flex">
+                    <Label className="mt-2 me-1">
+                      Start:
+                    </Label>
+                    <select
+                      id="openingStartTime"
+                      className="form-control"
+                    // value={ appointmentsDef.businessHours.start }
+                    // onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
+                    >
+                      { generateStartTimeOptions().map((time) => (
+                        <option key={ time } value={ time }>
+                          { time }
+                        </option>
+                      )) }
+                    </select>
+                  </div>
+                </Col>
+                <Col md={ 3 }>
+                  <div className="d-flex">
+                    <Label className="mt-2 me-1">
+                      End:
+                    </Label>
+                    <select
+                      id="openingEndTime"
+                      className="form-control"
+                    // value={ appointmentsDef.businessHours.end }
+                    // onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
+                    >
+                      { generateEndTimeOptions().map((time) => (
+                        <option key={ time } value={ time }>
+                          { time }
+                        </option>
+                      )) }
+                    </select>
+                  </div>
+                </Col>
 
+              </Row>
+            </div>
+          </form>
+        </div>
+      }
       <h5 className="d-flex justify-content-center m-1">Appointments</h5>
       <ul className="p-3 list-group list-group-flush">
-        {/* { appointments.length > 0 ?
+        { appointments.length > 0 ?
           (<>
             { appointments.map((item) => (
               <AppointmentItem
@@ -440,7 +441,7 @@ const AppointmentsProfile = () => {
           (<>
             <p className="text-center">There is no Appointments</p>
           </>)
-        } */}
+        }
       </ul>
     </div>
   )

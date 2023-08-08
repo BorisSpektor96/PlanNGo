@@ -108,7 +108,24 @@ const Messages = () => {
             console.error("Error while removing message:", error);
         }
     };
+    // const getMessages = async () => {
+    //     try {
+    //         const response = await fetch(api + "getMessages", {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ email: profileInfo.email }),
+    //         });
 
+    //         const messages = await response.json()
+    //         if (response.ok) {
+    //             setMessagesData(messages);
+    //         } else {
+    //             console.error("cannot get messages");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error while updating message status:", error);
+    //     }
+    // }
     return (
         <div className="p-4 ">
             <p className="text-center display-6 pt-3">Messages</p>

@@ -24,6 +24,22 @@ userRouter.post("/addMessage", async (req, res) => {
   }
 });
 
+userRouter.post("/getMessages", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await userModel.findOne({ email: email }).select({ messages: 1 });
+
+    if (!user || !user.messages) {
+      return res.status(404).json();
+    }
+    console.log(user.messages)
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
 userRouter.post('/signup', async (req, res) => {
   const { email, password, fullname, phoneNumber, userType, isBusiness, profileImg } = req.body;
 
