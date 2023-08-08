@@ -320,7 +320,7 @@ const AppointmentsProfile = () => {
 
           </Row>
 
-          { appointmentsDef.fixedBreak.length > 0 && (
+          {/* { appointmentsDef.fixedBreak.length > 0 && (
             <div>
               <ul>
                 { appointmentsDef.fixedBreak.map((breakTime, index) => (
@@ -338,7 +338,7 @@ const AppointmentsProfile = () => {
                 )) }
               </ul>
             </div>
-          ) }
+          ) } */}
           {/* { props.errors && (
             <p
               style={ {
@@ -361,8 +361,8 @@ const AppointmentsProfile = () => {
                   type="checkbox"
                   id={ day }
                   value={ day }
-                  checked={ appointmentsDef.fixedDaysOff.includes(day) }
-                  onChange={ () => handleDayCheckboxChange(day) }
+                // checked={ appointmentsDef.fixedDaysOff.includes(day) }
+                // onChange={ () => handleDayCheckboxChange(day) }
                 />
                 <label className="form-check-label" htmlFor={ day }>
                   { day }
@@ -388,8 +388,8 @@ const AppointmentsProfile = () => {
                   <select
                     id="openingStartTime"
                     className="form-control"
-                    value={ appointmentsDef.businessHours.start }
-                    onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
+                  // value={ appointmentsDef.businessHours.start }
+                  // onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
                   >
                     { generateStartTimeOptions().map((time) => (
                       <option key={ time } value={ time }>
@@ -407,8 +407,8 @@ const AppointmentsProfile = () => {
                   <select
                     id="openingEndTime"
                     className="form-control"
-                    value={ appointmentsDef.businessHours.end }
-                    onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
+                  // value={ appointmentsDef.businessHours.end }
+                  // onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
                   >
                     { generateEndTimeOptions().map((time) => (
                       <option key={ time } value={ time }>
@@ -426,7 +426,7 @@ const AppointmentsProfile = () => {
 
       <h5 className="d-flex justify-content-center m-1">Appointments</h5>
       <ul className="p-3 list-group list-group-flush">
-        { appointments.length > 0 ?
+        {/* { appointments.length > 0 ?
           (<>
             { appointments.map((item) => (
               <AppointmentItem
@@ -440,7 +440,7 @@ const AppointmentsProfile = () => {
           (<>
             <p className="text-center">There is no Appointments</p>
           </>)
-        }
+        } */}
       </ul>
     </div>
   )

@@ -120,7 +120,7 @@ userRouter.post("/removeAppointment", async (req, res) => {
 });
 
 userRouter.post("/removeMessage", async (req, res) => {
-  const { email, businessEmail, date } = req.body;
+  const { email, id } = req.body;
   try {
     const user = await userModel.findOne({ email: email }).select({ messages: 1 });
 
@@ -132,12 +132,12 @@ userRouter.post("/removeMessage", async (req, res) => {
     }
 
     const messagesIndex = user.messages.findIndex((message) =>
-      message.businessEmail === businessEmail && message.date === date
+      message.id === id
     );
 
     if (messagesIndex === -1) {
       return res.status(404).json({
-        message: "Message not found for the given business and date",
+        message: "Message not found for the given user id",
         type: "Error"
       });
     }
@@ -153,7 +153,7 @@ userRouter.post("/removeMessage", async (req, res) => {
 });
 
 userRouter.post("/markAs", async (req, res) => {
-  const { email, businessEmail, date, read } = req.body;
+  const { email, id, read } = req.body;
   try {
     const user = await userModel.findOne({ email: email }).select({ messages: 1 });
 
@@ -165,7 +165,7 @@ userRouter.post("/markAs", async (req, res) => {
     }
 
     const message = user.messages.find((message) =>
-      message.businessEmail === businessEmail && message.date === date
+      message.id === id
     );
 
     if (!message) {

@@ -4,6 +4,7 @@ import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { useContext, useState, useEffect } from 'react';
 import MessageForm from './MessageForm'
 const Messages = () => {
+
     const { profileInfo, dispatch } = useContext(ProfileInfoContext);
     const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
     const [ showSent, setShowSent ] = useState(false);
@@ -13,14 +14,14 @@ const Messages = () => {
 
     let type = "user";
     useEffect(() => {
-        // Update localProfileInfo when profileInfo changes
         setLocalProfileInfo(profileInfo);
     }, [ profileInfo ]);
 
     if (localProfileInfo.isBusiness) {
         type = "business"
-
     }
+
+    const api = type === 'business' ? "http://localhost:3001/business/" : "http://localhost:3001/users/"
 
     // Function to handle showing the reply form
     const handleShowReply = (email) => {
@@ -38,17 +39,16 @@ const Messages = () => {
         if (showReceived && message.status === "received") return true;
         return false;
     });
-    const onChangeRead = async (businessEmail, date, read) => {
+    const onChangeRead = async (id, read) => {
         try {
-            const response = await fetch("http://localhost:3001/users/markAs", {
+            const response = await fetch(api + "markAs", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     email: localProfileInfo.email,
-                    businessEmail,
-                    date,
+                    id: id,
                     read: !read,
                 }),
             });
@@ -59,8 +59,7 @@ const Messages = () => {
                 setMessagesData((prevMessages) =>
                     prevMessages.map((message) => {
                         if (
-                            message.businessEmail === businessEmail &&
-                            new Date(message.date).toISOString() === new Date(date).toISOString()
+                            message._id === id
                         ) {
                             return { ...message, read: !read };
                         }
@@ -78,16 +77,14 @@ const Messages = () => {
         }
     };
 
-    const handleRemoveMessage = async (businessEmail, date) => {
-
-
+    const handleRemoveMessage = async (id) => {
         try {
-            const response = await fetch("http://localhost:3001/users/removeMessage", {
+            const response = await fetch(api + 'removeMessage', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: localProfileInfo.email, businessEmail, date }),
+                body: JSON.stringify({ email: localProfileInfo.email, id }),
             });
 
             const data = await response.json();
@@ -96,8 +93,9 @@ const Messages = () => {
                 setMessagesData((prevMessages) =>
                     prevMessages.filter(
                         (message) =>
-                            message.businessEmail !== businessEmail ||
-                            new Date(message.date).toISOString() !== new Date(date).toISOString()
+                            message._id !== id
+                        // message.businessEmail !== email &&
+                        // new Date(message.date).toISOString() !== new Date(date).toISOString()
                     )
                 );
                 // Display a success message (you can implement this using state and a modal, for example)
@@ -157,7 +155,7 @@ const Messages = () => {
                 <tbody className="">
                     { filteredMessages.map((message, index) => (
                         <MessageItem
-                            key={ message._id.$oid }
+                            id={ message._id }
                             data={ message }
                             index={ index }
                             onChangeRead={ onChangeRead }

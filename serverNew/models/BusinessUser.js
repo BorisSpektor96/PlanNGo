@@ -29,11 +29,11 @@ const businessSchema = new mongoose.Schema(
     messages: [
       {
         read: Boolean,
-        UserEmail: String,
+        userEmail: String,
         date: String,
         content: String,
         status: String,
-        subject: String,
+        subject: String
       }
     ],
   },

@@ -27,6 +27,11 @@ const BusinessPage = () => {
   const [ workingHours, setWorkingHours ] = useState('')
   const [ appointmentsDef, setAppointmentDef ] = useState({})
 
+  let type = "user"
+  if (profileInfo.isBusiness) {
+    type = "business"
+  }
+
   useEffect(() => {
     if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
       setWorkingHours({
@@ -255,7 +260,7 @@ const BusinessPage = () => {
           from={ profileInfo.email }
           to={ businessDetails.email }
           type={ type }
-          onClose={ hideFormHandler }
+          onClose={ hideMessages }
         />
       ) }
 

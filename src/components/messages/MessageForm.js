@@ -4,54 +4,24 @@ import Modal from "../UI/Modal";
 import { PopupMessageContext } from "./../../PopupMessage";
 
 const MessageForm = ({ to, from, type, onClose }) => {
-  console.log("MessageForm " + "to " + to + " from " + from + " type " + type);
   const { showMessage } = useContext(PopupMessageContext);
   const [ formValues, setFormValues ] = useState({
     subject: "",
     content: "",
   });
 
-  let uRead = false;
-  let bRead = false;
-  let uStatus = "";
-  let bStatus = "";
-  let reqEmailuser = "";
-  let reqEmailBusiness = "";
-  let mmessageEmailUser = "";
-  let mmessageEmailBusiness = "";
+  const uRead = type === "business" ? false : true;
+  const bRead = type === "user" ? false : true;
+  const uStatus = type === "user" ? "sent" : "received";
+  const bStatus = type === "user" ? "received" : "sent";
+  const reqEmailUser = type === "user" ? from : to;
+  const reqEmailBusiness = type === "business" ? from : to;
+  const messageEmailUser = type === "user" ? to : from;
+  const messageEmailBusiness = type === "business" ? to : from;
 
-  if (type === "business") { //business sending to user
-    uRead = false;
-    bRead = true;
-    uStatus = "received";
-    bStatus = "sent";
-    reqEmailuser = to;
-    reqEmailBusiness = from;
-    mmessageEmailUser = from;
-    mmessageEmailBusiness = to
-
-  } else if (type === "user") {//user sending to business
-    uRead = true;
-    bRead = false;
-    uStatus = "sent";
-    bStatus = "received";
-    reqEmailuser = from;
-    reqEmailBusiness = to;
-    mmessageEmailUser = to;
-    mmessageEmailBusiness = from
-  }
   const onChange = (e) => {
     setFormValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
-
-  useEffect(() => {
-    console.log("subject: " + formValues.subject);
-  }, [ formValues.subject ]);
-
-  useEffect(() => {
-    console.log("content: " + formValues.content);
-  }, [ formValues.content ]);
-
 
   const currentDate = new Date();
   const sendMessageToBusiness = async () => {
@@ -66,7 +36,7 @@ const MessageForm = ({ to, from, type, onClose }) => {
           mmessage: {
             subject: formValues.subject,
             content: formValues.content,
-            userEmail: mmessageEmailBusiness, // Use changedTo instead of to
+            userEmail: messageEmailBusiness, // Use changedTo instead of to
             status: bStatus,
             read: bRead,
             date: currentDate.toISOString(),
@@ -90,11 +60,11 @@ const MessageForm = ({ to, from, type, onClose }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: reqEmailuser, // Use reqEmailUser instead of to
+          email: reqEmailUser, // Use reqEmailUser instead of to
           mmessage: {
             subject: formValues.subject,
             content: formValues.content,
-            businessEmail: mmessageEmailUser, // Use changedFrom instead of from
+            businessEmail: messageEmailUser, // Use changedFrom instead of from
             status: uStatus,
             read: uRead,
             date: currentDate.toISOString(),

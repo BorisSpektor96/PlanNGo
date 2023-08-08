@@ -369,7 +369,10 @@ const AccountProfile = () => {
           }
         </div>
         <div className="">
-          <AppointmentsProfile />
+          { profileInfo.isBusiness
+            &&
+            <AppointmentsProfile />
+          }
         </div>
 
 

@@ -34,6 +34,10 @@ const MainNavbar = () => {
           tabName: 'Home',
           pathName: '/businessesMenu'
         },
+        {
+          tabName: 'Messages',
+          pathName: '/messages'
+        },
       ]
     }
   } else {
