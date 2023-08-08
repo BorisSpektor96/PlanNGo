@@ -19,7 +19,7 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
                     />
                 </td>
                 <td className="text-center">
-                    <button type="button" class="btn btn-outline-success btn-sm"
+                    <button type="button" class={ showContent ? "btn btn-success btn-sm" : "btn btn-outline-success btn-sm" }
                         onClick={ () => setShowContent(!showContent) }>
                         { showContent ? "Hide " : "Show " }
                     </button>
