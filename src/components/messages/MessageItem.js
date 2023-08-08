@@ -1,29 +1,29 @@
 import { useState } from 'react';
 
-const MessageItem = ({ data, index, onRemoveMessage, onChangeRead, onShowReply }) => {
-    const [showContent, setShowContent] = useState(false); // Add useState here
+const MessageItem = ({ data, index, onRemoveMessage, onChangeRead, onShowReply, type }) => {
+    const [ showContent, setShowContent ] = useState(false); // Add useState here
+    let email = type === 'business' ? data.userEmail : data.businessEmail;
 
 
     return (
         <>
             <tr className="table-secondary">
-                <td className="text-center">{index + 1}</td>
-                <td className="text-center">{data.date}</td>
-                <td className="text-center">{data.businessEmail}</td>
-                <td className="text-center">{data.subject}</td>
-                <td className="text-center">{data.status}</td>
-                <td className="text-center"><input type="checkbox" class="custom-control-input" id="customSwitches" checked={data.read} onChange={() => onChangeRead(data.businessEmail, data.date, data.read)} /></td>
+                <td className="text-center">{ index + 1 }</td>
+                <td className="text-center">{ data.date }</td>
+                <td className="text-center">{ email }</td>
+                <td className="text-center">{ data.subject }</td>
+                <td className="text-center">{ data.status }</td>
+                <td className="text-center"><input type="checkbox" class="custom-control-input" id="customSwitches" checked={ data.read } onChange={ () => onChangeRead(data.businessEmail, data.date, data.read) } /></td>
                 <td className="text-center">
-                    <button type="button" class="btn btn-outline-success btn-sm" onClick={() => setShowContent(!showContent)}>{showContent ? "Hide " : "Show "}
+                    <button type="button" class="btn btn-outline-success btn-sm" onClick={ () => setShowContent(!showContent) }>{ showContent ? "Hide " : "Show " }
                     </button>
-                    {showContent && (
-                        <td className=" d-flex justify-content-center p-2"> {data.content} </td>
-                    )}
+                    { showContent && (
+                        <td className=" d-flex justify-content-center p-2"> { data.content } </td>
+                    ) }
                 </td>
-                <td className="text-center"><button type="button" class="btn  btn-outline-primary btn-sm" onClick={() => onShowReply(data.businessEmail)} >reply</button></td>
-                <td className="text-center"><button type="button" className="btn btn-outline-danger btn-sm" onClick={() => onRemoveMessage(data.businessEmail, data.date)}>delete</button></td>
+                <td className="text-center"><button type="button" class="btn  btn-outline-primary btn-sm" onClick={ () => onShowReply(email) } >reply</button></td>
+                <td className="text-center"><button type="button" className="btn btn-outline-danger btn-sm" onClick={ () => onRemoveMessage(data.businessEmail, data.date) }>delete</button></td>
             </tr>
-
         </>
     );
 };

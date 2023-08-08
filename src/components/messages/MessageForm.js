@@ -3,74 +3,101 @@ import { Input, Label } from "reactstrap";
 import Modal from "../UI/Modal";
 import { PopupMessageContext } from "./../../PopupMessage";
 
-const MessageForm = (props) => {
+const MessageForm = ({ to, from, type, onClose }) => {
+  console.log("MessageForm " + "to " + to + " from " + from + " type " + type);
   const { showMessage } = useContext(PopupMessageContext);
-
-  const [formValues, setFormValues] = useState({
+  const [ formValues, setFormValues ] = useState({
     subject: "",
     content: "",
   });
 
+  let uRead = false;
+  let bRead = false;
+  let uStatus = "";
+  let bStatus = "";
+  let reqEmailuser = "";
+  let reqEmailBusiness = "";
+  let mmessageEmailUser = "";
+  let mmessageEmailBusiness = "";
+
+  if (type === "business") { //business sending to user
+    uRead = false;
+    bRead = true;
+    uStatus = "received";
+    bStatus = "sent";
+    reqEmailuser = to;
+    reqEmailBusiness = from;
+    mmessageEmailUser = from;
+    mmessageEmailBusiness = to
+
+  } else if (type === "user") {//user sending to business
+    uRead = true;
+    bRead = false;
+    uStatus = "sent";
+    bStatus = "received";
+    reqEmailuser = from;
+    reqEmailBusiness = to;
+    mmessageEmailUser = to;
+    mmessageEmailBusiness = from
+  }
   const onChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    setFormValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
 
   useEffect(() => {
     console.log("subject: " + formValues.subject);
-  }, [formValues.subject]);
+  }, [ formValues.subject ]);
 
   useEffect(() => {
     console.log("content: " + formValues.content);
-  }, [formValues.content]);
+  }, [ formValues.content ]);
 
 
-  const currentDate = new Date(); 
-
+  const currentDate = new Date();
   const sendMessageToBusiness = async () => {
-      try {
+    try {
       const response = await fetch("http://localhost:3001/business/addMessage", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: props.businessEmail,
+          email: reqEmailBusiness, // Use reqEmailBusiness instead of reqEmail
           mmessage: {
             subject: formValues.subject,
             content: formValues.content,
-            userEmail: props.userEmail,
-            status:'received',
-            read: false,
+            userEmail: mmessageEmailBusiness, // Use changedTo instead of to
+            status: bStatus,
+            read: bRead,
             date: currentDate.toISOString(),
           },
         }),
       });
       const data = await response.json();
       showMessage(data.message, data.type);
-      } catch (error) {
+    } catch (error) {
       console.log("Error:", error);
       showMessage("Failed to send message to business", "Error");
     }
   };
 
   const sendMessageToUser = async () => {
-      try {
-        const currentDate = new Date();
+    try {
+      const currentDate = new Date();
       const response = await fetch("http://localhost:3001/users/addMessage", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: props.userEmail,
+          email: reqEmailuser, // Use reqEmailUser instead of to
           mmessage: {
             subject: formValues.subject,
             content: formValues.content,
-            businessEmail:props.businessEmail,
-            status:'sent',
-            read: true,
+            businessEmail: mmessageEmailUser, // Use changedFrom instead of from
+            status: uStatus,
+            read: uRead,
             date: currentDate.toISOString(),
-
           },
         }),
       });
@@ -87,7 +114,7 @@ const MessageForm = (props) => {
     event.preventDefault();
     await sendMessageToBusiness();
     await sendMessageToUser();
-    props.onClose();
+    onClose();
   };
 
   return (
@@ -98,22 +125,20 @@ const MessageForm = (props) => {
           className="btn-close"
           aria-label="Close"
           dal
-          onClick={props.onClose}
+          onClick={ onClose }
         ></button>
       </div>
 
       <form
         className="form-check d-flex flex-column justify-content-center  p-2"
-        onSubmit={handleSubmit}
+        onSubmit={ handleSubmit }
       >
         <p className="text-center display-7">Message the Business</p>
         <div className="lh-1 ">
-          <p style={{ fontSize: "13px" }}>
-            to: {props.businessEmail}
-          </p>
-          <p style={{ fontSize: "13px" }}>
-            from: {props.fullname}
-          </p>
+          <div className="lh-1">
+            <p style={ { fontSize: "13px" } }>to: { to }</p>
+            <p style={ { fontSize: "13px" } }>from: { from }</p>
+          </div>
         </div>
 
         <Label className="mt-2 mb-0" for="content">
@@ -126,10 +151,10 @@ const MessageForm = (props) => {
           placeholder="Message subject"
           errorMessage="Subject is required"
           label="Subject"
-          required={true}
-          onChange={onChange}
+          required={ true }
+          onChange={ onChange }
           className="form-control-sm"
-          value={formValues.subject}
+          value={ formValues.subject }
         />
 
         <Label className="mt-2 mb-0" for="content">
@@ -144,9 +169,9 @@ const MessageForm = (props) => {
           type="text"
           errorMessage="Content is required"
           label="Content"
-          required={true}
-          onChange={onChange}
-          value={formValues.content}
+          required={ true }
+          onChange={ onChange }
+          value={ formValues.content }
         />
 
         <button type="submit" className="btn btn-primary m-2">

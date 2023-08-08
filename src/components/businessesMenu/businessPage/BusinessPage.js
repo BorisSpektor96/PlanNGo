@@ -252,13 +252,20 @@ const BusinessPage = () => {
 
       { AddMassageIsShown && (
         <MessageForm
-          userEmail={ profileInfo.email }
-          businessEmail={ businessDetails.email }
-          fullname={ profileInfo.fullname }
-
-          onClose={ hideMessages }
+          from={ profileInfo.email }
+          to={ businessDetails.email }
+          type={ type }
+          onClose={ hideFormHandler }
         />
       ) }
+
+      { addReviewIsShown &&
+        <AddReview
+          profileInfo={ profileInfo }
+          businessDetails={ businessDetails }
+          onClose={ hideFormHandler }
+        />
+      }
 
       { addReviewIsShown &&
         <AddReview

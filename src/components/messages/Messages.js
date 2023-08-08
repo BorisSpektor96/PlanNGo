@@ -1,22 +1,33 @@
 import React from "react";
 import MessageItem from "./MessageItem";
 import { ProfileInfoContext } from '../../ProfileInfoContext';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import MessageForm from './MessageForm'
 const Messages = () => {
     const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-    const [localProfileInfo, setLocalProfileInfo] = useState(profileInfo);
-    const [showSent, setShowSent] = useState(false);
-    const [showReceived, setShowReceived] = useState(true);
-    const [showReply, setShowReply] = useState(false);
-    const [businessEmailForReply, setBusinessEmailForReply] = useState("");
+    const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
+    const [ showSent, setShowSent ] = useState(false);
+    const [ showReceived, setShowReceived ] = useState(true);
+    const [ showReply, setShowReply ] = useState(false);
+    const [ emailForReply, setEmailForReply ] = useState("");
+
+    let type = "user";
+    useEffect(() => {
+        // Update localProfileInfo when profileInfo changes
+        setLocalProfileInfo(profileInfo);
+    }, [ profileInfo ]);
+
+    if (localProfileInfo.isBusiness) {
+        type = "business"
+
+    }
 
     // Function to handle showing the reply form
-    const handleShowReply = (businessEmail, businessName) => {
-        setBusinessEmailForReply(businessEmail);
+    const handleShowReply = (email) => {
+        setEmailForReply(email);
         setShowReply(true);
     };
-    const [messagesData, setMessagesData] = useState(localProfileInfo?.messages);
+    const [ messagesData, setMessagesData ] = useState(localProfileInfo?.messages);
 
     if (!localProfileInfo || !messagesData) return null;
 
@@ -108,8 +119,8 @@ const Messages = () => {
                     <input
                         className="form-check-input"
                         type="checkbox"
-                        checked={showSent}
-                        onChange={() => setShowSent(!showSent)}
+                        checked={ showSent }
+                        onChange={ () => setShowSent(!showSent) }
                         id="showSentCheckbox"
                     />
                     <label className="form-check-label" htmlFor="showSentCheckbox">
@@ -120,8 +131,8 @@ const Messages = () => {
                     <input
                         className="form-check-input"
                         type="checkbox"
-                        checked={showReceived}
-                        onChange={() => setShowReceived(!showReceived)}
+                        checked={ showReceived }
+                        onChange={ () => setShowReceived(!showReceived) }
                         id="showReceivedCheckbox"
                     />
                     <label className="form-check-label" htmlFor="showReceivedCheckbox">
@@ -144,21 +155,27 @@ const Messages = () => {
                     </tr>
                 </thead>
                 <tbody className="">
-                    {filteredMessages.map((message, index) => (
-                        <MessageItem key={message._id.$oid}data={message} index={index} onChangeRead={onChangeRead} onShowReply={handleShowReply}
-                            onRemoveMessage={handleRemoveMessage} />
-                    ))}
+                    { filteredMessages.map((message, index) => (
+                        <MessageItem
+                            key={ message._id.$oid }
+                            data={ message }
+                            index={ index }
+                            onChangeRead={ onChangeRead }
+                            onShowReply={ handleShowReply }
+                            type={ type } // Pass the current user type to the MessageItem component
+                            onRemoveMessage={ handleRemoveMessage }
+                        />
+                    )) }
                 </tbody>
             </table>
-            {showReply && (
+            { showReply && (
                 <MessageForm
-                    fullname={profileInfo.fullname}
-                    userEmail={profileInfo.email}
-                    businessEmail={businessEmailForReply} 
-                    onClose={() => setShowReply(false)}
+                    type={ type }
+                    from={ profileInfo.email }
+                    to={ emailForReply }
+                    onClose={ () => setShowReply(false) }
                 />
-            )}
-
+            ) }
         </div>
     );
 };
