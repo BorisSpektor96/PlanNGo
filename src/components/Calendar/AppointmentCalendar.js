@@ -10,13 +10,13 @@ import Cart from "./cart/Cart";
 
 const AppointmentCalendar = (props) => {
   const { showMessage } = useContext(PopupMessageContext);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedService, setSelectedService] = useState(null);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [timeList, setTimeList] = useState([]);
-  const [currentStep, setCurrentStep] = useState(0);
-  const appointmentsDef = props.appointmentsDef[0];
+  const [ selectedDate, setSelectedDate ] = useState("");
+  const [ selectedTime, setSelectedTime ] = useState("");
+  const [ selectedService, setSelectedService ] = useState(null);
+  const [ selectedProducts, setSelectedProducts ] = useState([]);
+  const [ timeList, setTimeList ] = useState([]);
+  const [ currentStep, setCurrentStep ] = useState(0);
+  const appointmentsDef = props.appointmentsDef[ 0 ];
 
 
 
@@ -36,7 +36,7 @@ const AppointmentCalendar = (props) => {
   //     Service: selectedService.name,
   //     duration: selectedService.duration
   //   };
-  
+
   //   emailjs.sendForm('service_g0jkiit', 'template_3lmq448', templateParams, 'KL4TZz4uZS0SXCMop')
   //     .then(
   //       (result) => {
@@ -52,7 +52,7 @@ const AppointmentCalendar = (props) => {
 
 
 
-  
+
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setCurrentStep(2);
@@ -62,7 +62,7 @@ const AppointmentCalendar = (props) => {
     setSelectedTime(time);
     setCurrentStep(3);
   };
-  
+
 
   const handleBack = () => {
     if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
@@ -83,13 +83,13 @@ const AppointmentCalendar = (props) => {
   };
 
   const addProduct = (product) => {
-    const updatedProducts = [...selectedProducts];
+    const updatedProducts = [ ...selectedProducts ];
     const existingProductIndex = updatedProducts.findIndex(
       (item) => item.productId === product.productId
     );
 
     if (existingProductIndex !== -1) {
-      updatedProducts[existingProductIndex].amount++;
+      updatedProducts[ existingProductIndex ].amount++;
     } else {
       // Product doesn't exist, add as a new item
       updatedProducts.push({
@@ -179,7 +179,7 @@ const AppointmentCalendar = (props) => {
       );
 
       const businessData = await businessResponse.json();
-      console.log("businessData"+ props.businessDetails.email);
+      console.log("businessData" + props.businessDetails.email);
 
       if (businessResponse.ok) {
         showMessage(businessData.message, businessData.type);
@@ -201,10 +201,10 @@ const AppointmentCalendar = (props) => {
         );
 
         const userData = await userResponse.json();
-        console.log("userData"+ props.profileInfo.email);
+        console.log("userData" + props.profileInfo.email);
 
         if (userResponse.ok) {
-    
+
           showMessage(userData.message, userData.type);
           props.onClose();
         } else {
@@ -221,19 +221,19 @@ const AppointmentCalendar = (props) => {
       // Handle any network or other errors here
     }
   };
-  
-  useEffect(() => {
-console.log("selectedTime:"+ selectedTime);
-
-  }, [ selectedTime]);
-
-
 
   useEffect(() => {
-    console.log("selectedDate:"+ selectedDate);
-    
-      }, [selectedDate]);
-    
+    console.log("selectedTime:" + selectedTime);
+
+  }, [ selectedTime ]);
+
+
+
+  useEffect(() => {
+    console.log("selectedDate:" + selectedDate);
+
+  }, [ selectedDate ]);
+
   useEffect(() => {
     if (selectedService !== null) {
       const start = formattedTime(props.workingHours.start);
@@ -255,10 +255,10 @@ console.log("selectedTime:"+ selectedTime);
       ) {
         let time = {};
         if (
-          formattedTime(appointmentsDef.fixedBreak[0].start).getTime() <=
-            i.getTime() &&
+          formattedTime(appointmentsDef.fixedBreak[ 0 ].start).getTime() <=
+          i.getTime() &&
           i.getTime() <
-            formattedTime(appointmentsDef.fixedBreak[0].end).getTime()
+          formattedTime(appointmentsDef.fixedBreak[ 0 ].end).getTime()
         ) {
           time = { time: i, isTaken: true };
         } else {
@@ -280,21 +280,21 @@ console.log("selectedTime:"+ selectedTime);
     } else {
       setSelectedDate("");
     }
-  }, [selectedService]);
+  }, [ selectedService ]);
 
   const formattedTime = (timeString) => {
-    const [hours, minutes] = timeString.split(":").map(Number);
+    const [ hours, minutes ] = timeString.split(":").map(Number);
     const time = new Date();
     time.setHours(hours, minutes, 0);
     return time;
   };
-  
+
   const isAppointmentExist = (time, date) => {
     const selectedDateTime = new Date(date);
     const formattedTime = time.split(":");
-    selectedDateTime.setHours(formattedTime[0], formattedTime[1], 0);
-  
-    const appointments = props.appointmentsDef[0].appointments;
+    selectedDateTime.setHours(formattedTime[ 0 ], formattedTime[ 1 ], 0);
+
+    const appointments = props.appointmentsDef[ 0 ].appointments;
     for (const appointment of appointments) {
       const appointmentDateTime = new Date(appointment.date);
       if (selectedDateTime.getTime() === appointmentDateTime.getTime()) {
@@ -318,19 +318,18 @@ console.log("selectedTime:"+ selectedTime);
       if (!isSelectedTimeTaken) {
         return (
           <button
-            className={`btn ${
-              isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
-            } m-2`}
-            key={time}
-            onClick={() => handleTimeSelect(formattedTime)}
+            className={ `btn ${isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
+              } m-2` }
+            key={ time }
+            onClick={ () => handleTimeSelect(formattedTime) }
           >
-            {formattedTime}
+            { formattedTime }
           </button>
         );
       }
       return (
-        <button className="btn btn-dark m-2 disabled" key={formattedTime}>
-          {formattedTime}
+        <button className="btn btn-dark m-2 disabled" key={ formattedTime }>
+          { formattedTime }
         </button>
       );
     });
@@ -341,7 +340,7 @@ console.log("selectedTime:"+ selectedTime);
 
     return (
       <div className="d-flex justify-content-center flex-wrap">
-        {availableTimes}
+        { availableTimes }
       </div>
     );
   };
@@ -356,102 +355,102 @@ console.log("selectedTime:"+ selectedTime);
       <>
         <p className="text-center display-6">Choose a service</p>
         <Services
-          businessDetails={props.businessDetails}
-          setServiceAndShowCalendar={setServiceAndShowCalendar}
+          businessDetails={ props.businessDetails }
+          setServiceAndShowCalendar={ setServiceAndShowCalendar }
         />
       </>
     );
   };
 
   return (
-    <Modal onClose={props.onClose}>
+    <Modal onClose={ props.onClose }>
       <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={props.onClose}
+          onClick={ props.onClose }
         ></button>
       </div>
-      {currentStep === 0 ? (
+      { currentStep === 0 ? (
         servicesShow()
       ) : (
         <div className="d-flex flex-column flex-wrap align-items-center gap-1 pb-2">
-          {currentStep > 0 && currentStep < 4 && (
+          { currentStep > 0 && currentStep < 4 && (
             <>
               <p className="text-center display-6">Schedule</p>
               <Calendar
-                calendarType="hebrew"
+                calendarType="Hebrew"
                 locale="en-US"
-                value={selectedDate}
-                onChange={handleDateSelect}
-                minDate={new Date()}
-                maxDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)} // Show one month forward
-                tileDisabled={({ date }) => isDayDisabled(date)}
+                value={ selectedDate }
+                onChange={ handleDateSelect }
+                minDate={ new Date() }
+                maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
+                tileDisabled={ ({ date }) => isDayDisabled(date) }
               />
             </>
-          )}
+          ) }
         </div>
-      )}
+      ) }
       <div className="d-flex flex-wrap justify-content-center gap-1">
-        {currentStep > 1 && currentStep < 4 && (
+        { currentStep > 1 && currentStep < 4 && (
           <>
             <div className="">
-              {selectedDate && (
+              { selectedDate && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill ">
-                  Available times for {selectedDate.toLocaleDateString()}:
+                  Available times for { selectedDate.toLocaleDateString() }:
                 </p>
-              )}
-              {renderAvailableTimes()}
+              ) }
+              { renderAvailableTimes() }
 
-              {selectedTime && (
+              { selectedTime && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill">
-                  You have selected {selectedDate.toLocaleDateString()} at{" "}
-                  {selectedTime}.
+                  You have selected { selectedDate.toLocaleDateString() } at{ " " }
+                  { selectedTime }.
                 </p>
-              )}
+              ) }
             </div>
           </>
-        )}
+        ) }
       </div>
-      {currentStep === 4 && (
+      { currentStep === 4 && (
         <>
           <p className="text-center display-6">Recommended products</p>
           <Products
-            addProduct={addProduct}
-            businessDetails={props.businessDetails}
-                        selectedDate={selectedDate}
+            addProduct={ addProduct }
+            businessDetails={ props.businessDetails }
+            selectedDate={ selectedDate }
 
           />
           <Cart
-            selectedProducts={selectedProducts}
+            selectedProducts={ selectedProducts }
 
-            onIncrease={handleIncrease}
-            onDecrease={handleDecrease}
-            deleteProductHandler={deleteProductHandler}
+            onIncrease={ handleIncrease }
+            onDecrease={ handleDecrease }
+            deleteProductHandler={ deleteProductHandler }
           />
         </>
-      )}
-      {currentStep === 5 && (
+      ) }
+      { currentStep === 5 && (
         <div className="summary-section">
           <Summary
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            selectedService={selectedService}
-            selectedProducts={selectedProducts}
-            profileInfo={props.profileInfo}
-            businessDetails={props.businessDetails}
+            selectedDate={ selectedDate }
+            selectedTime={ selectedTime }
+            selectedService={ selectedService }
+            selectedProducts={ selectedProducts }
+            profileInfo={ props.profileInfo }
+            businessDetails={ props.businessDetails }
           />
         </div>
-      )}
-      {currentStep !== 0 && (
+      ) }
+      { currentStep !== 0 && (
         <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">
           <button
             className={
               currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={() => handleBack()}
+            onClick={ () => handleBack() }
           >
             back
           </button>
@@ -459,7 +458,7 @@ console.log("selectedTime:"+ selectedTime);
             className={
               currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={() => scheduleHandler()}
+            onClick={ () => scheduleHandler() }
           >
             Schedule
           </button>
@@ -469,14 +468,14 @@ console.log("selectedTime:"+ selectedTime);
                 ? "btn btn-primary disabled"
                 : "btn btn-primary"
             }
-            onClick={() => {
+            onClick={ () => {
               setCurrentStep(currentStep + 1);
-            }}
+            } }
           >
             continue
           </button>
         </div>
-      )}
+      ) }
     </Modal>
   );
 };

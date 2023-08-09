@@ -279,6 +279,7 @@ const BusinessPage = () => {
           onClose={ hideFormHandler }
         />
       }
+
       <Recommendations />
 
     </Fragment>

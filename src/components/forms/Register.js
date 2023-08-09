@@ -99,7 +99,7 @@ const Register = (props) => {
     {
       id: 4,
       name: "confirmPassword",
-      type: "text",
+      type: "password",
       placeholder: "Confirm Password",
       errorMessage: "Passwords don't match!",
       label: "Confirm Password",
@@ -154,18 +154,18 @@ const Register = (props) => {
 
       <p className="text-center display-6">Register</p>
       <form className=" p-1" onSubmit={ submitHandler }>
-        <div className="col-xl-4">
-          <div className="card mb-4 mb-xl-0">
+        <div className="d-flex justify-content-center">
+          <div className="card mb-4">
             <div className="card-header">Profile Picture</div>
             <div className="card-body text-center">
               <img
-                className="img-fluid mb-4"
+                className="w-50 img-fluid mb-4"
                 src={ previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" }
                 alt=""
               />
 
-              <div className="form-group">
-                <input type="file" name="profileImg" onChange={ onFileChange } />
+              <div className="d-flex flex-wrap form-group">
+                <input title="a" type="file" name="profileImg" onChange={ onFileChange } />
               </div>
             </div>
           </div>
