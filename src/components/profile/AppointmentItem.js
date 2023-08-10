@@ -3,8 +3,15 @@ import './appointmentItem.css'
 import { AuthContext } from '../../AuthContext'
 import { PopupMessageContext } from './../../PopupMessage';
 
+import { useSelector } from "react-redux";
+import { Store } from '../../Store'
+import { updateProfileInfo } from "../../profileInfoSlice";
+
 
 const AppointmentItem = props => {
+
+  const profileInfo = useSelector(state => state.profileInfo)
+
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
 
@@ -13,7 +20,13 @@ const AppointmentItem = props => {
   const service = props.item.service
   const businessDetails = props.item.businessDetails
   const userDetails = props.item.userDetails
-  const profileInfo = props.profileInfo
+
+  const appointment = {
+    date: new Date(props.item.date),
+    service: props.item.service,
+    businessEmail: props.item.businessDetails.email,
+    userEmail: profileInfo.email
+  }
 
   const daysOfWeek = [
     "Sunday",
@@ -24,63 +37,6 @@ const AppointmentItem = props => {
     "Friday",
     "Saturday"
   ];
-
-  const removeAppointment = async () => {
-    let clientEmail = ''
-    let businessEmail = ''
-    if (isBusiness) {
-      businessEmail = profileInfo.email
-      clientEmail = userDetails.email
-    } else {
-      businessEmail = businessDetails.email
-      clientEmail = profileInfo.email
-    }
-
-    try {
-      const response = await fetch('http://localhost:3001/business/removeAppointment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          businessEmail: businessEmail,
-          date: date,
-          userEmail: clientEmail
-        })
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        if (data.user !== null) {
-          showMessage(data.message, data.type)
-        }
-      } else {
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-
-    try {
-      const response = await fetch('http://localhost:3001/users/removeAppointment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: clientEmail,
-          date: date,
-          businessEmail: businessEmail
-        })
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        if (data.user !== null) {
-          showMessage(data.message, data.type)
-        }
-      } else {
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-    props.updateAppointments()
-  }
 
   return (
     <li className="d-flex flex-wrap justify-content-between align-items-center border rounded border-secondary m-1 p-2">
@@ -171,7 +127,7 @@ const AppointmentItem = props => {
             ?
             <button
               className="btn btn-danger"
-              onClick={ removeAppointment }
+              onClick={ () => props.removeAppointment(appointment) }
             >
               Cancel
             </button>
@@ -179,7 +135,6 @@ const AppointmentItem = props => {
             <button
               disabled
               className="btn btn-secondary"
-            // onClick={ removeAppointment }
             >
               Passed
             </button>

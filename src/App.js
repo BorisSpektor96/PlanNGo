@@ -15,7 +15,19 @@ import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
+// *************** redux ***************
+import { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { Store } from './Store';
+import { updateProfileInfo } from './profileInfoSlice';
+//  ***************      ***************
+
 function App() {
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('myData'));
+    Store.dispatch(updateProfileInfo(storedData));
+  }, []);
 
   const routes = [
     { path: '/', componentName: Welcome },
@@ -39,26 +51,35 @@ function App() {
 
   return (
 
-    <AuthProvider>
-      <ProfileInfoProvider>
-        <PopupProvider>
-          <div className="main">
-            <BrowserRouter className="Routes BrowserRouter">
-              <Routes>
-                <Route
-                  path='/'
-                  element={
-                    <Layout />
-                  }
-                >
-                  { routeOfComponents }
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </div>
-        </PopupProvider>
-      </ProfileInfoProvider>
-    </AuthProvider>
+    // *************** redux ***************
+    <Provider store={ Store }>
+      {/* // *************** redux *************** */ }
+
+      <AuthProvider>
+        <ProfileInfoProvider>
+          <PopupProvider>
+            <div className="main">
+              <BrowserRouter className="Routes BrowserRouter">
+                <Routes>
+                  <Route
+                    path='/'
+                    element={
+                      <Layout />
+                    }
+                  >
+                    { routeOfComponents }
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </div>
+          </PopupProvider>
+        </ProfileInfoProvider>
+      </AuthProvider>
+
+      {/*  *************** redux *************** */ }
+    </Provider>
+    // *************** redux ***************
+
   );
 }
 

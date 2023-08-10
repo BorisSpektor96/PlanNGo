@@ -8,7 +8,12 @@ import Summary from "./Summary";
 import { PopupMessageContext } from "../../PopupMessage";
 import Cart from "./cart/Cart";
 
+import { useSelector } from "react-redux";
+
 const AppointmentCalendar = (props) => {
+
+  const profileInfo = useSelector(state => state.profileInfo)
+
   const { showMessage } = useContext(PopupMessageContext);
   const [ selectedDate, setSelectedDate ] = useState("");
   const [ selectedTime, setSelectedTime ] = useState("");
@@ -17,10 +22,6 @@ const AppointmentCalendar = (props) => {
   const [ timeList, setTimeList ] = useState([]);
   const [ currentStep, setCurrentStep ] = useState(0);
   const appointmentsDef = props.appointmentsDef[ 0 ];
-
-
-
-
 
   // const sendEmail = () => {
   //   if (!props.profileInfo || !props.businessDetails) {
@@ -49,9 +50,6 @@ const AppointmentCalendar = (props) => {
   //       }
   //     );
   // };
-
-
-
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -137,9 +135,9 @@ const AppointmentCalendar = (props) => {
       date: new Date(selectedDate),
       service: selectedService,
       userDetails: {
-        name: props.profileInfo.fullname,
-        email: props.profileInfo.email,
-        phoneNumber: props.profileInfo.phoneNumber,
+        name: profileInfo.fullname,
+        email: profileInfo.email,
+        phoneNumber: profileInfo.phoneNumber,
       },
     };
     newAppointmentBusiness.date.setHours(parseInt(selectedTime.slice(0, 2)));
@@ -179,7 +177,6 @@ const AppointmentCalendar = (props) => {
       );
 
       const businessData = await businessResponse.json();
-      console.log("businessData" + props.businessDetails.email);
 
       if (businessResponse.ok) {
         showMessage(businessData.message, businessData.type);
@@ -194,14 +191,13 @@ const AppointmentCalendar = (props) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: props.profileInfo.email,
+              email: profileInfo.email,
               appointment: newAppointmentUser,
             }),
           }
         );
 
         const userData = await userResponse.json();
-        console.log("userData" + props.profileInfo.email);
 
         if (userResponse.ok) {
 
@@ -218,21 +214,18 @@ const AppointmentCalendar = (props) => {
       }
     } catch (error) {
       console.log("Error:", error.message);
-      // Handle any network or other errors here
     }
   };
 
-  useEffect(() => {
-    console.log("selectedTime:" + selectedTime);
+  // useEffect(() => {
+  //   console.log("selectedTime:" + selectedTime);
 
-  }, [ selectedTime ]);
+  // }, [ selectedTime ]);
 
+  // useEffect(() => {
+  //   console.log("selectedDate:" + selectedDate);
 
-
-  useEffect(() => {
-    console.log("selectedDate:" + selectedDate);
-
-  }, [ selectedDate ]);
+  // }, [ selectedDate ]);
 
   useEffect(() => {
     if (selectedService !== null) {
@@ -439,7 +432,7 @@ const AppointmentCalendar = (props) => {
             selectedTime={ selectedTime }
             selectedService={ selectedService }
             selectedProducts={ selectedProducts }
-            profileInfo={ props.profileInfo }
+            profileInfo={ profileInfo }
             businessDetails={ props.businessDetails }
           />
         </div>

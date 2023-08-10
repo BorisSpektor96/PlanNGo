@@ -99,7 +99,7 @@ const Login = (props) => {
     {
       id: 2,
       name: "password",
-      type: "password",
+      type: "text",
       placeholder: "Password",
       label: "Password",
       required: true,

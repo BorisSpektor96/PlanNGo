@@ -1,4 +1,6 @@
 import React, { createContext, useEffect, useContext, useState } from 'react';
+import { Store } from './Store'
+import { updateProfileInfo } from './profileInfoSlice';
 
 export const AuthContext = createContext();
 
@@ -9,18 +11,19 @@ export const AuthProvider = ({ children }) => {
 
 
   const login = (data) => {
-    localStorage.setItem('userData', JSON.stringify(data))
     if (data.isBusiness) {
       setIsBusiness(true)
     }
     setLoggedIn(true);
+    Store.dispatch(updateProfileInfo(data))
+    localStorage.setItem('userData', JSON.stringify(data.email))
   };
 
   const logout = () => {
 
-    localStorage.removeItem('userData');
     setLoggedIn(false);
     setIsBusiness(false)
+    Store.dispatch(updateProfileInfo(null))
   };
 
   return (

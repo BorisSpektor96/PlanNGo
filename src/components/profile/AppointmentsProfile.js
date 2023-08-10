@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { ProfileInfoContext } from "../../ProfileInfoContext";
+// import { ProfileInfoContext } from "../../ProfileInfoContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
@@ -7,6 +7,9 @@ import { PopupMessageContext } from './../../PopupMessage';
 import AppointmentItem from "./AppointmentItem";
 import { AuthContext } from '../../AuthContext'
 import { Label, Row, Col, Button } from "reactstrap";
+
+import { useSelector } from "react-redux";
+import { Store } from '../../Store'
 
 dayjs.extend(customParseFormat);
 const AppointmentsProfile = () => {
@@ -22,7 +25,7 @@ const AppointmentsProfile = () => {
     setAppointmentRemoved(!appointmentRemoved)
   }
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+  const profileInfo = useSelector(state => state.profileInfo)
 
   const [ appointments, setAppointments ] = useState([]);
   const [ appointmentsDef, setAppointmentsDef ] = useState([
@@ -43,14 +46,14 @@ const AppointmentsProfile = () => {
 
   useEffect(() => {
     if (isBusiness) {
-      getAppointmentsDetailsBusiness()
+      // getAppointmentsDetailsBusiness()
+      setAppointments(profileInfo.appointmentsDef[ 0 ].appointments)
       getAppointmentsDefBusiness()
-      console.log(appointmentsDef)
     } else {
-      getAppointmentsDetailsUser()
+      // getAppointmentsDetailsUser()
+      setAppointments(profileInfo.appointments)
     }
   }, [ profileInfo ])
-
 
   useEffect(() => {
     if (isBusiness) {
@@ -60,7 +63,65 @@ const AppointmentsProfile = () => {
     }
   }, [ appointmentRemoved ])
 
+
+  const removeAppointment = async (appointment) => {
+
+    const businessEmail = appointment.businessEmail
+    const clientEmail = appointment.userEmail
+
+    if (isBusiness) {
+      businessEmail = appointment.userEmail
+      clientEmail = appointment.businessEmail
+    }
+    try {
+      const response = await fetch('http://localhost:3001/business/removeAppointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessEmail: businessEmail,
+          date: appointment.date,
+          userEmail: clientEmail
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.user !== null) {
+          showMessage(data.message, data.type)
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/users/removeAppointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail: clientEmail,
+          date: appointment.date,
+          businessEmail: businessEmail
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.user !== null) {
+          showMessage(data.message, data.type)
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+    updateAppointments()
+  }
+
+
   const getAppointmentsDetailsUser = async () => {
+    console.log(profileInfo.email)
     try {
       const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
         method: 'POST',
@@ -427,13 +488,12 @@ const AppointmentsProfile = () => {
       }
       <h5 className="d-flex justify-content-center m-1">Appointments</h5>
       <ul className="p-3 list-group list-group-flush">
-        { appointments.length > 0 ?
+        { appointments && appointments.length > 0 ?
           (<>
             { appointments.map((item) => (
               <AppointmentItem
-                updateAppointments={ updateAppointments }
+                removeAppointment={ removeAppointment }
                 item={ item }
-                profileInfo={ profileInfo }
               />
             )) }
           </>)

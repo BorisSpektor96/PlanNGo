@@ -2,16 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import SearchBar from "../forms/SearchBar";
 import BusinessFormat from "./BusinessFormat";
-import { ProfileInfoContext } from "../../ProfileInfoContext";
 
 const BusinessesMenu = () => {
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext)
   const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
-
-  useEffect(() => {
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: JSON.parse(localStorage.getItem('userData')) });
-  }, [ profileInfo.email ])
 
   const fetchBusinessesArr = async () => {
     try {

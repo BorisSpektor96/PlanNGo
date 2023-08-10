@@ -3,9 +3,20 @@ import MessageItem from "./MessageItem";
 import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { useContext, useState, useEffect } from 'react';
 import MessageForm from './MessageForm'
+
+// *************** redux ***************
+import { Store } from '../../Store'
+import { useSelector } from "react-redux";
+// *************** redux ***************
+
 const Messages = () => {
 
-    const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+    // const { profileInfo, dispatch } = useContext(ProfileInfoContext);
+    const profileInfo = useSelector((state) => state.profileInfo)
+    useEffect(() => {
+        console.log(profileInfo);
+    }, [])
+
     const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
     const [ showSent, setShowSent ] = useState(false);
     const [ showReceived, setShowReceived ] = useState(true);
