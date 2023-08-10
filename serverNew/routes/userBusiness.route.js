@@ -375,11 +375,7 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
         type: "Error"
       });
     }
-
-    console.log(user.appointmentsDef[ 0 ].appointments[ appointmentIndex ])
     user.appointmentsDef[ 0 ].appointments.splice(appointmentIndex, 1)
-    console.log(appointmentIndex)
-    console.log(user.appointmentsDef[ 0 ].appointments)
     await user.save()
 
     res.status(200).json({ message: "Appointment removed successfully", type: "Success" });

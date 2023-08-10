@@ -123,8 +123,6 @@ userRouter.post("/removeAppointment", async (req, res) => {
         type: "Error"
       });
     }
-    console.log(user.appointments[ appointmentIndex ])
-    console.log(appointmentIndex)
     user.appointments.splice(appointmentIndex, 1)
     await user.save()
 
@@ -220,7 +218,6 @@ userRouter.post('/imgUpdate', async (req, res) => {
 userRouter.post('/updateUserProfile', async (req, res) => {
   const { email, fullname, emailNew, phoneNumber } = req.body
   const user = await userModel.findOne({ email: email })
-
   try {
     user.email = emailNew
     user.fullname = fullname
