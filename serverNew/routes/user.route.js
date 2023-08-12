@@ -75,7 +75,7 @@ userRouter.post("/addAppointmentToUser", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found", type: "Error" });
     }
-    res.status(200).json({ message: "Appointment added successfully", type: "Success" });
+    res.status(200).json({ appointments: user.appointments, message: "Appointment added successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Failed to add appointment", error });

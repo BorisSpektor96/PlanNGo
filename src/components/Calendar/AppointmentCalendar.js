@@ -8,11 +8,13 @@ import Summary from "./Summary";
 import { PopupMessageContext } from "../../PopupMessage";
 import Cart from "./cart/Cart";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateAppointments } from "../../profileInfoSlice";
 
 const AppointmentCalendar = (props) => {
 
   const profileInfo = useSelector(state => state.profileInfo)
+  const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
   const [ selectedDate, setSelectedDate ] = useState("");
@@ -202,6 +204,7 @@ const AppointmentCalendar = (props) => {
         if (userResponse.ok) {
 
           showMessage(userData.message, userData.type);
+          dispatch(updateAppointments(userData.appointments))
           props.onClose();
         } else {
           console.log(

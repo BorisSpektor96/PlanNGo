@@ -17,14 +17,9 @@ const AppointmentsProfile = () => {
 
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
-  const [ appointmentRemoved, setAppointmentRemoved ] = useState(false)
 
   const [ startTime, setStartTime ] = useState("");
   const [ endTime, setEndTime ] = useState("");
-
-  const updateAppointments = () => {
-    setAppointmentRemoved(!appointmentRemoved)
-  }
 
   const profileInfo = useSelector(state => state.profileInfo)
 
@@ -54,22 +49,12 @@ const AppointmentsProfile = () => {
     }
   }, [ profileInfo ])
 
-  useEffect(() => {
-    if (isBusiness) {
-      console.log(appointmentsDef)
-    }
-  }, [ appointmentRemoved ])
-
-
   const removeAppointment = async (appointment) => {
 
-    let businessEmail = appointment.businessEmail
-    let clientEmail = appointment.userEmail
-
-    if (!isBusiness) {
-      businessEmail = appointment.userEmail
-      clientEmail = appointment.businessEmail
-    }
+    let businessEmail = isBusiness ? appointment.businessEmail : appointment.userEmail
+    let clientEmail = isBusiness ? appointment.userEmail : appointment.businessEmail
+    console.log("businessEmail", businessEmail)
+    console.log("clientEmail", clientEmail)
     try {
       const response = await fetch('http://localhost:3001/business/removeAppointment', {
         method: 'POST',
