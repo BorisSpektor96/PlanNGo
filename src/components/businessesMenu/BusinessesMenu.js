@@ -1,11 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import SearchBar from "../forms/SearchBar";
 import BusinessFormat from "./BusinessFormat";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 const BusinessesMenu = () => {
 
+  const profileInfo = useSelector(state => state.profileInfo)
+
   const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
+
+  const [ loading, setLoading ] = useState(true)
 
   const fetchBusinessesArr = async () => {
     try {
@@ -40,6 +46,7 @@ const BusinessesMenu = () => {
           appointmentsDef: data[ key ].appointmentsDef
         });
       }
+      setLoading(false)
       setListOfBusinesses(loadedBusiness);
     } catch (error) {
       console.log(error.message)
@@ -47,8 +54,10 @@ const BusinessesMenu = () => {
   };
 
   useEffect(() => {
-    fetchBusinessesArr();
-  }, [ listOfBusinesses.length == 0 ]);
+    if (listOfBusinesses.length === 0) {
+      fetchBusinessesArr();
+    }
+  }, []);
 
   useEffect(() => {
     const logTimeout = setTimeout(() => {
@@ -67,13 +76,13 @@ const BusinessesMenu = () => {
   const handleFilter = () => {
     const filtered = listOfBusinesses.filter((business) => {
       if (business.isBusiness) {
-        const nameMatch = business.business_name.toLowerCase().includes(filterName.toLowerCase());
-        const serviceMatch = business.service.toLowerCase().includes(filterService.toLowerCase());
+        const nameMatch = business.business_name?.toLowerCase().includes(filterName.toLowerCase());
+        const serviceMatch = business.services?.some(service => service.serviceType.toLowerCase().includes(filterService.toLowerCase()));
         const locationMatch =
-          filterLocation === '' || business.address.toLowerCase().includes(filterLocation.toLowerCase());
-
+          filterLocation === '' || business.address?.toLowerCase().includes(filterLocation.toLowerCase());
         return nameMatch && serviceMatch && locationMatch;
       }
+      return false
     });
 
     if (filtered.length === 0) {
@@ -86,27 +95,33 @@ const BusinessesMenu = () => {
 
   return (
     <>
-      <SearchBar
-        filterName={ filterName }
-        filterService={ filterService }
-        filterLocation={ filterLocation }
-        setFilterName={ setFilterName }
-        setFilterService={ setFilterService }
-        setFilterLocation={ setFilterLocation }
-        handleFilter={ handleFilter }
-      />
-      <div className="d-flex flex-column col-12">
-        { noResults ? (
-          <div>No businesses found based on the filter criteria.</div>
-        ) : (
-          filteredBusinesses.map((business) => (
-            <BusinessFormat
-              key={ business.id }
-              { ...business }
-            />
-          ))
-        ) }
-      </div>
+      { !loading ?
+        <div>
+          <SearchBar
+            filterName={ filterName }
+            filterService={ filterService }
+            filterLocation={ filterLocation }
+            setFilterName={ setFilterName }
+            setFilterService={ setFilterService }
+            setFilterLocation={ setFilterLocation }
+            handleFilter={ handleFilter }
+          />
+          <div className="d-flex flex-column col-12">
+            { noResults ? (
+              <div>No businesses found based on the filter criteria.</div>
+            ) : (
+              filteredBusinesses.map((business) => (
+                <BusinessFormat
+                  key={ business.id }
+                  { ...business }
+                />
+              ))
+            ) }
+          </div>
+        </div>
+        :
+        <LoadingSpinner />
+      }
     </>
   );
 };

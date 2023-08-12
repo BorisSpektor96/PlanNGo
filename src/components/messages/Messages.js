@@ -1,34 +1,31 @@
 import React from "react";
 import MessageItem from "./MessageItem";
-import { ProfileInfoContext } from '../../ProfileInfoContext';
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import MessageForm from './MessageForm'
 
 // *************** redux ***************
-import { Store } from '../../Store'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateMessages } from "../../profileInfoSlice";
 // *************** redux ***************
 
 const Messages = () => {
 
-    // const { profileInfo, dispatch } = useContext(ProfileInfoContext);
     const profileInfo = useSelector((state) => state.profileInfo)
-    useEffect(() => {
-        console.log(profileInfo);
-    }, [])
+    const dispatch = useDispatch()
 
-    const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
     const [ showSent, setShowSent ] = useState(false);
     const [ showReceived, setShowReceived ] = useState(true);
     const [ showReply, setShowReply ] = useState(false);
     const [ emailForReply, setEmailForReply ] = useState("");
+    const [ messagesData, setMessagesData ] = useState(profileInfo.messages);
+
+    useEffect(() => {
+        dispatch(updateMessages(messagesData))
+    }, [ messagesData ])
 
     let type = "user";
-    useEffect(() => {
-        setLocalProfileInfo(profileInfo);
-    }, [ profileInfo ]);
 
-    if (localProfileInfo.isBusiness) {
+    if (profileInfo.isBusiness) {
         type = "business"
     }
 
@@ -39,9 +36,8 @@ const Messages = () => {
         setEmailForReply(email);
         setShowReply(true);
     };
-    const [ messagesData, setMessagesData ] = useState(localProfileInfo?.messages);
 
-    if (!localProfileInfo || !messagesData) return null;
+    if (!profileInfo || !messagesData) return null;
 
     // Filter the messages based on the selected statuses
     const filteredMessages = messagesData.filter((message) => {
@@ -58,7 +54,7 @@ const Messages = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: localProfileInfo.email,
+                    email: profileInfo.email,
                     id: id,
                     read: !read,
                 }),
@@ -66,21 +62,16 @@ const Messages = () => {
 
             const data = await response.json();
             if (response.ok) {
-                // Update the state to reflect the updated read status
                 setMessagesData((prevMessages) =>
                     prevMessages.map((message) => {
-                        if (
-                            message._id === id
-                        ) {
+                        if (message._id === id) {
                             return { ...message, read: !read };
                         }
                         return message;
                     })
                 );
-                // Display a success message (you can implement this using state and a modal, for example)
                 console.log("Message status updated successfully!");
             } else {
-                // Display an error message (you can implement this using state and a modal, for example)
                 console.error(data.message);
             }
         } catch (error) {
@@ -95,48 +86,26 @@ const Messages = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: localProfileInfo.email, id }),
+                body: JSON.stringify({ email: profileInfo.email, id }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                // If the message was removed successfully, update the state to remove the message from the table
                 setMessagesData((prevMessages) =>
                     prevMessages.filter(
                         (message) =>
                             message._id !== id
-                        // message.businessEmail !== email &&
-                        // new Date(message.date).toISOString() !== new Date(date).toISOString()
                     )
                 );
-                // Display a success message (you can implement this using state and a modal, for example)
                 console.log("Message removed successfully!");
             } else {
-                // Display an error message (you can implement this using state and a modal, for example)
                 console.error(data.message);
             }
         } catch (error) {
             console.error("Error while removing message:", error);
         }
     };
-    // const getMessages = async () => {
-    //     try {
-    //         const response = await fetch(api + "getMessages", {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify({ email: profileInfo.email }),
-    //         });
 
-    //         const messages = await response.json()
-    //         if (response.ok) {
-    //             setMessagesData(messages);
-    //         } else {
-    //             console.error("cannot get messages");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error while updating message status:", error);
-    //     }
-    // }
     return (
         <div className="p-4 ">
             <p className="text-center display-6 pt-3">Messages</p>

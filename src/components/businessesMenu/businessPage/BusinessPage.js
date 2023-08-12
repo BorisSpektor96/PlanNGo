@@ -1,7 +1,7 @@
 import { Fragment, useState, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Review from "../../review/Review";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
@@ -45,7 +45,7 @@ const BusinessPage = () => {
     }
 
     profileInfo.favorites.forEach(fav => {
-      if (fav.email == businessDetails.email) {
+      if (fav.email === businessDetails.email) {
         setIsFavorite(true)
       }
     });
@@ -64,7 +64,6 @@ const BusinessPage = () => {
       const data = await response.json()
       if (response.ok) {
         setIsFavorite(true)
-        showMessage(data.message, data.type)
         dispatch(updateFavorites(data.user))
       } else {
         showMessage(data.message, data.type)

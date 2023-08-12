@@ -1,4 +1,3 @@
-import styles from "./SearchBar.module.css";
 const SearchBar = ({
   filterName,
   filterService,

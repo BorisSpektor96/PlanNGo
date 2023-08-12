@@ -1,14 +1,19 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Input, Label } from "reactstrap";
 import Modal from "../UI/Modal";
 import { PopupMessageContext } from "./../../PopupMessage";
+import { updateMessages } from "../../profileInfoSlice";
+import { useDispatch } from "react-redux";
 
 const MessageForm = ({ to, from, type, onClose }) => {
+
   const { showMessage } = useContext(PopupMessageContext);
   const [ formValues, setFormValues ] = useState({
     subject: "",
     content: "",
   });
+
+  const dispatch = useDispatch()
 
   const uRead = type === "business" ? false : true;
   const bRead = type === "user" ? false : true;
@@ -33,18 +38,19 @@ const MessageForm = ({ to, from, type, onClose }) => {
         },
         body: JSON.stringify({
           email: reqEmailBusiness, // Use reqEmailBusiness instead of reqEmail
-          mmessage: {
-            subject: formValues.subject,
-            content: formValues.content,
-            userEmail: messageEmailBusiness, // Use changedTo instead of to
-            status: bStatus,
+          message: {
             read: bRead,
+            userEmail: messageEmailBusiness, // Use changedTo instead of to
             date: currentDate.toISOString(),
+            content: formValues.content,
+            status: bStatus,
+            subject: formValues.subject,
           },
         }),
       });
       const data = await response.json();
       showMessage(data.message, data.type);
+      dispatch(updateMessages(data.messages))
     } catch (error) {
       console.log("Error:", error);
       showMessage("Failed to send message to business", "Error");
@@ -61,19 +67,20 @@ const MessageForm = ({ to, from, type, onClose }) => {
         },
         body: JSON.stringify({
           email: reqEmailUser, // Use reqEmailUser instead of to
-          mmessage: {
-            subject: formValues.subject,
-            content: formValues.content,
-            businessEmail: messageEmailUser, // Use changedFrom instead of from
-            status: uStatus,
+          message: {
             read: uRead,
+            businessEmail: messageEmailUser, // Use changedFrom instead of from
             date: currentDate.toISOString(),
+            content: formValues.content,
+            status: uStatus,
+            subject: formValues.subject,
           },
         }),
       });
 
       const data = await response.json();
       showMessage(data.message, data.type);
+      dispatch(updateMessages(data.messages))
     } catch (error) {
       console.log("Error:", error);
       showMessage("Failed to send message to user", "Error");

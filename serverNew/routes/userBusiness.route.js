@@ -281,11 +281,12 @@ userBusinessRouter.post('/deleteProduct', async (req, res) => {
 });
 
 userBusinessRouter.post("/addMessage", async (req, res) => {
-  const { email, mmessage } = req.body;
+  const { email, message } = req.body;
+  console.log(message)
   try {
     const user = await userBusinessModel.findOneAndUpdate(
       { email: email },
-      { $push: { "messages": mmessage } },
+      { $push: { "messages": message } },
       { new: true }
     );
 
@@ -293,7 +294,7 @@ userBusinessRouter.post("/addMessage", async (req, res) => {
       return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
 
-    res.status(200).json({ message: "message added successfully", type: "Success" });
+    res.status(200).json({ messages: user.messages, message: "message added successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Failed to add message", error });

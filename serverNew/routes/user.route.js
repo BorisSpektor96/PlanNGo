@@ -5,19 +5,18 @@ import userBusinessModel from '../models/BusinessUser.js'
 const userRouter = express.Router();
 
 userRouter.post("/addMessage", async (req, res) => {
-  const { email, mmessage } = req.body;
+  const { email, message } = req.body;
   try {
     const user = await userModel.findOneAndUpdate(
       { email: email },
-      { $push: { "messages": mmessage } },
+      { $push: { "messages": message } },
       { new: true }
     );
 
     if (!user) {
       return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
-
-    res.status(200).json({ message: "message added successfully", type: "Success" });
+    res.status(200).json({ messages: user.messages, message: "message added successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Failed to add message", error });
@@ -32,7 +31,6 @@ userRouter.post("/getMessages", async (req, res) => {
     if (!user || !user.messages) {
       return res.status(404).json();
     }
-    console.log(user.messages)
     res.status(200).json(user);
   } catch (error) {
     console.error(error);

@@ -29,12 +29,14 @@ const profileInfoSlice = createSlice({
       return { ...action.payload };
     },
     updateFavorites: (state, action) => {
-      console.log(action.payload)
       state.favorites = action.payload;
+    },
+    updateMessages: (state, action) => {
+      state.messages = action.payload;
     },
     // Other actions can be defined here as well
   },
 });
 
-export const { updateProfileInfo, updateFavorites } = profileInfoSlice.actions;
+export const { updateProfileInfo, updateFavorites, updateMessages } = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;

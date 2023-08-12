@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useContext, useState } from 'react';
-import { Store } from './Store'
+import React, { createContext, useState } from 'react';
 import { updateProfileInfo } from './profileInfoSlice';
+import { useDispatch } from 'react-redux';
 
 export const AuthContext = createContext();
 
@@ -9,13 +9,14 @@ export const AuthProvider = ({ children }) => {
   const [ isLoggedIn, setLoggedIn ] = useState(false);
   const [ isBusiness, setIsBusiness ] = useState(false);
 
+  const dispatch = useDispatch()
 
   const login = (data) => {
     if (data.isBusiness) {
       setIsBusiness(true)
     }
     setLoggedIn(true);
-    Store.dispatch(updateProfileInfo(data))
+    dispatch(updateProfileInfo(data))
     localStorage.setItem('userData', JSON.stringify(data.email))
   };
 
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
     setLoggedIn(false);
     setIsBusiness(false)
-    Store.dispatch(updateProfileInfo(null))
+    dispatch(updateProfileInfo(null))
   };
 
   return (
