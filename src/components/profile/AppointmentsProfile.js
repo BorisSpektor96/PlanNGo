@@ -1,5 +1,4 @@
 import { useContext, useState, useEffect } from "react";
-// import { ProfileInfoContext } from "../../ProfileInfoContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
@@ -8,10 +7,13 @@ import AppointmentItem from "./AppointmentItem";
 import { AuthContext } from '../../AuthContext'
 import { Label, Row, Col, Button } from "reactstrap";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateAppointmentsDef, updateAppointments } from '../../profileInfoSlice'
 
 dayjs.extend(customParseFormat);
 const AppointmentsProfile = () => {
+
+  const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
@@ -27,7 +29,7 @@ const AppointmentsProfile = () => {
   const profileInfo = useSelector(state => state.profileInfo)
 
   const [ appointments, setAppointments ] = useState([]);
-  const [ appointmentsDef, setAppointmentsDef ] = useState([
+  const [ appointmentsDef, setAppointmentsDef ] = useState(
     {
       fixedBreak: {
         start: "",
@@ -41,24 +43,20 @@ const AppointmentsProfile = () => {
         end: "",
       }
     }
-  ]);
+  );
 
   useEffect(() => {
     if (isBusiness) {
       setAppointments(profileInfo.appointmentsDef[ 0 ].appointments)
       setAppointmentsDef(profileInfo.appointmentsDef[ 0 ])
-      // getAppointmentsDefBusiness()
     } else {
-      // getAppointmentsDetailsUser()
       setAppointments(profileInfo.appointments)
     }
   }, [ profileInfo ])
 
   useEffect(() => {
     if (isBusiness) {
-      getAppointmentsDetailsBusiness()
-    } else {
-      getAppointmentsDetailsUser()
+      console.log(appointmentsDef)
     }
   }, [ appointmentRemoved ])
 
@@ -68,7 +66,7 @@ const AppointmentsProfile = () => {
     let businessEmail = appointment.businessEmail
     let clientEmail = appointment.userEmail
 
-    if (isBusiness) {
+    if (!isBusiness) {
       businessEmail = appointment.userEmail
       clientEmail = appointment.businessEmail
     }
@@ -84,9 +82,13 @@ const AppointmentsProfile = () => {
       });
 
       const data = await response.json();
+      console.log(isBusiness)
       if (response.ok) {
-        if (data.user !== null) {
+        if (data.appointments !== null) {
           showMessage(data.message, data.type)
+          if (isBusiness) {
+            dispatch(updateAppointments(data.appointments));
+          }
         }
       } else {
       }
@@ -109,70 +111,56 @@ const AppointmentsProfile = () => {
       if (response.ok) {
         if (data.user !== null) {
           showMessage(data.message, data.type)
+          if (!isBusiness) {
+            dispatch(updateAppointments(data.appointments));
+          }
         }
       } else {
       }
     } catch (error) {
       console.log('Error:', error);
     }
-    updateAppointments()
   }
 
 
-  const getAppointmentsDetailsUser = async () => {
-    try {
-      const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
+  // const getAppointmentsDetailsUser = async () => {
+  //   try {
+  //     const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email: profileInfo.email })
+  //     });
 
-      if (appointmentsData.ok) {
-        const appointment = await appointmentsData.json()
-        setAppointments(appointment.appointments)
-        appointments.forEach(item => {
-          item[ "toggle" ] = false
-        })
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  }
+  //     if (appointmentsData.ok) {
+  //       const appointment = await appointmentsData.json()
+  //       setAppointments(appointment.appointments)
+  //       appointments.forEach(item => {
+  //         item[ "toggle" ] = false
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // }
 
-  const getAppointmentsDetailsBusiness = async () => {
-    try {
-      const appointmentsData = await fetch('http://localhost:3001/business/getAppointmentsDetails', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-      if (appointmentsData.ok) {
-        const appointments = await appointmentsData.json()
-        setAppointments(appointments)
-        appointments.forEach(item => {
-          item[ "toggle" ] = false
-        })
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  }
-
-  const getAppointmentsDefBusiness = async () => {
-    try {
-      const data = await fetch('http://localhost:3001/business/getAppointmentsDetails', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-      if (data.ok) {
-        const def = await data.json()
-        setAppointmentsDef(def)
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  }
+  // const getAppointmentsDetailsBusiness = async () => {
+  //   try {
+  //     const appointmentsData = await fetch('http://localhost:3001/business/getAppointmentsDetails', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email: profileInfo.email })
+  //     });
+  //     if (appointmentsData.ok) {
+  //       const appointments = await appointmentsData.json()
+  //       setAppointments(appointments)
+  //       appointments.forEach(item => {
+  //         item[ "toggle" ] = false
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // }
 
   const addBreakHandler = () => {
     console.log(startTime, endTime);
@@ -218,16 +206,14 @@ const AppointmentsProfile = () => {
     const formattedEndTime = dayjs(endTime, "HH:mm", true);
 
     if (formattedEndTime.isValid() && formattedEndTime.isAfter(formattedStartTime)) {
-      const breakTimeRange = {
+      const newBreak = {
         start: formattedStartTime.format("HH:mm"),
         end: formattedEndTime.format("HH:mm"),
       };
 
-      this.setState((prevState) => ({
-        appointmentsDef: {
-          ...prevState.appointmentsDef,
-          fixedBreak: breakTimeRange, // Set the new break time range object
-        },
+      setAppointmentsDef((prevState) => ({
+        ...prevState,
+        fixedBreak: [ ...prevState.fixedBreak, newBreak ], // Add the new break time range to the array
       }));
     } else {
       alert("Invalid break time range. End time should be after start time.");
@@ -235,76 +221,51 @@ const AppointmentsProfile = () => {
   };
 
   const handleDeleteBreak = (index) => {
-    this.setState((prevState) => {
-      const updatedBreaks = [ ...prevState.appointmentsDef.fixedBreak ];
+    setAppointmentsDef((prevState) => {
+      const updatedBreaks = [ ...prevState.fixedBreak ];
       updatedBreaks.splice(index, 1);
       return {
         ...prevState,
-        appointmentsDef: {
-          ...prevState.appointmentsDef,
-          fixedBreak: updatedBreaks,
-        },
+        fixedBreak: updatedBreaks,
       };
     });
   };
 
   const handleDayCheckboxChange = (day) => {
-    this.setState(
-      (prevState) => {
-        if (prevState.appointmentsDef.fixedDaysOff.includes(day)) {
-          return {
-            ...prevState,
-            appointmentsDef: {
-              ...prevState.appointmentsDef,
-              fixedDaysOff: prevState.appointmentsDef.fixedDaysOff.filter(
-                (selectedDay) => selectedDay !== day
-              ),
-            },
-          };
-        } else {
-          return {
-            ...prevState,
-            appointmentsDef: {
-              ...prevState.appointmentsDef,
-              fixedDaysOff: [ ...prevState.appointmentsDef.fixedDaysOff, day ],
-            },
-          };
-        }
-      },
-      () => {
-        // Callback function that runs after the state has been updated
-        console.log(
-          "Updated fixedDaysOff:",
-          this.state.appointmentsDef.fixedDaysOff
-        );
+    setAppointmentsDef((prevState) => {
+      if (prevState.fixedDaysOff.includes(day)) {
+        return {
+          ...prevState,
+          fixedDaysOff: prevState.fixedDaysOff.filter((selectedDay) => selectedDay !== day),
+        };
+      } else {
+        return {
+          ...prevState,
+          fixedDaysOff: [ ...prevState.fixedDaysOff, day ],
+        };
       }
-    );
+    });
   };
 
   const handleOpeningEndTimeChange = (value) => {
-    this.setState((prevState) => ({
-      appointmentsDef: {
-        ...prevState.appointmentsDef,
-        businessHours: {
-          ...prevState.appointmentsDef.businessHours,
-          end: value,
-        },
+    setAppointmentsDef((prevState) => ({
+      ...prevState,
+      businessHours: {
+        ...prevState.businessHours,
+        end: value,
       },
     }));
   };
 
   const handleOpeningStartTimeChange = (value) => {
-    this.setState((prevState) => ({
-      appointmentsDef: {
-        ...prevState.appointmentsDef,
-        businessHours: {
-          ...prevState.appointmentsDef.businessHours,
-          start: value,
-        },
+    setAppointmentsDef((prevState) => ({
+      ...prevState,
+      businessHours: {
+        ...prevState.businessHours,
+        start: value,
       },
     }));
   };
-
 
   const daysOfWeek = [
     "Sunday",
@@ -316,13 +277,47 @@ const AppointmentsProfile = () => {
     "Saturday",
   ];
 
+  const updateAppointmentsDefOnServer = async (newAppointmentsDef) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/updateAppointmentsDef', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: profileInfo.email,
+          newAppointmentsDef: newAppointmentsDef
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        showMessage(data.message, data.type)
+        dispatch(updateAppointmentsDef(data.appointmentsDef));
+
+      } else {
+        showMessage(data.message, data.type)
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Updated appointmentsDef:", appointmentsDef);
+    try {
+      await updateAppointmentsDefOnServer(appointmentsDef);
+    } catch (error) {
+      console.error("Error updating appointments definition:", error);
+    }
+  };
+
   return (
     <div className=" mt-4">
       { profileInfo.isBusiness &&
         <div className="d-flex flex-column align-items-center">
           <p className="text-center display-6">Calendar Settings</p>
-          <form>
-            <Row className="align-items-center">
+          <form onSubmit={ handleSubmit }>
+            <Row className="">
 
               <Col md={ 2 }>
                 <Label className="mt-2 me-1" for="fixedBreak">
@@ -381,10 +376,10 @@ const AppointmentsProfile = () => {
             </Row>
 
             { appointmentsDef.fixedBreak && appointmentsDef.fixedBreak.length > 0 && (
-              <div>
+              <div className="mt-4">
                 <ul>
                   { appointmentsDef.fixedBreak.map((breakTime, index) => (
-                    <li className="m-1" key={ index }>
+                    <li className="mb-1" key={ index }>
                       { `Start: ${breakTime.start}, End: ${breakTime.end}` }
                       <Button
                         color="danger"
@@ -399,16 +394,6 @@ const AppointmentsProfile = () => {
                 </ul>
               </div>
             ) }
-            {/* { props.errors && (
-            <p
-              style={ {
-                fontSize: "12px",
-                color: "red",
-              } }
-            >
-              { props.errors }
-            </p>
-          ) } */}
 
             <div className="mt-2">
               <Label className="mt-4 me-3" for="fixedBreak">
@@ -480,6 +465,9 @@ const AppointmentsProfile = () => {
                 </Col>
 
               </Row>
+              <div className="d-flex justify-content-center m-3">
+                <button className="btn btn-outline-success" type="submit" >Submit</button>
+              </div>
             </div>
           </form>
         </div>

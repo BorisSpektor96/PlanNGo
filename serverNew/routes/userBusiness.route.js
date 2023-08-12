@@ -332,6 +332,22 @@ userBusinessRouter.post("/getAppointmentsDetails", async (req, res) => {
   }
 })
 
+userBusinessRouter.post("/updateAppointmentsDef", async (req, res) => {
+  const { email, newAppointmentsDef } = req.body
+  try {
+    const user = await userBusinessModel.findOne({ email: email })
+    if (!user) {
+      return res.status(404).json({ message: "User / AppointmentsDef not found", type: "Error" });
+    }
+    user.appointmentsDef[ 0 ] = newAppointmentsDef
+    await user.save()
+
+    res.status(200).json({ appointmentsDef: user.appointmentsDef[ 0 ], message: "updated calendar times", type: "Info" })
+  } catch (error) {
+    res.status(500).json({ message: error, type: "Error" })
+  }
+})
+
 userBusinessRouter.post("/getAppointmentsDef", async (req, res) => {
   const { email } = req.body
   try {
@@ -353,19 +369,20 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
   console.log(userEmail, date, businessEmail)
   try {
     const user = await userBusinessModel.findOne({ email: businessEmail });
-
     if (!user) {
       return res.status(404).json({
         message: "User / Appointments not found",
         type: "Error"
       })
     }
+
     const appointmentIndex = user.appointmentsDef[ 0 ].appointments.findIndex(appointment =>
       appointment.userDetails.email === userEmail
       &&
       appointment.date === date
     );
 
+    console.log("appointmentIndex", user.appointmentsDef[ 0 ].appointments)
     if (appointmentIndex === -1) {
       return res.status(404).json({
         message: "Appointment not found for the given business and date",
@@ -375,7 +392,7 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
     user.appointmentsDef[ 0 ].appointments.splice(appointmentIndex, 1)
     await user.save()
 
-    res.status(200).json({ message: "Appointment removed successfully", type: "Success" });
+    res.status(200).json({ appointments: user.appointmentsDef[ 0 ].appointments, message: "Appointment removed successfully", type: "Success" });
   } catch (error) {
     res.status(500).json({ message: error.message, type: "Error" });
   }

@@ -16,6 +16,7 @@ const initialState = {
   products: [],
   reviews: [],
   favorites: [],
+  appointments: [],
   appointmentsDef: [],
   messages: [],
   profileImg: ""
@@ -34,9 +35,20 @@ const profileInfoSlice = createSlice({
     updateMessages: (state, action) => {
       state.messages = action.payload;
     },
+    updateAppointmentsDef: (state, action) => {
+      state.appointmentsDef[ 0 ] = action.payload;
+    },
+    updateAppointments: (state, action) => {
+      if (state.isBusiness) {
+        console.log("dispatch Business")
+        state.appointmentsDef[ 0 ].appointments = action.payload;
+      } else {
+        state.appointments = action.payload;
+      }
+    },
     // Other actions can be defined here as well
   },
 });
 
-export const { updateProfileInfo, updateFavorites, updateMessages } = profileInfoSlice.actions;
+export const { updateProfileInfo, updateFavorites, updateMessages, updateAppointmentsDef, updateAppointments } = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;
