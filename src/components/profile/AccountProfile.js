@@ -1,21 +1,18 @@
 import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import './profile.css'
-import { ProfileInfoContext } from '../../ProfileInfoContext';
 import FavoritesList from "../favorites/FavoritesList";
 import { PopupMessageContext } from "../../PopupMessage";
 import AppointmentsProfile from "./AppointmentsProfile";
-import { AuthContext } from "../../AuthContext";
 
-import { Store } from './../../Store'
 import { updateProfileInfo } from './../../profileInfoSlice'
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const AccountProfile = () => {
 
-  const profileInfo = useSelector((state) => state.profileInfo);
+  const dispatch = useDispatch()
 
-  const { isLoggedIn } = useContext(AuthContext)
+  const profileInfo = useSelector((state) => state.profileInfo);
 
   const { showMessage } = useContext(PopupMessageContext)
 
@@ -40,31 +37,6 @@ const AccountProfile = () => {
       ...localProfileInfo,
       [ e.target.name ]: e.target.value
     });
-  };
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/business/getBusinessProfile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-      if (response.ok) {
-        const user = await response.json();
-        if (user !== null) {
-          // dispatch({ type: 'UPDATE_PROFILE_INFO', payload: user });
-          setLocalProfileInfo(user)
-          setImgUrl(user.profileImg)
-
-        } else {
-          setLocalProfileInfo(user)
-        }
-      } else {
-        alert("cannot reload the profile")
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
   };
 
   useEffect(() => {
@@ -111,7 +83,7 @@ const AccountProfile = () => {
 
           setLocalProfileInfo(data.user)
           localStorage.setItem("userData", JSON.stringify(localProfileInfo.email))
-          Store.dispatch(updateProfileInfo(data.user))
+          dispatch(updateProfileInfo(data.user))
         }
       } else {
         showMessage(data.message, data.type)
@@ -144,7 +116,7 @@ const AccountProfile = () => {
           showMessage(data.message, data.type)
           setLocalProfileInfo(data.user)
           localStorage.setItem("userData", JSON.stringify(localProfileInfo.email))
-          Store.dispatch(updateProfileInfo(data.user))
+          dispatch(updateProfileInfo(data.user))
         }
       } else {
         showMessage(data.message, data.type)

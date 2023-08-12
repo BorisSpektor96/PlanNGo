@@ -1,8 +1,8 @@
 import React from "react";
 import MessageItem from "./MessageItem";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import MessageForm from './MessageForm'
-
+import { PopupMessageContext } from "../../PopupMessage";
 // *************** redux ***************
 import { useDispatch, useSelector } from "react-redux";
 import { updateMessages } from "../../profileInfoSlice";
@@ -10,6 +10,7 @@ import { updateMessages } from "../../profileInfoSlice";
 
 const Messages = () => {
 
+    const { showMessage } = useContext(PopupMessageContext)
     const profileInfo = useSelector((state) => state.profileInfo)
     const dispatch = useDispatch()
 
@@ -70,7 +71,7 @@ const Messages = () => {
                         return message;
                     })
                 );
-                console.log("Message status updated successfully!");
+                showMessage(data.message, data.type)
             } else {
                 console.error(data.message);
             }
@@ -97,7 +98,7 @@ const Messages = () => {
                             message._id !== id
                     )
                 );
-                console.log("Message removed successfully!");
+                showMessage(data.message, data.type)
             } else {
                 console.error(data.message);
             }

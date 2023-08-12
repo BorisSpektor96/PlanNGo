@@ -4,18 +4,17 @@ import { AuthContext } from '../../AuthContext'
 import { PopupMessageContext } from './../../PopupMessage';
 
 import { useSelector } from "react-redux";
-import { Store } from '../../Store'
 import { updateProfileInfo } from "../../profileInfoSlice";
 
 
 const AppointmentItem = props => {
 
   const profileInfo = useSelector(state => state.profileInfo)
-
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
 
   const [ toggle, setToggle ] = useState(props.item.toggle)
+
   const date = new Date(props.item.date)
   const service = props.item.service
   const businessDetails = props.item.businessDetails
@@ -24,7 +23,7 @@ const AppointmentItem = props => {
   const appointment = {
     date: new Date(props.item.date),
     service: props.item.service,
-    businessEmail: props.item.businessDetails.email,
+    businessEmail: isBusiness ? "" : props.item.businessDetails.email,
     userEmail: profileInfo.email
   }
 
@@ -37,17 +36,16 @@ const AppointmentItem = props => {
     "Friday",
     "Saturday"
   ];
-
   return (
     <li className="d-flex flex-wrap justify-content-between align-items-center border rounded border-secondary m-1 p-2">
       {
         !toggle ?
           <div>
             <div className="d-flex flex-wrap">
-              <div className="d-flex align-items-center gap-2 me-3 mb-1">
+              {/* <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">{ !isBusiness ? 'Business:' : 'Client:' } </h6>
-                <p className="p-0 m-0"> { isBusiness ? userDetails.name : businessDetails.name }</p>
-              </div>
+                <p className="p-0 m-0">  { !isBusiness ? userDetails.name : businessDetails.name }</p>
+              </div> */}
               <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">Service:</h6>
                 <p className="p-0 m-0"> { service.name }</p>

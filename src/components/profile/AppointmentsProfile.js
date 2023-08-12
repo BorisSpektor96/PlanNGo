@@ -9,7 +9,6 @@ import { AuthContext } from '../../AuthContext'
 import { Label, Row, Col, Button } from "reactstrap";
 
 import { useSelector } from "react-redux";
-import { Store } from '../../Store'
 
 dayjs.extend(customParseFormat);
 const AppointmentsProfile = () => {
@@ -46,9 +45,9 @@ const AppointmentsProfile = () => {
 
   useEffect(() => {
     if (isBusiness) {
-      // getAppointmentsDetailsBusiness()
       setAppointments(profileInfo.appointmentsDef[ 0 ].appointments)
-      getAppointmentsDefBusiness()
+      setAppointmentsDef(profileInfo.appointmentsDef[ 0 ])
+      // getAppointmentsDefBusiness()
     } else {
       // getAppointmentsDetailsUser()
       setAppointments(profileInfo.appointments)
@@ -66,8 +65,8 @@ const AppointmentsProfile = () => {
 
   const removeAppointment = async (appointment) => {
 
-    const businessEmail = appointment.businessEmail
-    const clientEmail = appointment.userEmail
+    let businessEmail = appointment.businessEmail
+    let clientEmail = appointment.userEmail
 
     if (isBusiness) {
       businessEmail = appointment.userEmail
@@ -161,7 +160,7 @@ const AppointmentsProfile = () => {
 
   const getAppointmentsDefBusiness = async () => {
     try {
-      const data = await fetch('http://localhost:3001/business/getAppointmentsDef', {
+      const data = await fetch('http://localhost:3001/business/getAppointmentsDetails', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: profileInfo.email })
@@ -381,25 +380,25 @@ const AppointmentsProfile = () => {
 
             </Row>
 
-            {/* { appointmentsDef.fixedBreak.length > 0 && (
-            <div>
-              <ul>
-                { appointmentsDef.fixedBreak.map((breakTime, index) => (
-                  <li className="m-1" key={ index }>
-                    { `Start: ${breakTime.start}, End: ${breakTime.end}` }
-                    <Button
-                      color="danger"
-                      size="sm"
-                      className="ms-1"
-                      onClick={ () => handleDeleteBreak(index) }
-                    >
-                      Delete
-                    </Button>
-                  </li>
-                )) }
-              </ul>
-            </div>
-          ) } */}
+            { appointmentsDef.fixedBreak && appointmentsDef.fixedBreak.length > 0 && (
+              <div>
+                <ul>
+                  { appointmentsDef.fixedBreak.map((breakTime, index) => (
+                    <li className="m-1" key={ index }>
+                      { `Start: ${breakTime.start}, End: ${breakTime.end}` }
+                      <Button
+                        color="danger"
+                        size="sm"
+                        className="ms-1"
+                        onClick={ () => handleDeleteBreak(index) }
+                      >
+                        Delete
+                      </Button>
+                    </li>
+                  )) }
+                </ul>
+              </div>
+            ) }
             {/* { props.errors && (
             <p
               style={ {
@@ -422,8 +421,8 @@ const AppointmentsProfile = () => {
                     type="checkbox"
                     id={ day }
                     value={ day }
-                  // checked={ appointmentsDef.fixedDaysOff.includes(day) }
-                  // onChange={ () => handleDayCheckboxChange(day) }
+                    checked={ appointmentsDef.fixedDaysOff.includes(day) }
+                    onChange={ () => handleDayCheckboxChange(day) }
                   />
                   <label className="form-check-label" htmlFor={ day }>
                     { day }
@@ -449,8 +448,8 @@ const AppointmentsProfile = () => {
                     <select
                       id="openingStartTime"
                       className="form-control"
-                    // value={ appointmentsDef.businessHours.start }
-                    // onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
+                      value={ appointmentsDef.businessHours.start }
+                      onChange={ (e) => handleOpeningStartTimeChange(e.target.value) }
                     >
                       { generateStartTimeOptions().map((time) => (
                         <option key={ time } value={ time }>
@@ -468,8 +467,8 @@ const AppointmentsProfile = () => {
                     <select
                       id="openingEndTime"
                       className="form-control"
-                    // value={ appointmentsDef.businessHours.end }
-                    // onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
+                      value={ appointmentsDef.businessHours.end }
+                      onChange={ (e) => handleOpeningEndTimeChange(e.target.value) }
                     >
                       { generateEndTimeOptions().map((time) => (
                         <option key={ time } value={ time }>
