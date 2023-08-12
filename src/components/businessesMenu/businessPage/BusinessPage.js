@@ -1,14 +1,15 @@
 import { Fragment, useState, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Review from "../../review/Review";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Calendar from "../../Calendar/AppointmentCalendar";
 import AddReview from "../../review/AddReview";
-import { ProfileInfoContext } from "../../../ProfileInfoContext";
 import { PopupMessageContext } from "../../../PopupMessage";
 import Recommendations from "../recommendations/Recomendations"
 import MessageForm from "../../messages/MessageForm";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFavorites } from '../../../profileInfoSlice'
 
 const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
@@ -16,8 +17,8 @@ const BusinessPage = () => {
   const location = useLocation();
   const businessDetails = location.state;
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext)
-
+  const profileInfo = useSelector(state => state.profileInfo)
+  const dispatch = useDispatch()
   const [ isFavorite, setIsFavorite ] = useState(false);
 
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
@@ -42,6 +43,12 @@ const BusinessPage = () => {
     } else {
       setWorkingHours({ start: "--:--", end: "--:--" })
     }
+
+    profileInfo.favorites.forEach(fav => {
+      if (fav.email == businessDetails.email) {
+        setIsFavorite(true)
+      }
+    });
   }, [])
 
   const addBusinessToFavorite = async () => {
@@ -58,7 +65,7 @@ const BusinessPage = () => {
       if (response.ok) {
         setIsFavorite(true)
         showMessage(data.message, data.type)
-        await dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
+        dispatch(updateFavorites(data.user))
       } else {
         showMessage(data.message, data.type)
       }
@@ -83,7 +90,7 @@ const BusinessPage = () => {
       if (response.ok) {
         setIsFavorite(false)
         showMessage(data.message, data.type)
-        dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
+        dispatch(updateFavorites(data.favorites))
       }
     } catch (error) {
       console.log('Error:', error);

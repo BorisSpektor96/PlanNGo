@@ -4,8 +4,9 @@
 }
 .container {
   max-width: 1960px;
+  margin: 0 auto;
   justify-content: space-evenly;
-  min-height: 100vh;
+  min-height: 85vh;
 }
 .container, .Bcontainer {
   display: flex;

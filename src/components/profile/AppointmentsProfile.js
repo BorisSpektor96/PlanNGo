@@ -121,7 +121,6 @@ const AppointmentsProfile = () => {
 
 
   const getAppointmentsDetailsUser = async () => {
-    console.log(profileInfo.email)
     try {
       const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
         method: 'POST',

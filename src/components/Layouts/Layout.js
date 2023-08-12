@@ -8,7 +8,7 @@ const Layout = () => {
   return (
     <main>
       <Navbar />
-      <div className='min-vh-100'>
+      <div style={ { minHeight: "calc(100vh - 122.7px)" } }>
         <Outlet />
       </div>
       <Footer />

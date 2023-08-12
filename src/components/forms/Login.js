@@ -44,6 +44,7 @@ const Login = (props) => {
       } else {
         console.log('Bad information');
       }
+
     } catch (error) {
       console.log('Error:', error);
     }
@@ -59,11 +60,10 @@ const Login = (props) => {
           password: formValues.password
         })
       });
+      const data = await response.json();
 
       if (response.status === 200) {
-        const data = await response.json();
         if (data !== null && data !== 'undefined' && data !== undefined) {
-
           showMessage(data.message, data.type)
           setData(data.user);
           login(data.user)

@@ -70,7 +70,6 @@ const AccountProfile = () => {
   useEffect(() => {
     setLocalProfileInfo(profileInfo)
     setImgUrl(profileInfo.profileImg)
-    console.log(profileInfo.email)
   }, []);
 
   const submitAccountForm = (e) => {
@@ -274,7 +273,6 @@ const AccountProfile = () => {
       const data = await response.json();
       if (response.ok) {
         if (data.user !== null) {
-          console.log(data.user)
           showMessage(data.message, data.type)
           setLocalProfileInfo(data.user)
           editImgHandler()

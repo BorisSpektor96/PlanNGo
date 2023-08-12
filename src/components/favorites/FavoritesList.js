@@ -1,46 +1,16 @@
 import { useContext, useState } from "react";
 import FavoriteItem from "./FavoriteItem";
 import "./favoritesList.css"
-import { ProfileInfoContext } from "../../ProfileInfoContext";
-import { useEffect } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { updateFavorites } from "../../profileInfoSlice";
 import { PopupMessageContext } from './../../PopupMessage';
 
 const FavoritesList = () => {
 
   const { showMessage } = useContext(PopupMessageContext)
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-
-  const [ favorites, setFavorites ] = useState([]);
-
-  useEffect(() => {
-    fetchFavorites()
-  }, [ profileInfo.email ])
-
-  const fetchFavorites = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/users/getFavorites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-      if (response.ok) {
-        const favoritesData = await response.json();
-
-        if (favoritesData !== null) {
-          setFavorites(favoritesData);
-        } else {
-          setFavorites(favoritesData);
-        }
-      } else {
-        setFavorites([]);
-      }
-    } catch (error) {
-      console.log('Error:', error);
-      setFavorites([]);
-    }
-  };
+  const profileInfo = useSelector(state => state.profileInfo)
+  const dispatch = useDispatch()
 
   const deleteFavoriteHandler = async (favId) => {
     try {
@@ -52,9 +22,8 @@ const FavoritesList = () => {
 
       if (response.ok) {
         const data = await response.json()
+        dispatch(updateFavorites(data.favorites))
         showMessage(data.message, data.type)
-        fetchFavorites()
-        await dispatch({ type: 'UPDATE_FAVORITES', payload: data.user.favorites })
       }
     } catch (error) {
       console.log('Error:', error);
@@ -65,9 +34,9 @@ const FavoritesList = () => {
     <div class="justify-content-center mt-4">
       <h5 className="d-flex justify-content-center m-1">Favorite Businesses</h5>
       <ul className="p-3 list-group list-group-flush">
-        { favorites.length > 0 ?
+        { profileInfo.favorites && profileInfo.favorites.length > 0 ?
           (<>
-            { favorites.map((item) => (
+            { profileInfo.favorites.map((item) => (
               <FavoriteItem
                 key={ item.id }
                 id={ item.id }

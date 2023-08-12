@@ -67,7 +67,7 @@ const Welcome = () => {
       { isLoggedIn ?
         <div className={ styles.container }>
           <div className="header">
-            <h1 className="header display-4 text-center">Welcome </h1>
+            <h1 className="m-0 p-0 header display-4">Welcome </h1>
           </div>
         </div>
         :

@@ -231,20 +231,6 @@ userRouter.post('/updateUserProfile', async (req, res) => {
   }
 });
 
-userRouter.post("/getFavorites", async (req, res) => {
-  const { email } = req.body;
-  try {
-    const { favorites } = await userModel.findOne({ email: email }, { favorites: 1 });
-    if (favorites) {
-      res.json(favorites);
-    } else {
-      res.json([]);
-    }
-  } catch (err) {
-    res.send("Error " + err);
-  }
-});
-
 userRouter.post('/addToFavorite', async (req, res) => {
   try {
     const { userEmail, businessEmail } = req.body
@@ -280,7 +266,7 @@ userRouter.post('/deleteFromFavoriteById', async (req, res) => {
     if (favoriteIndex !== -1) {
       user.favorites.splice(favoriteIndex, 1);
       await user.save();
-      res.json({ user: user, message: "Successfully Deleted from Favorites", type: "Info" });
+      res.status(200).json({ favorites: user.favorites, message: "Successfully Deleted from Favorites", type: "Info" });
     } else {
       res.json({ message: "Failed To Delete From Favorites Business ", type: "Error" });
     }
@@ -294,7 +280,13 @@ userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const loggedUser = await userModel.findOne({ email: email, password: password });
-    res.json({ user: loggedUser, message: "Login Success", type: "Success" });
+    if (!loggedUser) {
+      return res.status(404).json({
+        message: "Bad Login Information",
+        type: "Error"
+      });
+    }
+    res.status(200).json({ user: loggedUser, message: "Login Success", type: "Success" });
   } catch (error) {
     res.json({ error: error, message: "Login Success", type: "Error" });
   }
