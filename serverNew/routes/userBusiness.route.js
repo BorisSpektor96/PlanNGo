@@ -168,11 +168,11 @@ userBusinessRouter.post('/updateBusinessProfile', async (req, res) => {
 });
 
 userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
-  const { email, reviewer, date, content, rating } = req.body
+  const { email, reviewer, date, content, rating, userEmail } = req.body
   const user = await userBusinessModel.findOne({ email: email });
   try {
     if (user) {
-      user.reviews.push({ reviewer, date, content, rating });
+      user.reviews.push({ reviewer, date, content, rating, userEmail });
       await user.save();
 
       res.status(200).json({ message: "Review added successfully", type: "Success" });
