@@ -18,6 +18,8 @@ const AppointmentsProfile = () => {
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
 
+  const [ oneTimeDate, setOneTimeDate ] = useState('')
+
   const [ startTime, setStartTime ] = useState("");
   const [ endTime, setEndTime ] = useState("");
 
@@ -31,7 +33,7 @@ const AppointmentsProfile = () => {
         end: "",
       },
       fixedDaysOff: [],
-      OneTimeDayOff: [],
+      OneTimeDayOff: [ '16/08/23' ],
       appointments: [],
       businessHours: {
         start: "",
@@ -107,45 +109,22 @@ const AppointmentsProfile = () => {
     }
   }
 
+  const addDateOffHandler = () => {
+    if (!appointmentsDef.OneTimeDayOff.includes(oneTimeDate)) {
+      setAppointmentsDef((prevState) => ({
+        ...prevState,
+        OneTimeDayOff: [ ...prevState.OneTimeDayOff, oneTimeDate ],
+      }));
+      setOneTimeDate('');
+    }
+  };
 
-  // const getAppointmentsDetailsUser = async () => {
-  //   try {
-  //     const appointmentsData = await fetch('http://localhost:3001/users/getAppointmentsDetails', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ email: profileInfo.email })
-  //     });
-
-  //     if (appointmentsData.ok) {
-  //       const appointment = await appointmentsData.json()
-  //       setAppointments(appointment.appointments)
-  //       appointments.forEach(item => {
-  //         item[ "toggle" ] = false
-  //       })
-  //     }
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // }
-
-  // const getAppointmentsDetailsBusiness = async () => {
-  //   try {
-  //     const appointmentsData = await fetch('http://localhost:3001/business/getAppointmentsDetails', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ email: profileInfo.email })
-  //     });
-  //     if (appointmentsData.ok) {
-  //       const appointments = await appointmentsData.json()
-  //       setAppointments(appointments)
-  //       appointments.forEach(item => {
-  //         item[ "toggle" ] = false
-  //       })
-  //     }
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // }
+  const handleDeleteDate = (index) => {
+    setAppointmentsDef((prevState) => ({
+      ...prevState,
+      OneTimeDayOff: prevState.OneTimeDayOff.filter((value, i) => i !== index),
+    }));
+  };
 
   const addBreakHandler = () => {
     console.log(startTime, endTime);
@@ -184,7 +163,6 @@ const AppointmentsProfile = () => {
     }
     return endTimeOptions;
   };
-
 
   const handleAddBreak = (startTime, endTime) => {
     const formattedStartTime = dayjs(startTime, "HH:mm", true);
@@ -277,7 +255,6 @@ const AppointmentsProfile = () => {
       if (response.ok) {
         showMessage(data.message, data.type)
         dispatch(updateAppointmentsDef(data.appointmentsDef));
-
       } else {
         showMessage(data.message, data.type)
       }
@@ -298,6 +275,7 @@ const AppointmentsProfile = () => {
 
   return (
     <div className=" mt-4">
+      <hr />
       { profileInfo.isBusiness &&
         <div className="d-flex flex-column align-items-center">
           <p className="text-center display-6">Calendar Settings</p>
@@ -357,7 +335,6 @@ const AppointmentsProfile = () => {
                   Add break
                 </Button>
               </Col>
-
             </Row>
 
             { appointmentsDef.fixedBreak && appointmentsDef.fixedBreak.length > 0 && (
@@ -448,8 +425,59 @@ const AppointmentsProfile = () => {
                     </select>
                   </div>
                 </Col>
-
               </Row>
+
+              <Row>
+                <div className="d-flex mt-2 gap-3">
+                  <Col md={ 2 }>
+                    <Label>Day Of By Date:</Label>
+                  </Col>
+                  <Col md={ 3 }>
+                    <input
+                      type="date"
+                      className="form-control text-center"
+                      value={ oneTimeDate }
+                      onChange={ (e) => {
+                        if (e.target.value) {
+                          setOneTimeDate(e.target.value);
+                        }
+                      } }
+                      min={ dayjs().add(1, 'day').format('YYYY-MM-DD') }
+                      max={ dayjs().add(2, 'month').format('YYYY-MM-DD') }
+                    />
+                  </Col>
+                  <Col md={ 3 }>
+                    <Button
+                      className="btn btn-success px-4"
+                      onClick={ addDateOffHandler }
+                      type="button"
+                      disabled={ !oneTimeDate }
+                    >
+                      Add Date
+                    </Button>
+                  </Col>
+                </div>
+              </Row>
+              { appointmentsDef.OneTimeDayOff && appointmentsDef.OneTimeDayOff.length > 0 && (
+                <div className="mt-4">
+                  <ul>
+                    { appointmentsDef.OneTimeDayOff.map((breakDate, index) => (
+                      <li className="mb-1" key={ index }>
+                        { `${new Date(breakDate).getDate()}/${new Date(breakDate).getMonth() + 1}/${new Date(breakDate).getFullYear().toString().slice(2)}` }
+                        <Button
+                          color="danger"
+                          size="sm"
+                          className="ms-1"
+                          onClick={ () => handleDeleteDate(index) }
+                        >
+                          Delete
+                        </Button>
+                      </li>
+                    )) }
+                  </ul>
+                </div>
+              ) }
+
               <div className="d-flex justify-content-center m-3">
                 <button className="btn btn-outline-success" type="submit" >Submit</button>
               </div>
@@ -457,6 +485,7 @@ const AppointmentsProfile = () => {
           </form>
         </div>
       }
+      <hr />
       <h5 className="d-flex justify-content-center m-1">Appointments</h5>
       <ul className="p-3 list-group list-group-flush">
         { appointments && appointments.length > 0 ?

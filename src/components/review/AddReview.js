@@ -8,9 +8,11 @@ const AddReview = (props) => {
 
   const { showMessage } = useContext(PopupMessageContext)
 
-  const [ anonymous, setAnonymous ] = useState(false)
-  const [ reviewContent, setReviewContent ] = useState("");
-  const [ reviewRate, setreviewRate ] = useState("");
+  const hasReviewed = props.businessDetails.reviews.some(review => review.userEmail === props.profileInfo.email);
+
+  const [anonymous, setAnonymous] = useState(false)
+  const [reviewContent, setReviewContent] = useState("");
+  const [reviewRate, setreviewRate] = useState("");
 
   const anonymousHandler = () => {
     setAnonymous(!anonymous)
@@ -25,21 +27,23 @@ const AddReview = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const name = anonymous ? "-anonymous-" : props.profileInfo.fullName;
+    const name = anonymous ? "-anonymous-" : props.profileInfo.fullname;
+    const userEmail = props.profileInfo.email
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate)
+    await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate, userEmail)
     props.onClose();
   };
 
-  const postReviewToBusiness = async (reviewer, content, rating, date, anonymous) => {
+  const postReviewToBusiness = async (reviewer, content, rating, date, userEmail) => {
     try {
       const formValues = {
         email: props.businessDetails.email,
         reviewer: reviewer,
         content: content,
         rating: rating,
-        date: date
+        date: date,
+        userEmail: userEmail
       };
       const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
         method: 'POST',
@@ -69,16 +73,16 @@ const AddReview = (props) => {
           className="btn-close"
           aria-label="Close"
           dal
-          onClick={ props.onClose }
+          onClick={props.onClose}
         ></button>
       </div>
 
-      <form onSubmit={ handleSubmit } className="form-outline">
+      <form onSubmit={handleSubmit} className="form-outline">
         <p className="d-flex justify-content-center">add a review</p>
         <div className="d-flex flex-column justify-content-center">
           <div className="d-flex p-2 justify-content-between">
             <label>how was your visit?</label>
-            <StarRating onChange={ starHandler } />
+            <StarRating onChange={starHandler} />
           </div>
           <div className="form-check mt-2">
             <input
@@ -87,20 +91,25 @@ const AddReview = (props) => {
               value="anonymous"
               id="anonymous"
               name="anonymous"
-              onClick={ anonymousHandler }
+              onClick={anonymousHandler}
             />
             <label className="form-check-label" htmlFor="anonymous">
               anonymous?
             </label>
           </div>
-          <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } />
-          <div className="p-2 mt-4 d-flex justify-content-center">
+          <textarea className="mt-4" name="content" value={reviewContent} onChange={handleReviewContent} />
+          {hasReviewed && (
+            <div className=" p-1 text-center ">
+              <p className="text-danger">You can review this business only once.</p>
+          
+            </div>)}
+            <div className="p-1 d-flex justify-content-center"> 
             <input
-              className="btn btn-outline-success "
-              type="submit"
-              value="Post Review"
-            />
-          </div>
+                className="btn btn-outline-success "
+                type="submit"
+                value="Post Review"
+                disabled={hasReviewed}
+              /></div>
         </div>
       </form>
     </Modal>

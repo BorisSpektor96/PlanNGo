@@ -296,7 +296,7 @@ const AccountProfile = () => {
               </div>
               <div className="card-body text-center d-flex flex-column justify-content-center">
 
-                <img style={ { width: '100%', maxWidth: '350px' } } className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
+                <img style={ { width: '100%', maxWidth: '200px', maxHeight: '250px' } } className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
                 <div className="small font-italic text-muted">
                   { editImgProfile &&
                     <form className="d-flex flex-column" onSubmit={ imgUploadHandler }>

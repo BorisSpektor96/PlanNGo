@@ -9,7 +9,12 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
         <>
             <tr className="table-secondary">
                 <td className="text-center">{ index + 1 }</td>
-                <td className="text-center">{ data.date }</td>
+                <td className="text-center">
+                    { `
+                    ${new Date(data.date).getHours()}:${new Date(data.date).getMinutes().toString().padStart(2, '0')}
+                    ${new Date(data.date).getDate()}/${new Date(data.date).getMonth() + 1}/${new Date(data.date).getFullYear().toString().slice(2)}
+                    ` }
+                </td>
                 <td className="text-center">{ email }</td>
                 <td className="text-center">{ data.subject }</td>
                 <td className="text-center">

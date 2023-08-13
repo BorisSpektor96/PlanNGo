@@ -11,64 +11,39 @@ import Cart from "./cart/Cart";
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
 
+import dayjs from 'dayjs'; // Import dayjs library
+// import 'dayjs/locale/en'; // Import the locale you want to use (optional)
+
 const AppointmentCalendar = (props) => {
 
   const profileInfo = useSelector(state => state.profileInfo)
   const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
-  const [ selectedDate, setSelectedDate ] = useState("");
-  const [ selectedTime, setSelectedTime ] = useState("");
+  const [ selectedDate, setSelectedDate ] = useState(null);
+  const [ selectedTime, setSelectedTime ] = useState(null);
   const [ selectedService, setSelectedService ] = useState(null);
   const [ selectedProducts, setSelectedProducts ] = useState([]);
   const [ timeList, setTimeList ] = useState([]);
   const [ currentStep, setCurrentStep ] = useState(0);
   const appointmentsDef = props.appointmentsDef[ 0 ];
 
-  // const sendEmail = () => {
-  //   if (!props.profileInfo || !props.businessDetails) {
-  //     console.log("Error: Profile info or business details are undefined");
-  //     return;
-  //   }
-  //   const templateParams = {
-  //     user_name: props.profileInfo.fullname,
-  //     business_name: props.businessDetails.business_name,
-  //     user_mail: props.profileInfo.email,
-  //     date:selectedDate,
-  //     time:selectedTime,
-  //     Service: selectedService.name,
-  //     duration: selectedService.duration
-  //   };
-
-  //   emailjs.sendForm('service_g0jkiit', 'template_3lmq448', templateParams, 'KL4TZz4uZS0SXCMop')
-  //     .then(
-  //       (result) => {
-  //         console.log("Email sent successfully:", result.text);
-  //         // Show the user a success message if needed
-  //       },
-  //       (error) => {
-  //         console.log("Error sending email:", error.text);
-  //         // Show the user an error message if needed
-  //       }
-  //     );
-  // };
-
   const handleDateSelect = (date) => {
-    setSelectedDate(date);
+    setSelectedDate(new Date(date));
     setCurrentStep(2);
   };
-
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
     setCurrentStep(3);
   };
-
 
   const handleBack = () => {
     if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
       setCurrentStep(0);
       setSelectedDate("");
       setSelectedTime("");
+      setSelectedService(null)
+
     } else if (currentStep === 4) {
       setSelectedTime("");
       setCurrentStep(1);
@@ -79,7 +54,14 @@ const AppointmentCalendar = (props) => {
 
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    return appointmentsDef.fixedDaysOff.includes(dayName);
+    const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
+
+    const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => new Date(dateTime).toISOString().split('T')[ 0 ]);
+
+    return (
+      appointmentsDef.fixedDaysOff.includes(dayName) ||
+      oneTimeDates.includes(isoDayDate)
+    );
   };
 
   const addProduct = (product) => {
@@ -220,20 +202,31 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("selectedTime:" + selectedTime);
+  useEffect(() => {
+    console.log("selectedDate:" + selectedDate);
 
-  // }, [ selectedTime ]);
-
-  // useEffect(() => {
-  //   console.log("selectedDate:" + selectedDate);
-
-  // }, [ selectedDate ]);
+  }, [ selectedDate ]);
 
   useEffect(() => {
-    if (selectedService !== null) {
-      const start = formattedTime(props.workingHours.start);
-      const end = formattedTime(props.workingHours.end);
+    if (selectedService !== null && selectedDate !== "") {
+      const start = new Date();
+      const end = new Date();
+
+      const currentDate = new Date();
+
+      if (
+        selectedDate.getDate() === currentDate.getDate() &&
+        selectedDate.getMonth() === currentDate.getMonth() &&
+        selectedDate.getFullYear() === currentDate.getFullYear()
+      ) {
+        // If selectedDate is today, start time is 3 hours from now
+        start.setHours(start.getHours() + 3);
+        start.setMinutes(0);
+      } else {
+        start.setTime(formattedTime(props.workingHours.start).getTime());
+      }
+
+      end.setTime(formattedTime(props.workingHours.end).getTime());
 
       let minutes = selectedService.duration * 60;
       let hours = Math.floor(selectedService.duration);
@@ -265,24 +258,20 @@ const AppointmentCalendar = (props) => {
         }
       }
 
-      setTimeList(
-        filteredList.filter(
-          (time) =>
-            time.time > new Date(10, 0, 0) && time.time < new Date(21, 0, 0)
-        )
-      );
-
       setTimeList(filteredList);
     } else {
       setSelectedDate("");
     }
-  }, [ selectedService ]);
-
+  }, [ selectedService, selectedDate ]);
   const formattedTime = (timeString) => {
+    if (!selectedDate) {
+      return null; // Return null or some default value when selectedDate is not set
+    }
+
+    const selectedDateObj = new Date(selectedDate);
     const [ hours, minutes ] = timeString.split(":").map(Number);
-    const time = new Date();
-    time.setHours(hours, minutes, 0);
-    return time;
+    selectedDateObj.setHours(hours, minutes, 0);
+    return selectedDateObj;
   };
 
   const isAppointmentExist = (time, date) => {
