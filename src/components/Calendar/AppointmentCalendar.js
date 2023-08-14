@@ -56,11 +56,11 @@ const AppointmentCalendar = (props) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
     const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
 
-    const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => new Date(dateTime).toISOString().split('T')[ 0 ]);
+    const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => dateTime);
 
     return (
       appointmentsDef.fixedDaysOff.includes(dayName) ||
-      oneTimeDates.includes(isoDayDate)
+      oneTimeDates.includes(dayjs(isoDayDate).add(1, 'day').format('YYYY-MM-DD'))
     );
   };
 
