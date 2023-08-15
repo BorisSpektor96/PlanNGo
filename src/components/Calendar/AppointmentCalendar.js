@@ -12,11 +12,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
 
 import dayjs from 'dayjs'; // Import dayjs library
-// import 'dayjs/locale/en'; // Import the locale you want to use (optional)
 
 const AppointmentCalendar = (props) => {
 
   const profileInfo = useSelector(state => state.profileInfo)
+  console.log(props.businessDetails.email)
   const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
@@ -32,10 +32,78 @@ const AppointmentCalendar = (props) => {
     setSelectedDate(new Date(date));
     setCurrentStep(2);
   };
+
+  const handleLockAppointmentTemp = async () => {
+    const newAppointmentBusiness = {
+      type: "lock",
+      date: new Date(selectedDate),
+      userDetails: {
+        email: profileInfo.email,
+      },
+    }
+
+    if (selectedTime !== null) {
+      newAppointmentBusiness.date.setHours(parseInt(selectedTime.slice(0, 2)));
+      newAppointmentBusiness.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
+    }
+    try {
+      const businessResponse = await fetch(
+        "http://localhost:3001/business/addAppointment",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: props.businessDetails.email,
+            appointment: newAppointmentBusiness,
+          }),
+        }
+      );
+
+      const businessData = await businessResponse.json();
+
+      if (businessResponse.ok) {
+        showMessage(businessData.message, businessData.type);
+      }
+    }
+    catch (error) {
+      console.log("Error:", error.message);
+    }
+  }
+
+  const handleRemoveLockAppointment = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/business/removeAppointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          businessEmail: props.businessDetails.email,
+          date: selectedDate.toISOString(),
+          userEmail: profileInfo.email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showMessage(data.message, data.type);
+      } else {
+        console.log("Failed to remove lock appointment:", data.message);
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
+
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
+    handleLockAppointmentTemp();
     setCurrentStep(3);
   };
+
 
   const handleBack = () => {
     if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
@@ -51,7 +119,6 @@ const AppointmentCalendar = (props) => {
       setCurrentStep(4);
     }
   };
-
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
     const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
@@ -114,6 +181,8 @@ const AppointmentCalendar = (props) => {
     );
   };
 
+
+
   const scheduleHandler = async () => {
     const newAppointmentBusiness = {
       date: new Date(selectedDate),
@@ -164,6 +233,8 @@ const AppointmentCalendar = (props) => {
 
       if (businessResponse.ok) {
         showMessage(businessData.message, businessData.type);
+        await handleRemoveLockAppointment();
+
         props.onClose();
 
         // Now, add the appointment to the user
@@ -202,10 +273,6 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log("selectedDate:" + selectedDate);
-
-  }, [ selectedDate ]);
 
   useEffect(() => {
     if (selectedService !== null && selectedDate !== "") {
@@ -366,7 +433,7 @@ const AppointmentCalendar = (props) => {
             <>
               <p className="text-center display-6">Schedule</p>
               <Calendar
-                calendarType="Hebrew"
+                calendarType="hebrew"
                 locale="en-US"
                 value={ selectedDate }
                 onChange={ handleDateSelect }

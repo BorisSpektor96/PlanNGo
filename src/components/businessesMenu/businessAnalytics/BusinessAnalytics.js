@@ -1,5 +1,3 @@
-import React, { useContext, useState, useEffect } from "react";
-import { ProfileInfoContext } from '../../../ProfileInfoContext';
 import PieChart from "./PieChart";
 import VerticalBarChart from './VerticalBarChart';
 import LineChart from './LineChart';
@@ -7,16 +5,15 @@ import { Button } from 'react-bootstrap';
 import { Chart, registerables } from 'chart.js'; // Import Chart and registerables
 import { exportChartsToPDF } from './pdf-export';
 
-Chart.register(...registerables); // Register the necessary elements
+import { useSelector } from "react-redux";
+
+Chart.register(...registerables);
 
 const BusinessAnalytics = () => {
+    const profileInfo = useSelector(state => state.profileInfo)
 
-    const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-    const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
-
-
-    const appointments = localProfileInfo?.appointmentsDef?.[ 0 ]?.appointments;
-    if (!localProfileInfo || !appointments) return null;
+    const appointments = profileInfo?.appointmentsDef?.[ 0 ]?.appointments;
+    if (!profileInfo || !appointments) return null;
 
     const calculateTotalPaymentByMonth = (appointments) => {
         const totalPaymentByMonth = new Array(12).fill(0); // Initialize an array to hold total payments for each month, starting with zeros.
@@ -61,7 +58,7 @@ const BusinessAnalytics = () => {
             <VerticalBarChart id="bar-chart" totalPaymentByMonth={ totalPaymentByMonth } />
             <div className="d-flex justify-content-center ">
                 <LineChart id="line-chart" totalPaymentByMonth={ totalPaymentByMonth } />
-                <div className="m-3">                <PieChart id="pie-chart" business={ localProfileInfo } />
+                <div className="m-3">                <PieChart id="pie-chart" business={ profileInfo } />
                 </div>
             </div>
             <div className="d-flex justify-content-center mb-3">
