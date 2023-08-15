@@ -96,9 +96,7 @@ userRouter.post("/getAppointmentsDetails", async (req, res) => {
 })
 
 userRouter.post("/removeAppointment", async (req, res) => {
-  const { userEmail, date, businessEmail } = req.body;
-  console.log("================= user ===================")
-  console.log(userEmail, date, businessEmail)
+  const { userEmail, businessEmail, date } = req.body;
   try {
     const user = await userModel.findOne({ email: userEmail }).select({ appointments: 1 })
 

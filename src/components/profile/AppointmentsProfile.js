@@ -44,32 +44,44 @@ const AppointmentsProfile = () => {
 
   useEffect(() => {
     if (isBusiness) {
-      setAppointments(profileInfo.appointmentsDef[ 0 ].appointments)
+      let sortedAppointments = [ ...profileInfo.appointmentsDef[ 0 ].appointments ]; // Create a copy of the array
+      sortedAppointments.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA - dateB;
+      });
+      setAppointments(sortedAppointments)
       setAppointmentsDef(profileInfo.appointmentsDef[ 0 ])
     } else {
-      setAppointments(profileInfo.appointments)
+      let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
+      sortedAppointments.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA - dateB;
+      });
+      setAppointments(sortedAppointments);
+
     }
   }, [ profileInfo ])
 
   const removeAppointment = async (appointment) => {
 
-    let businessEmail = isBusiness ? appointment.businessEmail : appointment.userEmail
-    let clientEmail = isBusiness ? appointment.userEmail : appointment.businessEmail
-    console.log("businessEmail", businessEmail)
-    console.log("clientEmail", clientEmail)
+    const email = profileInfo.email
+    const otherEmail = appointment.appointmentEmail
+
     try {
       const response = await fetch('http://localhost:3001/business/removeAppointment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          businessEmail: businessEmail,
+          businessEmail: isBusiness ? email : otherEmail,
           date: appointment.date,
-          userEmail: clientEmail
+          userEmail: isBusiness ? otherEmail : email,
+          type: 'not lock'
         })
       });
 
       const data = await response.json();
-      console.log(isBusiness)
       if (response.ok) {
         if (data.appointments !== null) {
           showMessage(data.message, data.type)
@@ -88,9 +100,9 @@ const AppointmentsProfile = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userEmail: clientEmail,
+          businessEmail: isBusiness ? email : otherEmail,
           date: appointment.date,
-          businessEmail: businessEmail
+          userEmail: isBusiness ? otherEmail : email,
         })
       });
 
@@ -127,8 +139,6 @@ const AppointmentsProfile = () => {
   };
 
   const addBreakHandler = () => {
-    console.log(startTime, endTime);
-
     if (startTime && endTime) {
       handleAddBreak(startTime, endTime);
       setStartTime("");
@@ -265,7 +275,6 @@ const AppointmentsProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated appointmentsDef:", appointmentsDef);
     try {
       await updateAppointmentsDefOnServer(appointmentsDef);
     } catch (error) {

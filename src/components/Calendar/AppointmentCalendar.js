@@ -16,7 +16,6 @@ import dayjs from 'dayjs'; // Import dayjs library
 const AppointmentCalendar = (props) => {
 
   const profileInfo = useSelector(state => state.profileInfo)
-  console.log(props.businessDetails.email)
   const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
@@ -73,6 +72,17 @@ const AppointmentCalendar = (props) => {
   }
 
   const handleRemoveLockAppointment = async () => {
+    const deleteDate = {
+      type: "lock",
+      date: new Date(selectedDate),
+      businessEmail: props.businessDetails.email,
+      userEmail: profileInfo.email,
+    }
+
+    if (selectedTime !== null) {
+      deleteDate.date.setHours(parseInt(selectedTime.slice(0, 2)));
+      deleteDate.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
+    }
     try {
       const response = await fetch("http://localhost:3001/business/removeAppointment", {
         method: "POST",
@@ -80,12 +90,12 @@ const AppointmentCalendar = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          businessEmail: props.businessDetails.email,
-          date: selectedDate.toISOString(),
-          userEmail: profileInfo.email,
+          userEmail: deleteDate.userEmail,
+          date: deleteDate.date,
+          businessEmail: deleteDate.businessEmail,
+          type: 'lock'
         }),
       });
-
       const data = await response.json();
 
       if (response.ok) {
@@ -100,20 +110,25 @@ const AppointmentCalendar = (props) => {
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
-    handleLockAppointmentTemp();
     setCurrentStep(3);
   };
+
+  useEffect(() => {
+    if (selectedTime !== null) {
+      handleLockAppointmentTemp();
+    }
+  }, [ selectedTime ])
 
 
   const handleBack = () => {
     if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
       setCurrentStep(0);
-      setSelectedDate("");
-      setSelectedTime("");
+      setSelectedDate(null);
+      setSelectedTime(null);
       setSelectedService(null)
 
     } else if (currentStep === 4) {
-      setSelectedTime("");
+      setSelectedTime(null);
       setCurrentStep(1);
     } else if (currentStep === 5) {
       setCurrentStep(4);
