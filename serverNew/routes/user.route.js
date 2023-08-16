@@ -39,7 +39,7 @@ userRouter.post("/getMessages", async (req, res) => {
 });
 
 userRouter.post('/signup', async (req, res) => {
-  const { email, password, fullname, phoneNumber, userType, isBusiness, profileImg } = req.body;
+  const { email, password, fullname, phoneNumber, isBusiness, profileImg, securityQuestion } = req.body;
 
   try {
     const user = await userModel.create({
@@ -47,9 +47,9 @@ userRouter.post('/signup', async (req, res) => {
       password,
       fullname,
       phoneNumber,
-      profileImg, // Save the base64 string directly to the profileImg field
-      userType,
+      profileImg,
       isBusiness,
+      securityQuestion
     });
 
     res.status(200).json({ user: user, message: "Signed Up Succesfully ", type: "Success" });
@@ -62,6 +62,7 @@ userRouter.post('/signup', async (req, res) => {
     return res.status(400).send(error);
   }
 });
+
 
 userRouter.post("/addAppointmentToUser", async (req, res) => {
   const { email, appointment } = req.body;

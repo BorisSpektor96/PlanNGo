@@ -7,7 +7,6 @@ const businessSchema = new mongoose.Schema(
     fullname: String,
     phoneNumber: String,
     isBusiness: Boolean,
-    userType: String,
     address: String,
     business_phone: String,
     business_name: String,
@@ -17,6 +16,7 @@ const businessSchema = new mongoose.Schema(
     products: Array,
     profileImg: String,
     reviews: Array,
+    securityQuestion: Object,
     appointmentsDef: [
       {
         fixedBreak: Array,

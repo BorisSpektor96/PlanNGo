@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
   phoneNumber: String,
   isBusiness: Boolean,
   favorites: Array,
-  userType: String,
   appointments: Array,
+  securityQuestion: Object,
   messages: [
     {
       read: Boolean,

@@ -7,7 +7,6 @@ const initialState = {
   fullname: "redux",
   phoneNumber: "",
   isBusiness: true,
-  userType: "",
   address: "",
   business_name: "",
   business_description: "",
@@ -17,9 +16,10 @@ const initialState = {
   reviews: [],
   favorites: [],
   appointments: [],
-  appointmentsDef: [],
+  appointmentsDef: [ {} ],
   messages: [],
-  profileImg: ""
+  profileImg: "",
+  securityQuestion: {},
 }
 
 const profileInfoSlice = createSlice({

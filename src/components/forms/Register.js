@@ -1,27 +1,71 @@
-import { useState } from "react";
+import { useState, useContext, useEffect} from "react";
 import Modal from "../UI/Modal";
 import { useNavigate } from "react-router-dom";
 import FormInput from "./FormInput";
 import { PopupMessageContext } from "../../PopupMessage";
-import { useContext } from "react";
+import Select from "react-select";
+
+import { Label } from "reactstrap";
 
 const Register = (props) => {
 
   const { showMessage } = useContext(PopupMessageContext)
 
-  const [ RememberMe, RememberMehandler ] = useState(false);
-  const [ previewUrl, setPreviewUrl ] = useState("");
-  const [ formValues, setformValues ] = useState({
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [formValues, setformValues] = useState({
     fullname: "",
     email: "",
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    userType: "U",
     isBusiness: false,
     profileImg: "",
+    securityQuestion:{
+      question: "",
+      answer: "",
+    }
 
   });
+
+  const securityQuestions = [
+    {
+      label: "What is your mother's maiden name?",
+      value: "What is your mother's maiden name?",
+    },
+    {
+      label: "What was the name of your first pet?",
+      value: "What was the name of your first pet?",
+    },
+    {
+      label: "What is your favorite book?",
+      value: "What is your favorite book?",
+    },
+    {
+      label: "In what city were you born?",
+      value: "In what city were you born?",
+    },
+  ];
+
+  const onChangeSecurityQuestion = (selectedOption) => {
+    setformValues({
+      ...formValues,
+      securityQuestion: {
+        ...formValues.securityQuestion,
+        question: selectedOption.value,
+      },
+    });
+  };
+
+  const onChangeSecurityAnswer = (e) => {
+    setformValues({
+      ...formValues,
+      securityQuestion: {
+        ...formValues.securityQuestion,
+        answer: e.target.value,
+      },
+    });
+  };
+
 
   const DBreq = async (e) => {
     try {
@@ -33,6 +77,7 @@ const Register = (props) => {
         userType: formValues.userType,
         isBusiness: formValues.isBusiness,
         profileImg: formValues.profileImg,
+        securityQuestion: formValues.securityQuestion
       };
 
       const response = await fetch("http://localhost:3001/users/signup", {
@@ -67,7 +112,7 @@ const Register = (props) => {
       id: 1,
       name: "fullname",
       type: "text",
-      placeholder: "fullname",
+      placeholder: "full name",
       errorMessage:
         "fullname should be 3-16 characters and shouldn't include any special character!",
       label: "Fullname",
@@ -116,24 +161,23 @@ const Register = (props) => {
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
       required: true,
     },
+
   ];
 
-  const RememberMeCheckbox = () => {
-    RememberMehandler(!RememberMe);
-  };
+
 
   const onChange = (e) => {
-    setformValues({ ...formValues, [ e.target.name ]: e.target.value });
+    setformValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
   const onFileChange = (e) => {
-    const selectedFile = e.target.files[ 0 ];
+    const selectedFile = e.target.files[0];
     if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setformValues({
           ...formValues,
-          profileImg: reader.result.split(",")[ 1 ], // Save the base64 string
+          profileImg: reader.result.split(",")[1], // Save the base64 string
         });
         setPreviewUrl(reader.result);
       };
@@ -148,55 +192,61 @@ const Register = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          onClick={ props.onClose }
+          onClick={props.onClose}
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
-      <form className=" p-1" onSubmit={ submitHandler }>
+      <form className=" p-1" onSubmit={submitHandler}>
         <div className="d-flex justify-content-center">
           <div className="card mb-4">
             <div className="card-header">Profile Picture</div>
             <div className="card-body text-center">
               <img
                 className="w-50 img-fluid mb-4"
-                src={ previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" }
+                src={previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png"}
                 alt=""
               />
 
               <div className="d-flex flex-wrap form-group">
-                <input title="a" type="file" name="profileImg" onChange={ onFileChange } />
+                <input title="a" type="file" name="profileImg" onChange={onFileChange} />
               </div>
             </div>
           </div>
         </div>
-        { inputs.map((input) => (
+        {inputs.map((input) => (
           <FormInput
-            key={ input.id }
-            { ...input }
-            value={ formValues[ input.name ] }
-            onChange={ onChange }
+            key={input.id}
+            {...input}
+            value={formValues[input.name]}
+            onChange={onChange}
           />
-        )) }
+        ))}
+  <Label  for="security question" >Security question</Label>
+          <Select
+            name="security question"
+            options={securityQuestions}
+            //value={formValues.securityQuestion.question}
+            onChange={onChangeSecurityQuestion} 
+            autoFocus={true}
+            className="custom-select text-center form-control form-select-sm"
+            placeholder="choose a security question"
+            required= {true}
 
-        <div className="row mb-4">
-          <div className="col d-flex ">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value="RememberMe"
-                id="form2Example31"
-              />
-              <label
-                className="form-check-label"
-                htmlFor="form2Example31"
-                onChange={ RememberMeCheckbox }
-              >
-                Remember me
-              </label>
-            </div>
-          </div>
+          />
+
+          <FormInput
+            key={6}
+            name= "securityAnswer"
+            type= "text"
+            placeholder= "Your answer"
+            label= "Security answer"
+            required= {true}
+            value={formValues.securityQuestion.answer}
+            onChange={onChangeSecurityAnswer}
+          />
+        <div className="row m-2  pt-4">
+     
           <button type="submit" className="btn btn-primary btn-block mb-4">
             submit
           </button>

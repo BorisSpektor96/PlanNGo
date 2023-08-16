@@ -19,7 +19,6 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     fullname,
     phoneNumber,
     isBusiness,
-    userType,
     address,
     business_name,
     business_description,
@@ -28,7 +27,8 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     products,
     profileImg,
     reviews,
-    appointmentsDef
+    appointmentsDef,
+    securityQuestion
   } = req.body;
 
   const newBusinessUser = new userBusinessModel({
@@ -37,7 +37,6 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     fullname,
     phoneNumber,
     isBusiness,
-    userType,
     address,
     business_name,
     business_description,
@@ -46,7 +45,8 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
     products,
     profileImg,
     reviews,
-    appointmentsDef
+    appointmentsDef,
+    securityQuestion
   });
 
   try {
