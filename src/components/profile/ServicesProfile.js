@@ -11,11 +11,6 @@ const ServicesProfile = () => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
 
-<<<<<<< HEAD
-=======
-  const profileInfo  = useSelector(state => state.profileInfo)
-
->>>>>>> 3b6b3618124e8e5c5e8d6b9556be2bf350d2b2f5
   const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({

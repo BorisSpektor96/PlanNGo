@@ -13,7 +13,16 @@ const businessSchema = new mongoose.Schema(
     business_description: String,
     business_type: String,
     services: Array,
-    products: Array,
+    products: [
+      {
+        productId: Number,
+        price: Number,
+        description: String,
+        name: String,
+        quantity: Number,
+        photo: String
+      }
+    ],
     profileImg: String,
     reviews: Array,
     securityQuestion: Object,

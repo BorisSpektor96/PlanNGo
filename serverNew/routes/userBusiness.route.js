@@ -108,20 +108,16 @@ userBusinessRouter.post("/getMessages", async (req, res) => {
 
 userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
   const { email, increment, productId } = req.body;
-  console.log(email, increment, productId)
   try {
     const user = await userBusinessModel.findOne({ email: email })
 
     if (!user || !user.messages) {
       return res.status(404).json();
     }
-    // const product = user.products.id(productId)
-    // console.log(product.name)
-    // console.log(product.quantity)
-    // product.quantity += increment
-    // console.log(product.name)
-    // console.log(product.quantity)
+    const productIndex = user.products.findIndex(product => product.productId === productId);
 
+    const product = user.products[ productIndex ]
+    product.quantity += increment
     await user.save()
 
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
@@ -133,23 +129,19 @@ userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
 
 userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
   const { email, decrement, productId } = req.body;
+  console.log(email, decrement, productId)
   try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ producs: 1 });
+    const user = await userBusinessModel.findOne({ email: email })
 
     if (!user || !user.messages) {
       return res.status(404).json();
     }
+    const productIndex = user.products.findIndex(product => product.productId === productId);
 
-    const product = user.products.id(productId)
-    if (product.quantity > 0) {
-      console.log(product.name)
-      console.log(product.quantity)
-      product.quantity -= decrement
-      console.log(product.name)
-      console.log(product.quantity)
-    }
-
+    const product = user.products[ productIndex ]
+    product.quantity -= decrement
     await user.save()
+
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
   } catch (error) {
     console.error(error);

@@ -22,14 +22,14 @@ function Copyright() {
 const Footer = () => {
   return (
     <footer className=' bg-dark navbar-dark text-light  d-flex flex-column footer '>
-        <div >
+      <div >
 
-          <p class="nav-link  font-weight-light ">
-            My sticky footer can be found here.
-          </p>
-          <Copyright />
+        <p className="nav-link  font-weight-light ">
+          My sticky footer can be found here.
+        </p>
+        <Copyright />
 
-        </div>
+      </div>
 
     </footer>
   );

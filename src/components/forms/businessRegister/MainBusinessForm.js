@@ -27,7 +27,6 @@ class MainBusinessForm extends Component {
       fullname: "",
       phoneNumber: "",
       isBusiness: true,
-      userType: "B",
       address: "",
       business_name: "",
       business_description: "",
@@ -230,7 +229,7 @@ class MainBusinessForm extends Component {
     this.setState({ businessType: type });
 
     // Clear the businessType error when the user selects a value
-    if (this.state.errors["businessType"]) {
+    if (this.state.errors[ "businessType" ]) {
       const errors = { ...this.state.errors };
       errors.businessType = "";
       this.setState({ errors });
@@ -246,7 +245,7 @@ class MainBusinessForm extends Component {
       },
     }));
   }
-  
+
   handleQuestionChange(question) {
     this.setState((prevState) => ({
       securityQuestion: {
@@ -254,15 +253,17 @@ class MainBusinessForm extends Component {
         question: question,
       },
     }));
-    if (this.state.errors["securityQuestion"]) {
+    if (this.state.errors[ "securityQuestion" ]) {
       const errors = { ...this.state.errors };
       errors.securityQuestion = "";
       this.setState({ errors });
     }
   }
-  
+
 
   handleServices(serviceType, name, price, duration, id) {
+    price = parseFloat(price)
+    duration = parseFloat(duration)
     this.setState((state) => {
       const services = [
         ...state.services,
@@ -286,7 +287,7 @@ class MainBusinessForm extends Component {
     });
   };
   handleInsertImage(event) {
-    const imageFile = event.target.files[0];
+    const imageFile = event.target.files[ 0 ];
 
     if (!imageFile) {
       return;
@@ -295,7 +296,7 @@ class MainBusinessForm extends Component {
     const reader = new FileReader();
 
     reader.onload = () => {
-      const imageData = reader.result.split(",")[1]; // Extract the base64 data part
+      const imageData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
       this.setState({ profileImg: imageData }); // Set the base64 string in the state
     };
 
@@ -307,10 +308,13 @@ class MainBusinessForm extends Component {
   };
 
   handleProducts(productId, price, description, name, quantity, lables, photoFile) {
+    price = parseFloat(price)
+    quantity = parseInt(quantity)
+
     const reader = new FileReader();
 
     reader.onload = () => {
-      const photoData = reader.result.split(",")[1]; // Extract the base64 data part
+      const photoData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
       // Rest of your code ...
 
       this.setState((state) => {
@@ -349,7 +353,7 @@ class MainBusinessForm extends Component {
     });
   };
 
-  /*************************AppointmentsDef*************************/
+  /************************AppointmentsDef************************/
   handleOpeningStartTimeChange = (value) => {
     this.setState((prevState) => ({
       appointmentsDef: {
@@ -420,7 +424,7 @@ class MainBusinessForm extends Component {
 
   handleDeleteBreak = (index) => {
     this.setState((prevState) => {
-      const updatedBreaks = [...prevState.appointmentsDef.fixedBreak];
+      const updatedBreaks = [ ...prevState.appointmentsDef.fixedBreak ];
       updatedBreaks.splice(index, 1);
       return {
         ...prevState,
@@ -450,7 +454,7 @@ class MainBusinessForm extends Component {
             ...prevState,
             appointmentsDef: {
               ...prevState.appointmentsDef,
-              fixedDaysOff: [...prevState.appointmentsDef.fixedDaysOff, day],
+              fixedDaysOff: [ ...prevState.appointmentsDef.fixedDaysOff, day ],
             },
           };
         }
@@ -464,7 +468,7 @@ class MainBusinessForm extends Component {
       }
     );
   };
-  /*************************AppointmentsDef*************************/
+  /************************AppointmentsDef************************/
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -524,7 +528,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <Button color="secondary float-left" onClick={this._prev}>
+        <Button color="secondary float-left" onClick={ this._prev }>
           Previous
         </Button>
       );
@@ -553,7 +557,7 @@ class MainBusinessForm extends Component {
     // If the current step is not 3, render the "next" button with the appropriate style
     if (currentStep < 5) {
       return (
-        <Button color={buttonClass} onClick={this._next}>
+        <Button color={ buttonClass } onClick={ this._next }>
           Next
         </Button>
       );
@@ -578,74 +582,74 @@ class MainBusinessForm extends Component {
 
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={this.handleSubmit}>
+        <Form className="pb-5" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={this.props.onClose}
+              onClick={ this.props.onClose }
             ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>
             <CardBody>
               <CardTitle>
-                <MultiStepProgressBar currentStep={this.state.currentStep} />
+                <MultiStepProgressBar currentStep={ this.state.currentStep } />
               </CardTitle>
               <CardText />
               <PersonalInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                errors={this.state.errors}
-                formInput={this.state}
-                handleAnswerChange={this.handleAnswerChange}
-                handleQuestionChange={this.handleQuestionChange}
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                errors={ this.state.errors }
+                formInput={ this.state }
+                handleAnswerChange={ this.handleAnswerChange }
+                handleQuestionChange={ this.handleQuestionChange }
               />
 
               <BusinessInfo
-                currentStep={this.state.currentStep}
-                handleChange={this.handleChange}
-                handleBusinessType={this.handleBusinessType}
-                handleInsertImage={this.handleInsertImage}
-                handleDeleteImage={this.handleDeleteImage}
-                profileImg={this.state.profileImg}
-                formInput={this.state}
-                errors={this.state.errors} // Pass the errors object to the component
+                currentStep={ this.state.currentStep }
+                handleChange={ this.handleChange }
+                handleBusinessType={ this.handleBusinessType }
+                handleInsertImage={ this.handleInsertImage }
+                handleDeleteImage={ this.handleDeleteImage }
+                profileImg={ this.state.profileImg }
+                formInput={ this.state }
+                errors={ this.state.errors } // Pass the errors object to the component
               />
               <Services
-                currentStep={this.state.currentStep}
-                handleServices={this.handleServices}
-                deleteServicesHandler={this.deleteServicesHandler}
-                services={this.state.services}
+                currentStep={ this.state.currentStep }
+                handleServices={ this.handleServices }
+                deleteServicesHandler={ this.deleteServicesHandler }
+                services={ this.state.services }
               />
               <Products
-                currentStep={this.state.currentStep}
-                handleProducts={this.handleProducts}
-                deleteProductHandler={this.deleteProductHandler}
-                products={this.state.products}
+                currentStep={ this.state.currentStep }
+                handleProducts={ this.handleProducts }
+                deleteProductHandler={ this.deleteProductHandler }
+                products={ this.state.products }
               />
               <AppointmentsDef
-                currentStep={this.state.currentStep}
-                appointmentsDef={this.state.appointmentsDef}
-                handleDayCheckboxChange={this.handleDayCheckboxChange}
-                handleAddBreak={this.handleAddBreak}
-                handleDeleteBreak={this.handleDeleteBreak}
-                businessHours={this.state.appointmentsDef.businessHours} // Pass the businessHours object
-                handleOpeningStartTimeChange={this.handleOpeningStartTimeChange}
-                handleOpeningEndTimeChange={this.handleOpeningEndTimeChange}
+                currentStep={ this.state.currentStep }
+                appointmentsDef={ this.state.appointmentsDef }
+                handleDayCheckboxChange={ this.handleDayCheckboxChange }
+                handleAddBreak={ this.handleAddBreak }
+                handleDeleteBreak={ this.handleDeleteBreak }
+                businessHours={ this.state.appointmentsDef.businessHours } // Pass the businessHours object
+                handleOpeningStartTimeChange={ this.handleOpeningStartTimeChange }
+                handleOpeningEndTimeChange={ this.handleOpeningEndTimeChange }
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
-              {this.previousButton}
-              {currentStep < 5 && (
-                <Button color="primary float-right" onClick={this.handleNext}>
+              { this.previousButton }
+              { currentStep < 5 && (
+                <Button color="primary float-right" onClick={ this.handleNext }>
                   Next
                 </Button>
-              )}
-              {currentStep === 5 && (
+              ) }
+              { currentStep === 5 && (
                 <Button color="primary float-right">Submit</Button>
-              )}
+              ) }
             </CardFooter>
           </Card>
         </Form>

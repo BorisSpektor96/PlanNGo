@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import './profile.css'
 import { PopupMessageContext } from "../../PopupMessage";
 import { useSelector, useDispatch } from "react-redux";
-import { incrementProductQuantity } from "../../profileInfoSlice";
+import { incrementProductQuantity, decrementProductQuantity } from "../../profileInfoSlice";
 
 const ProductsProfile = () => {
 
@@ -44,7 +44,7 @@ const ProductsProfile = () => {
         if (productsData.length > 0) {
           for (let p of productsData) {
             if (p.productId > productId) {
-              setProductId(++p.productId)
+              setProductId(p.productId + 1)
             }
           }
         }
@@ -64,9 +64,9 @@ const ProductsProfile = () => {
 
   useEffect(() => {
     if (profileInfo.isBusiness) {
-      fetchProducts();
+      setProducts(profileInfo.products)
     }
-  }, [ profileInfo.email ]);
+  }, [ profileInfo ]);
 
   const inputProductHandlerChange = (e) => {
     const { name, value } = e.target
@@ -159,7 +159,6 @@ const ProductsProfile = () => {
           increment: increment
         }
         dispatch(incrementProductQuantity(updateQuantity))
-        // fetchProducts();
       } else {
         showMessage(data.message, data.type)
       }
@@ -167,6 +166,33 @@ const ProductsProfile = () => {
       console.log('Error:', error);
     }
   };
+  const decrementProductQuantityHandler = async (productId, decrement) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: profileInfo.email,
+          productId: productId,
+          decrement: decrement
+        })
+      });
+      const data = await response.json()
+      if (response.ok) {
+        const updateQuantity = {
+          productId: productId,
+          decrement: decrement
+        }
+        dispatch(decrementProductQuantity(updateQuantity))
+      } else {
+        showMessage(data.message, data.type)
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+
 
   const productsListInputs = [
     {
@@ -363,7 +389,11 @@ const ProductsProfile = () => {
                             </lord-icon>
                           </button>
                           <button className='btn p-0 m-0'
-                            onClick={ (product) => { console.log('decrement', product) } }
+                            onClick={ () => {
+                              decrementProductQuantityHandler(
+                                product.productId, 1
+                              )
+                            } }
                           >
                             <lord-icon
                               src="https://cdn.lordicon.com/ymerwkwd.json"
