@@ -1,8 +1,9 @@
 import React from "react";
 import CartItem from "./CartItem";
 
-const Cart = ({ selectedProducts, onIncrease, onDecrease,deleteProductHandler}) => {
-  if(selectedProducts.length===0){
+const Cart = ({ selectedProducts, onIncrease, onDecrease,deleteProductHandler,currentStep}) => {
+
+  if(selectedProducts.length===0 ||currentStep !==4){
     return
   }
   return (

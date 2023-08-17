@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
 
     setLoggedIn(false);
     setIsBusiness(false)
+    localStorage.setItem('userData', JSON.stringify(null))
     dispatch(updateProfileInfo(null))
   };
 

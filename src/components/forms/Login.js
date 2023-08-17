@@ -1,9 +1,8 @@
 import Modal from "../UI/Modal";
 import "bootstrap/dist/css/bootstrap.css";
 import FormInput from "./FormInput";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
-import { ProfileInfoContext } from '../../ProfileInfoContext'
 import { AuthContext } from '../../AuthContext';
 import { PopupMessageContext } from "../../PopupMessage";
 
@@ -12,27 +11,10 @@ const Login = (props) => {
   const { showMessage } = useContext(PopupMessageContext)
   const { login } = useContext(AuthContext);
 
-  const { profileInfo, dispatch } = useContext(ProfileInfoContext);
-  const [ localProfileInfo, setLocalProfileInfo ] = useState(profileInfo);
-  const [ data, setData ] = useState();
-
   const [ formValues, setformValues ] = useState({
     email: "",
     password: "",
   });
-
-  useEffect(() => {
-    const storedData = localStorage.getItem('userData');
-    if (storedData !== 'undefined') {
-      setLocalProfileInfo(JSON.parse(storedData));
-    }
-  }, [ profileInfo ]);
-
-  useEffect(() => {
-    setLocalProfileInfo(data);
-    localStorage.setItem('userData', JSON.stringify(data))
-    dispatch({ type: 'UPDATE_PROFILE_INFO', payload: data });
-  }, [ data ]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -65,7 +47,6 @@ const Login = (props) => {
       if (response.status === 200) {
         if (data !== null && data !== 'undefined' && data !== undefined) {
           showMessage(data.message, data.type)
-          setData(data.user);
           login(data.user)
           props.hideForm()
           return true;

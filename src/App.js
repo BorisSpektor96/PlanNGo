@@ -11,7 +11,6 @@ import FavoritesList from './components/favorites/FavoritesList'
 import BusinessAnalytics from './components/businessesMenu/businessAnalytics/BusinessAnalytics';
 import Messages from './components/messages/Messages'
 
-import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
@@ -51,34 +50,28 @@ function App() {
 
   return (
 
-    // *************** redux ***************
     <Provider store={ Store }>
-      {/* // *************** redux *************** */ }
 
       <AuthProvider>
-        <ProfileInfoProvider>
-          <PopupProvider>
-            <div className="main">
-              <BrowserRouter className="Routes BrowserRouter">
-                <Routes>
-                  <Route
-                    path='/'
-                    element={
-                      <Layout />
-                    }
-                  >
-                    { routeOfComponents }
-                  </Route>
-                </Routes>
-              </BrowserRouter>
-            </div>
-          </PopupProvider>
-        </ProfileInfoProvider>
+        <PopupProvider>
+          <div className="main">
+            <BrowserRouter className="Routes BrowserRouter">
+              <Routes>
+                <Route
+                  path='/'
+                  element={
+                    <Layout />
+                  }
+                >
+                  { routeOfComponents }
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </div>
+        </PopupProvider>
       </AuthProvider>
 
-      {/*  *************** redux *************** */ }
     </Provider>
-    // *************** redux ***************
 
   );
 }

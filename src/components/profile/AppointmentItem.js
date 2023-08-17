@@ -14,7 +14,6 @@ const AppointmentItem = ({ item, removeAppointment }) => {
   const [ toggle, setToggle ] = useState(item.toggle)
 
   const date = new Date(item.date)
-  const service = item.service
   let appointmentDetails = !isBusiness ? item.businessDetails : item.userDetails
   const appointment = {
     date: new Date(item.date),
@@ -23,8 +22,7 @@ const AppointmentItem = ({ item, removeAppointment }) => {
     userEmail: profileInfo.email
   }
   useEffect(() => {
-    console.log(appointmentDetails)
-    // appointmentDetails = isBusiness ? item.businessDetails : item.userDetails
+    console.log(item)
   }, [])
   const daysOfWeek = [
     "Sunday",
@@ -47,7 +45,7 @@ const AppointmentItem = ({ item, removeAppointment }) => {
               </div>
               <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">Service:</h6>
-                <p className="p-0 m-0">  { service.name }</p>
+                <p className="p-0 m-0">  { appointment.service.name }</p>
               </div>
               <div className="d-flex align-items-center gap-2 me-3 mb-1">
                 <h6 className="p-0 m-0">Time:</h6>
@@ -79,15 +77,15 @@ const AppointmentItem = ({ item, removeAppointment }) => {
               <div className="d-flex flex-column">
                 <div className="d-flex align-items-center gap-2 me-3 mb-1">
                   <h6 className="p-0 m-0">Service:</h6>
-                  <p className="p-0 m-0"> { service.name }</p>
+                  <p className="p-0 m-0"> { appointment.service.name }</p>
                 </div>
                 <div className="d-flex align-items-center gap-2 me-3 mb-1">
                   <h6 className="p-0 m-0">Duration:</h6>
-                  <p className="p-0 m-0"> { service.duration }</p>
+                  <p className="p-0 m-0"> { appointment.service.duration }</p>
                 </div>
                 <div className="d-flex align-items-center gap-2 me-3 mb-1">
                   <h6 className="p-0 m-0">Price:</h6>
-                  <p className="p-0 m-0"> ${ service.price }</p>
+                  <p className="p-0 m-0"> ${ appointment.service.price }</p>
                 </div>
               </div>
 

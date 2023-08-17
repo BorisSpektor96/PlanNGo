@@ -1,22 +1,19 @@
 import React from "react";
 
 import "./summary.css";
-const Summary = ({
-  selectedDate,
-  selectedTime,
-  selectedService,
-  selectedProducts,
-  profileInfo,
-  businessDetails,
-}) => {
-
+const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,profileInfo,businessDetails,currentStep}) => {
+  
+  if (currentStep !== 5) {
+    return null
+  }
   // Calculate the total price of selected products
   const totalProductsPrice = selectedProducts.reduce((acc, product) => {
     return acc + product.price * product.amount;
   }, 0);
 
+
   // Calculate the total price with tax
-   const totalWithTax =
+  const totalWithTax =
     parseInt(totalProductsPrice) + parseInt(selectedService.price);
   const totalWithTaxAndPercentage = (totalWithTax * 1.17).toFixed(2);
 
@@ -95,7 +92,7 @@ const Summary = ({
 
         </div>
       )}
-       
+
     </div>
   );
 };

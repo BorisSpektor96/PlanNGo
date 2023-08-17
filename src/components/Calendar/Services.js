@@ -1,9 +1,12 @@
 import React from "react";
 const Services = (props) => {
   const { businessDetails, setServiceAndShowCalendar } = props;
+if(props.currentStep !== 0) return null;
 
   return (
     <div className="d-flex justify-content-center">
+              {/* <p className="text-center display-6">Choose a service</p> */}
+
       <div className="d-flex flex-wrap gap-2 justify-content-center align-items-center">
         {businessDetails.services.map((service) => (
           <div className="card" key={service.id}>

@@ -1,16 +1,16 @@
 import FormInput from "../forms/FormInput"
 import { useState, useContext, useEffect } from "react";
 import './profile.css'
-import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { PopupMessageContext } from "../../PopupMessage";
+import { useSelector } from "react-redux";
 
 const ProductsProfile = () => {
+
+  const profileInfo = useSelector(state => state.profileInfo)
 
   const { showMessage } = useContext(PopupMessageContext)
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
-
-  const { profileInfo } = useContext(ProfileInfoContext);
 
   const [ productId, setProductId ] = useState(0);
   const [ products, setProducts ] = useState([]);
@@ -300,14 +300,29 @@ const ProductsProfile = () => {
                       <td className="text-center">{ product.productId }</td>
                       <td className="text-center">
                         <img
-                          className="mb-2"
+                          style={ { width: '100%', maxWidth: '200px', maxHeight: '250px' } }
+                          className="img-thumbnail mb-2"
                           src={ product.photo ? `data:image/jpeg;base64,${product.photo}` : "" }
                           alt=""
                         />
                       </td>
                       <td className="text-center">{ product.name }</td>
                       <td className="text-center">{ product.price }$</td>
-                      <td className="text-center">{ product.quantity }</td>
+                      <td className="text-center">
+                        <p>
+                          { product.quantity }
+                        </p>
+                        <div className="d-flex gap-1">
+                          <button
+                            className="ps-1 pt-0 pb-0 p-2 m-0 btn btn-primary"
+                            onClick={ () => console.log(product, '+1') }
+                          >+</button>
+                          <button
+                            className="pt-0 pb-0 p-2 m-0 btn btn-primary"
+                            onClick={ () => console.log(product, '-1') }
+                          >-</button>
+                        </div>
+                      </td>
                       <td className="text-center">{ product.description }</td>
 
                       { editProductsMode &&

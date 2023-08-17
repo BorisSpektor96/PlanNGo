@@ -1,17 +1,16 @@
 import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
-import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { PopupMessageContext } from "../../PopupMessage";
+import { useSelector } from "react-redux";
 
 const ServicesProfile = () => {
+
+  const profileInfo = useSelector(state => state.profileInfo)
 
   const { showMessage } = useContext(PopupMessageContext)
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
 
-  const { profileInfo } = useContext(ProfileInfoContext);
-
-  // const [ serviceId, setServiceId ] = useState(0);
   const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({

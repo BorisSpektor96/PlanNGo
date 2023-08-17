@@ -11,7 +11,7 @@ import Cart from "./cart/Cart";
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
 
-import dayjs from 'dayjs'; // Import dayjs library
+import dayjs from 'dayjs';
 
 const AppointmentCalendar = (props) => {
 
@@ -19,18 +19,20 @@ const AppointmentCalendar = (props) => {
   const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
-  const [ selectedDate, setSelectedDate ] = useState(null);
-  const [ selectedTime, setSelectedTime ] = useState(null);
-  const [ selectedService, setSelectedService ] = useState(null);
-  const [ selectedProducts, setSelectedProducts ] = useState([]);
-  const [ timeList, setTimeList ] = useState([]);
-  const [ currentStep, setCurrentStep ] = useState(0);
-  const appointmentsDef = props.appointmentsDef[ 0 ];
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [timeList, setTimeList] = useState([]);
+
+  const appointmentsDef = props.appointmentsDef[0];
 
   const handleDateSelect = (date) => {
     setSelectedDate(new Date(date));
-    setCurrentStep(2);
+    props.onStepChange(2);
   };
+
+
 
   const handleLockAppointmentTemp = async () => {
     const newAppointmentBusiness = {
@@ -71,6 +73,7 @@ const AppointmentCalendar = (props) => {
     }
   }
 
+
   const handleRemoveLockAppointment = async () => {
     const deleteDate = {
       type: "lock",
@@ -110,33 +113,33 @@ const AppointmentCalendar = (props) => {
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
-    setCurrentStep(3);
+    props.onStepChange(3);
   };
 
   useEffect(() => {
     if (selectedTime !== null) {
       handleLockAppointmentTemp();
     }
-  }, [ selectedTime ])
+  }, [selectedTime])
 
 
   const handleBack = () => {
-    if (currentStep === 1 || currentStep === 2 || currentStep === 3) {
-      setCurrentStep(0);
+    if (props.currentStep === 1 || props.currentStep === 2 || props.currentStep === 3) {
+      props.onStepChange(0);
       setSelectedDate(null);
       setSelectedTime(null);
       setSelectedService(null)
 
-    } else if (currentStep === 4) {
+    } else if (props.currentStep === 4) {
       setSelectedTime(null);
-      setCurrentStep(1);
-    } else if (currentStep === 5) {
-      setCurrentStep(4);
+      props.onStepChange(1);
+    } else if (props.currentStep === 5) {
+      props.onStepChange(4);
     }
   };
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
+    const isoDayDate = date.toISOString().split('T')[0]; // Convert to ISO format
 
     const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => dateTime);
 
@@ -147,13 +150,13 @@ const AppointmentCalendar = (props) => {
   };
 
   const addProduct = (product) => {
-    const updatedProducts = [ ...selectedProducts ];
+    const updatedProducts = [...selectedProducts];
     const existingProductIndex = updatedProducts.findIndex(
       (item) => item.productId === product.productId
     );
 
     if (existingProductIndex !== -1) {
-      updatedProducts[ existingProductIndex ].amount++;
+      updatedProducts[existingProductIndex].amount++;
     } else {
       // Product doesn't exist, add as a new item
       updatedProducts.push({
@@ -326,10 +329,10 @@ const AppointmentCalendar = (props) => {
       ) {
         let time = {};
         if (
-          formattedTime(appointmentsDef.fixedBreak[ 0 ].start).getTime() <=
+          formattedTime(appointmentsDef.fixedBreak[0].start).getTime() <=
           i.getTime() &&
           i.getTime() <
-          formattedTime(appointmentsDef.fixedBreak[ 0 ].end).getTime()
+          formattedTime(appointmentsDef.fixedBreak[0].end).getTime()
         ) {
           time = { time: i, isTaken: true };
         } else {
@@ -344,14 +347,15 @@ const AppointmentCalendar = (props) => {
     } else {
       setSelectedDate("");
     }
-  }, [ selectedService, selectedDate ]);
+  }, [selectedService, selectedDate]);
+
   const formattedTime = (timeString) => {
     if (!selectedDate) {
       return null; // Return null or some default value when selectedDate is not set
     }
 
     const selectedDateObj = new Date(selectedDate);
-    const [ hours, minutes ] = timeString.split(":").map(Number);
+    const [hours, minutes] = timeString.split(":").map(Number);
     selectedDateObj.setHours(hours, minutes, 0);
     return selectedDateObj;
   };
@@ -359,9 +363,9 @@ const AppointmentCalendar = (props) => {
   const isAppointmentExist = (time, date) => {
     const selectedDateTime = new Date(date);
     const formattedTime = time.split(":");
-    selectedDateTime.setHours(formattedTime[ 0 ], formattedTime[ 1 ], 0);
+    selectedDateTime.setHours(formattedTime[0], formattedTime[1], 0);
 
-    const appointments = props.appointmentsDef[ 0 ].appointments;
+    const appointments = props.appointmentsDef[0].appointments;
     for (const appointment of appointments) {
       const appointmentDateTime = new Date(appointment.date);
       if (selectedDateTime.getTime() === appointmentDateTime.getTime()) {
@@ -385,18 +389,18 @@ const AppointmentCalendar = (props) => {
       if (!isSelectedTimeTaken) {
         return (
           <button
-            className={ `btn ${isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
-              } m-2` }
-            key={ time }
-            onClick={ () => handleTimeSelect(formattedTime) }
+            className={`btn ${isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
+              } m-2`}
+            key={time}
+            onClick={() => handleTimeSelect(formattedTime)}
           >
-            { formattedTime }
+            {formattedTime}
           </button>
         );
       }
       return (
-        <button className="btn btn-dark m-2 disabled" key={ formattedTime }>
-          { formattedTime }
+        <button className="btn btn-dark m-2 disabled" key={formattedTime}>
+          {formattedTime}
         </button>
       );
     });
@@ -407,142 +411,135 @@ const AppointmentCalendar = (props) => {
 
     return (
       <div className="d-flex justify-content-center flex-wrap">
-        { availableTimes }
+        {availableTimes}
       </div>
     );
   };
 
   const setServiceAndShowCalendar = (service) => {
     setSelectedService(service);
-    setCurrentStep(1);
+    props.onStepChange(1);
   };
 
-  const servicesShow = () => {
-    return (
-      <>
-        <p className="text-center display-6">Choose a service</p>
-        <Services
-          businessDetails={ props.businessDetails }
-          setServiceAndShowCalendar={ setServiceAndShowCalendar }
-        />
-      </>
-    );
-  };
+
 
   return (
-    <Modal onClose={ props.onClose }>
+    <Modal onClose={props.onClose}>
       <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={ props.onClose }
+          onClick={props.onClose}
         ></button>
       </div>
-      { currentStep === 0 ? (
-        servicesShow()
-      ) : (
-        <div className="d-flex flex-column flex-wrap align-items-center gap-1 pb-2">
-          { currentStep > 0 && currentStep < 4 && (
-            <>
-              <p className="text-center display-6">Schedule</p>
-              <Calendar
-                calendarType="hebrew"
-                locale="en-US"
-                value={ selectedDate }
-                onChange={ handleDateSelect }
-                minDate={ new Date() }
-                maxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
-                tileDisabled={ ({ date }) => isDayDisabled(date) }
-              />
-            </>
-          ) }
-        </div>
-      ) }
+
+      <Services
+        businessDetails={props.businessDetails}
+        setServiceAndShowCalendar={setServiceAndShowCalendar}
+        currentStep={props.currentStep}
+      />
+
+      <div className="d-flex flex-column flex-wrap align-items-center gap-1 pb-2">
+        {props.currentStep > 0 && props.currentStep < 4 && (
+          <>
+            <p className="text-center display-6">Schedule</p>
+            <Calendar
+              calendarType="hebrew"
+              locale="en-US"
+              value={selectedDate}
+              onChange={handleDateSelect}
+              minDate={new Date()}
+              mraxDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)} // Show one month forward
+              tileDisabled={({ date }) => isDayDisabled(date)}
+            />
+          </>
+        )}
+      </div>
+
       <div className="d-flex flex-wrap justify-content-center gap-1">
-        { currentStep > 1 && currentStep < 4 && (
+        {props.currentStep > 1 && props.currentStep < 4 && (
           <>
             <div className="">
-              { selectedDate && (
+              {selectedDate && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill ">
-                  Available times for { selectedDate.toLocaleDateString() }:
+                  Available times for {selectedDate.toLocaleDateString()}:
                 </p>
-              ) }
-              { renderAvailableTimes() }
+              )}
+              {renderAvailableTimes()}
 
-              { selectedTime && (
+              {selectedTime && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill">
-                  You have selected { selectedDate.toLocaleDateString() } at{ " " }
-                  { selectedTime }.
+                  You have selected {selectedDate.toLocaleDateString()} at{" "}
+                  {selectedTime}.
                 </p>
-              ) }
+              )}
             </div>
           </>
-        ) }
+        )}
       </div>
-      { currentStep === 4 && (
-        <>
-          <p className="text-center display-6">Recommended products</p>
-          <Products
-            addProduct={ addProduct }
-            businessDetails={ props.businessDetails }
-            selectedDate={ selectedDate }
 
-          />
-          <Cart
-            selectedProducts={ selectedProducts }
 
-            onIncrease={ handleIncrease }
-            onDecrease={ handleDecrease }
-            deleteProductHandler={ deleteProductHandler }
-          />
-        </>
-      ) }
-      { currentStep === 5 && (
-        <div className="summary-section">
-          <Summary
-            selectedDate={ selectedDate }
-            selectedTime={ selectedTime }
-            selectedService={ selectedService }
-            selectedProducts={ selectedProducts }
-            profileInfo={ profileInfo }
-            businessDetails={ props.businessDetails }
-          />
-        </div>
-      ) }
-      { currentStep !== 0 && (
+      <Products
+        addProduct={addProduct}
+        businessDetails={props.businessDetails}
+        selectedDate={selectedDate}
+        currentStep={props.currentStep}
+      />
+      <Cart
+        selectedProducts={selectedProducts}
+        onIncrease={handleIncrease}
+        onDecrease={handleDecrease}
+        deleteProductHandler={deleteProductHandler}
+        currentStep={props.currentStep}
+
+      />
+
+
+      <Summary
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+        selectedService={selectedService}
+        selectedProducts={selectedProducts}
+        profileInfo={profileInfo}
+        businessDetails={props.businessDetails}
+        currentStep={props.currentStep}
+      />
+
+
+      {props.currentStep !== 0 && (
         <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">
           <button
             className={
-              currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
+              props.currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={ () => handleBack() }
+            onClick={() => handleBack()}
           >
             back
           </button>
           <button
             className={
-              currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
+              props.currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={ () => scheduleHandler() }
+            onClick={() => scheduleHandler()}
           >
             Schedule
           </button>
           <button
             className={
-              currentStep < 3 || currentStep > 4
+              props.currentStep < 3 || props.currentStep > 4
                 ? "btn btn-primary disabled"
                 : "btn btn-primary"
             }
-            onClick={ () => {
-              setCurrentStep(currentStep + 1);
-            } }
+            onClick={() => {
+              props.onStepChange(props.currentStep + 1);
+            }}
           >
             continue
           </button>
         </div>
-      ) }
+      )}
     </Modal>
   );
 };
