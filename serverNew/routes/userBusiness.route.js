@@ -106,6 +106,38 @@ userBusinessRouter.post("/getMessages", async (req, res) => {
   }
 });
 
+
+userBusinessRouter.post("/decrementQuantityProduct", async (req, res) => {
+  const { product, email } = req.body;
+  try {
+    const user = await userBusinessModel.findOne({ email: email }).select({ products: 1 });
+
+    if (!user || !user.messages) {
+      return res.status(404).json();
+    }
+    res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
+userBusinessRouter.post("/incrementQuantityProduct", async (req, res) => {
+  const { product, email } = req.body;
+  try {
+    const user = await userBusinessModel.findOne({ email: email }).select({ products: 1 });
+
+    if (!user || !user.messages) {
+      return res.status(404).json();
+    }
+    res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
+
 userBusinessRouter.post("/removeMessage", async (req, res) => {
   const { email, id } = req.body;
   try {
