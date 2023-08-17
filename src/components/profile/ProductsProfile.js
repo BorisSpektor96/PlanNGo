@@ -2,9 +2,12 @@ import FormInput from "../forms/FormInput"
 import { useState, useContext, useEffect } from "react";
 import './profile.css'
 import { PopupMessageContext } from "../../PopupMessage";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { incrementProductQuantity } from "../../profileInfoSlice";
 
 const ProductsProfile = () => {
+
+const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext)
 
@@ -129,6 +132,34 @@ const ProductsProfile = () => {
       if (response.ok) {
         showMessage(data.message, data.type)
         fetchProducts();
+      } else {
+        showMessage(data.message, data.type)
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const incrementProductQuantityHandler = async (productId, increment) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            email: profileInfo.email,
+            productId: productId,
+            increment: increment
+         })
+      });
+      const data = await response.json()
+      if (response.ok) {
+        console.log(productId)
+        const updateQuantity = {
+          productId:productId,
+          increment:increment
+        }
+        dispatch(incrementProductQuantity(updateQuantity))
+        // fetchProducts();
       } else {
         showMessage(data.message, data.type)
       }
@@ -297,7 +328,11 @@ const ProductsProfile = () => {
                   products.map((product) => (
                     <tr tr key={ product.productId } className="table-secondary" >
 
-                      <td className="text-center">{ product.productId }</td>
+                      <td className="text-center">
+                        <div>
+                        { product.productId }
+                        </div>
+                        </td>
                       <td className="text-center">
                         <img
                           className="mb-2"
@@ -307,7 +342,37 @@ const ProductsProfile = () => {
                       </td>
                       <td className="text-center">{ product.name }</td>
                       <td className="text-center">{ product.price }$</td>
-                      <td className="text-center">{ product.quantity }</td>
+                      <td className="text-center">
+                        <p>
+                        { product.quantity }
+                        </p>
+                        <div className='d-flex gap-1'>
+                          <button className='btn p-0 m-0'
+                          onClick={() => {
+                            incrementProductQuantityHandler(
+                              product.productId, 1
+                              )
+                            }}
+                          >
+                          <lord-icon
+                            src="https://cdn.lordicon.com/xzksbhzh.json"
+                            trigger="click"
+                            colors="primary:#4030e8,secondary:#ebe6ef"
+                            style={{ width: '30px', height: '30px' }}>
+                        </lord-icon>
+                          </button>
+                          <button className='btn p-0 m-0'
+                            onClick={(product) => {console.log('decrement',product)}}
+                          >
+                          <lord-icon
+                            src="https://cdn.lordicon.com/ymerwkwd.json"
+                            trigger="click"
+                            colors="primary:#f24c00,secondary:#ebe6ef"
+                            style={{ width: '30px', height: '30px' }}>
+                        </lord-icon>
+                          </button>
+                        </div>
+                      </td>
                       <td className="text-center">{ product.description }</td>
 
                       { editProductsMode &&

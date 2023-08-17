@@ -46,9 +46,25 @@ const profileInfoSlice = createSlice({
         state.appointments = action.payload;
       }
     },
+    incrementProductQuantity: (state, action) => {
+      console.log(action.payload)
+      for(let product of state.products) {
+        if(product.productId === action.payload.productId) {
+          // product.quantity += action.payload.increment
+          // console.log(action.payload.productId)
+          // console.log(action.payload.increment)
+        }
+      }
+    }
     // Other actions can be defined here as well
   },
 });
 
-export const { updateProfileInfo, updateFavorites, updateMessages, updateAppointmentsDef, updateAppointments } = profileInfoSlice.actions;
+export const { updateProfileInfo,
+  updateFavorites,
+  updateMessages,
+  updateAppointmentsDef,
+  updateAppointments,
+  incrementProductQuantity
+} = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;
