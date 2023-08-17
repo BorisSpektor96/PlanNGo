@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
-import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { PopupMessageContext } from "../../PopupMessage";
+import { useSelector } from "react-redux";
 
 const ServicesProfile = () => {
 
@@ -9,9 +9,8 @@ const ServicesProfile = () => {
 
   const [ editServicesMode, setEditServicesMode ] = useState(false)
 
-  const { profileInfo } = useContext(ProfileInfoContext);
+  const profileInfo  = useSelector(state => state.profileInfo)
 
-  // const [ serviceId, setServiceId ] = useState(0);
   const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({
@@ -69,9 +68,7 @@ const ServicesProfile = () => {
 
   const submitServiceForm = (e) => {
     e.preventDefault()
-    // setServiceId((serviceId + 1))
     const newService = {
-      // id: serviceId,
       ...service,
     }
     addServiceHandler(newService)

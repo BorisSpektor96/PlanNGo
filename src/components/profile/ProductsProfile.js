@@ -1,8 +1,8 @@
 import FormInput from "../forms/FormInput"
 import { useState, useContext, useEffect } from "react";
 import './profile.css'
-import { ProfileInfoContext } from '../../ProfileInfoContext';
 import { PopupMessageContext } from "../../PopupMessage";
+import { useSelector } from "react-redux";
 
 const ProductsProfile = () => {
 
@@ -10,7 +10,7 @@ const ProductsProfile = () => {
 
   const [ editProductsMode, setEditProductsMode ] = useState(false)
 
-  const { profileInfo } = useContext(ProfileInfoContext);
+  const profileInfo = useSelector(state => state.profileInfo)
 
   const [ productId, setProductId ] = useState(0);
   const [ products, setProducts ] = useState([]);

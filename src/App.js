@@ -11,7 +11,6 @@ import FavoritesList from './components/favorites/FavoritesList'
 import BusinessAnalytics from './components/businessesMenu/businessAnalytics/BusinessAnalytics';
 import Messages from './components/messages/Messages'
 
-import ProfileInfoProvider from './ProfileInfoContext';
 import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
@@ -56,7 +55,6 @@ function App() {
       {/* // *************** redux *************** */ }
 
       <AuthProvider>
-        <ProfileInfoProvider>
           <PopupProvider>
             <div className="main">
               <BrowserRouter className="Routes BrowserRouter">
@@ -73,7 +71,6 @@ function App() {
               </BrowserRouter>
             </div>
           </PopupProvider>
-        </ProfileInfoProvider>
       </AuthProvider>
 
       {/*  *************** redux *************** */ }
