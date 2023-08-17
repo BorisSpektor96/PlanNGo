@@ -106,15 +106,24 @@ userBusinessRouter.post("/getMessages", async (req, res) => {
   }
 });
 
-
-userBusinessRouter.post("/decrementQuantityProduct", async (req, res) => {
-  const { product, email } = req.body;
+userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
+  const { email, increment, productId } = req.body;
+  console.log(email, increment, productId)
   try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ products: 1 });
+    const user = await userBusinessModel.findOne({ email: email })
 
     if (!user || !user.messages) {
       return res.status(404).json();
     }
+    // const product = user.products.id(productId)
+    // console.log(product.name)
+    // console.log(product.quantity)
+    // product.quantity += increment
+    // console.log(product.name)
+    // console.log(product.quantity)
+
+    await user.save()
+
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
   } catch (error) {
     console.error(error);
@@ -122,21 +131,31 @@ userBusinessRouter.post("/decrementQuantityProduct", async (req, res) => {
   }
 });
 
-userBusinessRouter.post("/incrementQuantityProduct", async (req, res) => {
-  const { product, email } = req.body;
+userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
+  const { email, decrement, productId } = req.body;
   try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ products: 1 });
+    const user = await userBusinessModel.findOne({ email: email }).select({ producs: 1 });
 
     if (!user || !user.messages) {
       return res.status(404).json();
     }
+
+    const product = user.products.id(productId)
+    if (product.quantity > 0) {
+      console.log(product.name)
+      console.log(product.quantity)
+      product.quantity -= decrement
+      console.log(product.name)
+      console.log(product.quantity)
+    }
+
+    await user.save()
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message, type: "Error" });
   }
 });
-
 
 userBusinessRouter.post("/removeMessage", async (req, res) => {
   const { email, id } = req.body;

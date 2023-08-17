@@ -53,6 +53,7 @@ function App() {
     <Provider store={ Store }>
 
       <AuthProvider>
+<<<<<<< HEAD
         <PopupProvider>
           <div className="main">
             <BrowserRouter className="Routes BrowserRouter">
@@ -69,6 +70,24 @@ function App() {
             </BrowserRouter>
           </div>
         </PopupProvider>
+=======
+          <PopupProvider>
+            <div className="main">
+              <BrowserRouter className="Routes BrowserRouter">
+                <Routes>
+                  <Route
+                    path='/'
+                    element={
+                      <Layout />
+                    }
+                  >
+                    { routeOfComponents }
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </div>
+          </PopupProvider>
+>>>>>>> 3b6b3618124e8e5c5e8d6b9556be2bf350d2b2f5
       </AuthProvider>
 
     </Provider>

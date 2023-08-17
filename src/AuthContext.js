@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
     dispatch(updateProfileInfo(data))
     localStorage.setItem('userData', JSON.stringify(data.email))
   };
-
+  
   const logout = () => {
-
+    
     setLoggedIn(false);
     setIsBusiness(false)
     localStorage.setItem('userData', JSON.stringify(null))
