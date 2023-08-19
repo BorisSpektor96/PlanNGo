@@ -1,10 +1,14 @@
 import { useState, useContext, useEffect } from "react"
 import FormInput from "../forms/FormInput"
 import { PopupMessageContext } from "../../PopupMessage";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addService,
+  deleteService
+} from '../../profileInfoSlice'
 const ServicesProfile = () => {
 
+  const dispatch = useDispatch()
   const profileInfo = useSelector(state => state.profileInfo)
 
   const { showMessage } = useContext(PopupMessageContext)
@@ -14,49 +18,26 @@ const ServicesProfile = () => {
   const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({
+    serviceId: 0,
     name: "",
     price: 0,
     duration: 0,
     type: "",
-    description: "",
-    image: "",
   })
 
   const editServicesModeHandler = () => {
     setEditServicesMode(!editServicesMode)
   }
 
-  const fetchServices = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/business/getBusinessServices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-
-      if (response.ok) {
-        const servicesData = await response.json();
-
-        if (servicesData !== null) {
-          setServices(servicesData);
-        } else {
-          setServices(servicesData);
-        }
-      } else {
-        console.log("not ok ")
-        setServices([]);
-      }
-    } catch (error) {
-      console.log('Error:', error);
-      setServices([]);
-    }
-  };
-
   useEffect(() => {
     if (profileInfo.isBusiness) {
-      fetchServices();
+      setServices(profileInfo.services)
     }
-  }, [ editServicesMode, profileInfo ]);
+  }, [ profileInfo, editServicesMode ]);
+
+  useEffect(() => {
+    console.log(services)
+  }, [ services ])
 
   const handleInputServiceChange = (e) => {
     const { name, value } = e.target;
@@ -68,8 +49,13 @@ const ServicesProfile = () => {
 
   const submitServiceForm = (e) => {
     e.preventDefault()
+    const newServiceId = profileInfo.services.reduce(
+      (maxId, service) => Math.max(maxId, service.serviceId),
+      0
+    ) + 1;
     const newService = {
       ...service,
+      serviceId: newServiceId
     }
     addServiceHandler(newService)
   }
@@ -84,8 +70,8 @@ const ServicesProfile = () => {
       const data = await response.json()
 
       if (response.ok) {
-        showMessage(data.showMessage, data.type)
-        fetchServices();
+        showMessage(data.message, data.type)
+        dispatch(addService(service))
       } else {
         showMessage(data.showMessage, data.type)
       }
@@ -99,12 +85,12 @@ const ServicesProfile = () => {
       const response = await fetch('http://localhost:3001/business/deleteService', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email, serviceId })
+        body: JSON.stringify({ email: profileInfo.email, serviceId: serviceId })
       });
       const data = await response.json()
       if (response.ok) {
-        showMessage(data.showMessage, data.type)
-        fetchServices();
+        showMessage(data.message, data.type)
+        dispatch(deleteService(serviceId))
       } else {
         showMessage(data.showMessage, data.type)
       }
@@ -140,8 +126,8 @@ const ServicesProfile = () => {
       label: "Duration",
       placeholder: "Enter Service Duration: ",
       required: true,
-      min: 1,
-      errorMessage: "Must Be Duration to Service Can't Be 0",
+      errorMessage: "Must Be Duration to Service of 0.25 steps",
+      step: "0.25"
     },
     {
       id: "type",
@@ -151,25 +137,7 @@ const ServicesProfile = () => {
       placeholder: "Enter Service type: ",
       required: true,
       errorMessage: "Must Be type to the Service",
-    },
-    {
-      id: "description",
-      name: "description",
-      type: "text",
-      label: "Description",
-      placeholder: "Enter Product Description: ",
-      required: true,
-      errorMessage: "Must Be Description to the Product",
-    },
-    {
-      id: "image",
-      name: "image",
-      type: "file",
-      label: "Add Image",
-      placeholder: "Enter Product Description: ",
-      required: false,
-      errorMessage: "Must Be an Image",
-    },
+    }
   ]
 
   const showServiceAddInputs = (
@@ -255,6 +223,9 @@ const ServicesProfile = () => {
                   <th className="text-center  " scope="col">
                     Service Name
                   </th>
+                  <th className="text-center  " scope="col">
+                    Service Type
+                  </th>
                   <th className="text-center" scope="col">
                     Price
                   </th>
@@ -278,6 +249,7 @@ const ServicesProfile = () => {
                     <tr key={ service._id } className="table-secondary">
 
                       <td className="text-center">{ service.name }</td>
+                      <td className="text-center">{ service.type }</td>
                       <td className="text-center">{ service.price }$</td>
                       <td className="text-center">{ service.duration } (hour/s)</td>
 
@@ -285,7 +257,7 @@ const ServicesProfile = () => {
                         <td className="text-center">
                           <button className="btn p-0 m-0"
                             onClick={ () => {
-                              deleteServiceHandler(service.id);
+                              deleteServiceHandler(service.serviceId);
                             } }
                           >
                             <lord-icon

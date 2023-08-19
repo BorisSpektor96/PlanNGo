@@ -13,14 +13,27 @@ const ModalOverlay = (props) => {
   );
 };
 
+
 const portalElement = document.getElementById('overLay');
 const portalCalendar = document.getElementById('calendarOverlay');
 const ReviewportalElement = document.getElementById("ReviewOverLay");
 const AddMessagePortalElement = document.getElementById("addMessageOverLay");
+const ChangePassword = document.getElementById("ChangePassword");
 
 const Modal = (props) => {
   return (
     <div>
+      <div>
+        { createPortal(<Backdrop onClose={ props.onClose } />, ChangePassword) }
+        { createPortal(
+          <ModalOverlay>{ props.children }</ModalOverlay>,
+          ChangePassword
+        )
+        }
+      </div>
+
+
+
       <div>
         { createPortal(<Backdrop onClose={ props.onClose } />, portalElement) }
         { createPortal(

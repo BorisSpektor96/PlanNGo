@@ -3,8 +3,6 @@ import "./formInput.css";
 const FormInput = (props) => {
   const { label, errorMessage, onChange, id, ...inputProps } = props;
 
-
-
   return (
     <div className="formInput">
       <label htmlFor={ id } className="form-label">{ label }</label>

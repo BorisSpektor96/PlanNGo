@@ -290,17 +290,40 @@ userRouter.post("/login", async (req, res) => {
 });
 
 userRouter.post("/checkEmail", async (req, res) => {
+
   try {
     const { email } = req.body;
     const user = await userModel.findOne({ email: email });
 
     if (user) {
-      res.json({ exists: true });
+      res.json({ exists: true, user: user });
     } else {
       res.json({ exists: false });
+
     }
   } catch (err) {
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+userRouter.post('/updatePassword', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Find the user by email
+    const user = await userModel.findOne({ email: email });
+
+    if (user) {
+      // Update the user's password
+      user.password = password;
+      await user.save();
+
+      res.json({ success: true, message: 'Password updated successfully' });
+    } else {
+      res.json({ success: false, message: 'User not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

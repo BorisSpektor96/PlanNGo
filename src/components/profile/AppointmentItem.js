@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useContext } from "react"
 import './appointmentItem.css'
 import { AuthContext } from '../../AuthContext'
 import { PopupMessageContext } from './../../PopupMessage';
@@ -21,9 +21,7 @@ const AppointmentItem = ({ item, removeAppointment }) => {
     appointmentEmail: appointmentDetails.email,
     userEmail: profileInfo.email
   }
-  useEffect(() => {
-    console.log(item)
-  }, [])
+
   const daysOfWeek = [
     "Sunday",
     "Monday",

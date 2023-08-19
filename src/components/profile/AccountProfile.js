@@ -4,14 +4,14 @@ import './profile.css'
 import FavoritesList from "../favorites/FavoritesList";
 import { PopupMessageContext } from "../../PopupMessage";
 import AppointmentsProfile from "./AppointmentsProfile";
-
+import ChangePassword from "../forms/ChangePassword";
 import { updateProfileInfo } from './../../profileInfoSlice'
 import { useSelector, useDispatch } from "react-redux";
 
 const AccountProfile = () => {
 
   const dispatch = useDispatch()
-
+  const [ bType, setBType ] = useState("");
   const profileInfo = useSelector((state) => state.profileInfo);
 
   const { showMessage } = useContext(PopupMessageContext)
@@ -23,6 +23,12 @@ const AccountProfile = () => {
   const [ editImgProfile, setEditImgProfile ] = useState(false)
 
   const [ imgUrl, setImgUrl ] = useState("")
+
+  const [ showChangePassword, setShowChangePassword ] = useState(false)
+
+  const showChangePasswordHandler = () => {
+    setShowChangePassword(!showChangePassword);
+  };
 
   const editAccountHandler = () => {
     setEditAccountMode(!editAccountMode)
@@ -219,14 +225,37 @@ const AccountProfile = () => {
           }
         </div>
 
-        { editAccountMode && (
-          <div className="d-flex justify-content-center">
-            <button className="mb-3 text-center btn btn-primary" type="submit">
-              Save changes
-            </button>
-          </div>
-        ) }
+
       </div>
+
+      <button
+        className="m-2 btn btn-primary btn-sm"
+        type="button"
+        onClick={ () => {
+          showChangePasswordHandler();
+          setBType("changePassword");
+        } }
+      >
+        Change Password
+      </button>
+
+      <button
+        className="m-2 btn btn-primary btn-sm"
+        type="button"
+        onClick={ () => {
+          showChangePasswordHandler();
+          setBType("forgotPassword");
+        } }
+      >
+        Forgot Password
+      </button>
+      { editAccountMode && (
+        <div className="d-flex justify-content-center">
+          <button className="mb-3 text-center btn btn-primary" type="submit">
+            Save changes
+          </button>
+        </div>
+      ) }
     </form>
   );
 
@@ -270,86 +299,92 @@ const AccountProfile = () => {
   };
 
   return (
+    <>
 
-    <div className="container-xl px-4 mt-4 mb-4">
-      <div className="d-flex flex-column flex-wrap">
-        <div className="d-flex flex-wrap gap-4 justify-content-around">
+      <div className="container-xl px-4 mt-4 mb-4">
+        <div className="d-flex flex-column flex-wrap">
+          <div className="d-flex flex-wrap gap-4 justify-content-around">
 
-          <div className="col-md-5 d-flex justify-content-center">
-            <div className="card">
-              <div className="card-header d-flex justify-content-around mb-2">
-                <div className="d-flex align-items-center">Profile Picture</div>
-                { !editImgProfile &&
-                  <div className="d-flex justify-content-end">
-                    <button className="border-0" onClick={ editImgHandler }>
-                      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
-                      <lord-icon
-                        src="https://cdn.lordicon.com/puvaffet.json"
-                        trigger="loop"
-                        stroke="85"
-                        colors="primary:#121331,secondary:#2516c7"
-                        styles="width:250px;height:250px">
-                      </lord-icon>
-                    </button>
-                  </div>
-                }
-              </div>
-              <div className="card-body text-center d-flex flex-column justify-content-center">
-
-                <img style={ { width: '100%', maxWidth: '200px', maxHeight: '250px' } } className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
-                <div className="small font-italic text-muted">
-                  { editImgProfile &&
-                    <form className="d-flex flex-column" onSubmit={ imgUploadHandler }>
-                      <input type="file" name="profileImg" onChange={ onFileChange } />
-                      <button className="mt-3 btn btn-primary" type="submit">Upload new image</button>
-                    </form>
+            <div className="col-md-5 d-flex justify-content-center">
+              <div className="card">
+                <div className="card-header d-flex justify-content-around mb-2">
+                  <div className="d-flex align-items-center">Profile Picture</div>
+                  { !editImgProfile &&
+                    <div className="d-flex justify-content-end">
+                      <button className="border-0" onClick={ editImgHandler }>
+                        <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                        <lord-icon
+                          src="https://cdn.lordicon.com/puvaffet.json"
+                          trigger="loop"
+                          stroke="85"
+                          colors="primary:#121331,secondary:#2516c7"
+                          styles="width:250px;height:250px">
+                        </lord-icon>
+                      </button>
+                    </div>
                   }
-
                 </div>
-              </div>
-            </div>
-          </div>
+                <div className="card-body text-center d-flex flex-column justify-content-center">
 
-          <div className="col-md-5 d-flex justify-content-center">
-            <div className="card">
-              <div className="card-header d-flex justify-content-around mb-2">
-                <div className="d-flex align-items-center">
-                  Account Details
-                </div>
-                { !editAccountMode &&
-                  <div className="d-flex justify-content-end">
-                    <button className="border-0" onClick={ editAccountHandler }>
-                      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
-                      <lord-icon
-                        src="https://cdn.lordicon.com/puvaffet.json"
-                        trigger="loop"
-                        stroke="85"
-                        colors="primary:#121331,secondary:#2516c7"
-                        styles="width:250px;height:250px">
-                      </lord-icon>
-                    </button>
+                  <img style={ { width: '100%', maxWidth: '200px', maxHeight: '250px' } } className="img-thumbnail mb-2" src={ imgUrl ? `data:image/jpeg;base64,${imgUrl}` : "" } alt="" />
+                  <div className="small font-italic text-muted">
+                    { editImgProfile &&
+                      <form className="d-flex flex-column" onSubmit={ imgUploadHandler }>
+                        <input type="file" name="profileImg" onChange={ onFileChange } />
+                        <button className="mt-3 btn btn-primary" type="submit">Upload new image</button>
+                      </form>
+                    }
+
                   </div>
-                }
+                </div>
               </div>
-              { showLabelInputList }
             </div>
+
+            <div className="col-md-5 d-flex justify-content-center">
+              <div className="card">
+                <div className="card-header d-flex justify-content-around mb-2">
+                  <div className="d-flex align-items-center">
+                    Account Details
+                  </div>
+                  { !editAccountMode &&
+                    <div className="d-flex justify-content-end">
+                      <button className="border-0" onClick={ editAccountHandler }>
+                        <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                        <lord-icon
+                          src="https://cdn.lordicon.com/puvaffet.json"
+                          trigger="loop"
+                          stroke="85"
+                          colors="primary:#121331,secondary:#2516c7"
+                          styles="width:250px;height:250px">
+                        </lord-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+                { showLabelInputList }
+              </div>
+              { showChangePassword && <ChangePassword profileInfo={ profileInfo } onClose={ showChangePasswordHandler } bType={ bType } /> }
+
+            </div>
+
+          </div>
+          <div className="d-flex justify-content-around flex-wrap">
+            {
+              !profileInfo.isBusiness
+              &&
+              <FavoritesList />
+            }
+          </div>
+          <div >
+            <AppointmentsProfile />
           </div>
 
-        </div>
-        <div className="d-flex justify-content-around flex-wrap">
-          {
-            !profileInfo.isBusiness
-            &&
-            <FavoritesList />
-          }
-        </div>
-        <div className="">
-          <AppointmentsProfile />
-        </div>
 
 
-      </div>
-    </div >
+        </div>
+      </div >
+
+    </>
   )
 
 }

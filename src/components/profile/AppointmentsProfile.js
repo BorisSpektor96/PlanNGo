@@ -18,6 +18,13 @@ const AppointmentsProfile = () => {
   const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
 
+  const [ isExpanded, setIsExpanded ] = useState(false);
+  const initialItemCount = 2;
+
+  const toggleList = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const [ oneTimeDate, setOneTimeDate ] = useState('')
 
   const [ startTime, setStartTime ] = useState("");
@@ -284,7 +291,7 @@ const AppointmentsProfile = () => {
 
   return (
     <div className=" mt-4">
-      <hr />
+      { profileInfo.isBusiness && <hr /> }
       { profileInfo.isBusiness &&
         <div className="d-flex flex-column align-items-center">
           <p className="text-center display-6">Calendar Settings</p>
@@ -494,24 +501,29 @@ const AppointmentsProfile = () => {
           </form>
         </div>
       }
-      <hr />
-      <h5 className="d-flex justify-content-center m-1">Appointments</h5>
-      <ul className="p-3 list-group list-group-flush">
-        { appointments && appointments.length > 0 ?
-          (<>
-            { appointments.map((item) => (
-              <AppointmentItem
-                removeAppointment={ removeAppointment }
-                item={ item }
-              />
-            )) }
-          </>)
-          :
-          (<>
-            <p className="text-center">There is no Appointments</p>
-          </>)
-        }
-      </ul>
+      { profileInfo.isBusiness && <hr /> }
+      <div className="d-flex justify-content-around">
+        <h5 className="d-flex justify-content-center m-1">Appointments</h5>
+        { appointments.length > initialItemCount && (
+          <button onClick={ toggleList }
+            style={ { width: '120px' } }
+            className="btn btn-primary">
+            { isExpanded ? "Show Less" : "Show All" }
+          </button>
+        ) }
+      </div>
+      <div>
+        <ul className="p-3 list-group list-group-flush">
+          { appointments.slice(0, isExpanded ? appointments.length : initialItemCount).map((item) => (
+            <AppointmentItem
+              key={ item.id }
+              removeAppointment={ removeAppointment }
+              item={ item }
+              isExpanded={ isExpanded }
+            />
+          )) }
+        </ul>
+      </div>
     </div>
   )
 

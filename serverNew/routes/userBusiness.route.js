@@ -248,7 +248,7 @@ userBusinessRouter.post('/addService', async (req, res) => {
 
     user.services.push(service);
     await user.save();
-    res.status(200).json({ message: 'Service added successfully', type: "Success" });
+    res.status(200).json({ services: user.services, message: 'Service added successfully', type: "Success" });
 
   } catch (error) {
     res.status(500).json({ message: 'Failed to add service', error });
@@ -262,14 +262,14 @@ userBusinessRouter.post('/deleteService', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found', type: "Error" });
     }
-    const serviceIndex = user.services.findIndex(service => service._id.oid === serviceId);
+    const serviceIndex = user.services.findIndex(service => service.serviceId === serviceId);
     if (serviceIndex === -1) {
       return res.status(404).json({ message: 'Service not found', type: "Error" });
     }
     user.services.splice(serviceIndex, 1);
     await user.save();
 
-    res.status(200).json({ message: 'Service deleted successfully', type: "Info" });
+    res.status(200).json({ services: user.services, message: 'Service deleted successfully', type: "Info" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete service', error });
   }

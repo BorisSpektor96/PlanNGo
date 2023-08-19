@@ -12,7 +12,15 @@ const businessSchema = new mongoose.Schema(
     business_name: String,
     business_description: String,
     business_type: String,
-    services: Array,
+    services: [
+      {
+        serviceId: Number,
+        name: String,
+        price: Number,
+        duration: Number,
+        serviceType: String
+      }
+    ],
     products: [
       {
         productId: Number,

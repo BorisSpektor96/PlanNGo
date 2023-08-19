@@ -2,7 +2,7 @@ import Modal from "../UI/Modal";
 import "bootstrap/dist/css/bootstrap.css";
 import FormInput from "./FormInput";
 import { useState, useContext } from "react";
-
+import ChangePassword from "./ChangePassword"
 import { AuthContext } from '../../AuthContext';
 import { PopupMessageContext } from "../../PopupMessage";
 
@@ -10,6 +10,13 @@ const Login = (props) => {
 
   const { showMessage } = useContext(PopupMessageContext)
   const { login } = useContext(AuthContext);
+  const [ showChangePassword, setShowChangePassword ] = useState(false)
+  const [ bType, setBType ] = useState("");
+
+  const showChangePasswordHandler = () => {
+    setShowChangePassword(!showChangePassword);
+
+  };
 
   const [ formValues, setformValues ] = useState({
     email: "",
@@ -112,29 +119,9 @@ const Login = (props) => {
             onChange={ onChange }
           />
         )) }
-        <div className="row mb-4">
-          <div className="col">
-            <div className="form-check mt-2">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="form2Example31"
-                name="form2Example31"
-              />
-              <label className="form-check-label" htmlFor="form2Example31">
-                { " " }
-                Remember me{ " " }
-              </label>
-            </div>
-          </div>
 
-          <div className="col text-end mt-2">
-            <a href="#!">Forgot password?</a>
-          </div>
-        </div>
 
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center pt-2">
           <button
             type="submit"
             className="btn btn-primary btn-block mb-4"
@@ -144,11 +131,27 @@ const Login = (props) => {
         </div>
 
         <div className="text-center">
+
           <p>
             Not a member? <a href="#!">Register</a>
           </p>
+          forgot password?
+          <button
+            className=" btn btn-link"
+            type="button"
+            onClick={ () => {
+              showChangePasswordHandler();
+              setBType("forgotPasswordLogin");
+            } }
+          >
+            click here
+          </button>
         </div>
+
       </form>
+
+      { showChangePassword && <ChangePassword onClose={ showChangePasswordHandler } bType={ bType } /> }
+
     </Modal>
   );
 };

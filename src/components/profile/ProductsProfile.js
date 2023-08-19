@@ -3,7 +3,10 @@ import { useState, useContext, useEffect } from "react";
 import './profile.css'
 import { PopupMessageContext } from "../../PopupMessage";
 import { useSelector, useDispatch } from "react-redux";
-import { incrementProductQuantity, decrementProductQuantity } from "../../profileInfoSlice";
+import {
+  incrementProductQuantity, decrementProductQuantity,
+  deleteProduct, addProduct
+} from "../../profileInfoSlice";
 
 const ProductsProfile = () => {
 
@@ -31,42 +34,18 @@ const ProductsProfile = () => {
     setEditProductsMode(!editProductsMode)
   }
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/business/getBusinessProducts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: profileInfo.email })
-      });
-
-      if (response.ok) {
-        const productsData = await response.json();
-        if (productsData.length > 0) {
-          for (let p of productsData) {
-            if (p.productId > productId) {
-              setProductId(p.productId + 1)
-            }
-          }
-        }
-        if (productsData !== null) {
-          setProducts(productsData);
-        } else {
-          setProducts(productsData);
-        }
-      } else {
-        setProducts([]);
-      }
-    } catch (error) {
-      console.log('Error:', error);
-      setProducts([]);
-    }
-  };
-
   useEffect(() => {
     if (profileInfo.isBusiness) {
       setProducts(profileInfo.products)
     }
-  }, [ profileInfo ]);
+    let id = 0
+    for (let product of products) {
+      if (id < product.productId) {
+        id = (product.productId + 1)
+      }
+    }
+    setProductId(id)
+  }, [ profileInfo.products ]);
 
   const inputProductHandlerChange = (e) => {
     const { name, value } = e.target
@@ -92,11 +71,16 @@ const ProductsProfile = () => {
 
   const submitProductForm = async (e) => {
     e.preventDefault()
-    setProductId(productId + 1)
+    const newProductId = profileInfo.products.reduce(
+      (maxId, product) => Math.max(maxId, product.productId),
+      0
+    ) + 1;
+
     const newProduct = {
       ...product,
-      productId: productId,
-    }
+      productId: newProductId,
+    };
+    console.log(newProduct)
     await addProductHandler(newProduct)
   }
 
@@ -112,7 +96,7 @@ const ProductsProfile = () => {
 
       if (response.ok) {
         showMessage(data.message, data.type)
-        fetchProducts();
+        dispatch(addProduct(product))
       } else {
         showMessage(data.message, data.type)
       }
@@ -131,7 +115,7 @@ const ProductsProfile = () => {
       const data = await response.json()
       if (response.ok) {
         showMessage(data.message, data.type)
-        fetchProducts();
+        dispatch(deleteProduct(productId))
       } else {
         showMessage(data.message, data.type)
       }

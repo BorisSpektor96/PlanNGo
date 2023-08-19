@@ -59,7 +59,29 @@ const profileInfoSlice = createSlice({
           product.quantity -= action.payload.decrement
         }
       }
-    }
+    },
+    deleteProduct: (state, action) => {
+      const productIndex = state.products.findIndex(
+        product => product.productId === action.payload
+      )
+      if (productIndex !== -1) {
+        state.products.splice(productIndex, 1)
+      }
+    },
+    addProduct: (state, action) => {
+      state.products = [ ...state.products, action.payload ]
+    },
+    addService: (state, action) => {
+      state.services = [ ...state.services, action.payload ]
+    },
+    deleteService: (state, action) => {
+      const serviceIndex = state.services.findIndex(
+        service => service.serviceId === action.payload
+      )
+      if (serviceIndex !== -1) {
+        state.services.splice(serviceIndex, 1)
+      }
+    },
   },
 });
 
@@ -69,6 +91,10 @@ export const { updateProfileInfo,
   updateAppointmentsDef,
   updateAppointments,
   incrementProductQuantity,
-  decrementProductQuantity
+  decrementProductQuantity,
+  deleteProduct,
+  addProduct,
+  addService,
+  deleteService
 } = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;
