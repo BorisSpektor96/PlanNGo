@@ -363,7 +363,13 @@ const AccountProfile = () => {
                 </div>
                 { showLabelInputList }
               </div>
-              { showChangePassword && <ChangePassword profileInfo={ profileInfo } onClose={ showChangePasswordHandler } bType={ bType } /> }
+              { showChangePassword &&
+                <ChangePassword
+                  profileInfo={ profileInfo }
+                  onClose={ showChangePasswordHandler }
+                  bType={ bType }
+                />
+              }
 
             </div>
 

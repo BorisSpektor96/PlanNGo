@@ -34,11 +34,6 @@ const ServicesProfile = () => {
       setServices(profileInfo.services)
     }
   }, [ profileInfo, editServicesMode ]);
-
-  useEffect(() => {
-    console.log(services)
-  }, [ services ])
-
   const handleInputServiceChange = (e) => {
     const { name, value } = e.target;
     setService(prevData => ({

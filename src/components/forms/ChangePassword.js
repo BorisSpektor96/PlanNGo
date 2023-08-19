@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import Modal from "../UI/Modal"
-import { Input, Label } from "reactstrap";
 import FormInput from "./FormInput";
 const ChangePassword = (props) => {
-    const [timer, setTimer] = useState(null);
-    const [user, setuser] = useState(props.profileInfo ? props.profileInfo : null);
-    const [errors, setErrors] = useState({});
+    const [ timer, setTimer ] = useState(null);
+    const [ user, setuser ] = useState(props.profileInfo ? props.profileInfo : null);
+    const [ errors, setErrors ] = useState({});
 
-
-
-    const [formValues, setFormValues] = useState({
+    const [ formValues, setFormValues ] = useState({
         securityQuestion: props.bType !== "forgotPasswordLogin" ? user.securityQuestion.question : null,
         currentPassword: null,
         email: props.bType !== "forgotPasswordLogin" ? user.email : null,
@@ -30,18 +27,18 @@ const ChangePassword = (props) => {
         return () => {
             clearTimeout(timer);
         };
-    }, [timer]);
+    }, [ timer ]);
 
     useEffect(() => {
 
         console.log("email: " + formValues.email);
-    }, [formValues.email]);
+    }, [ formValues.email ]);
 
     const handleEmailChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
             ...prevValues,
-            [name]: value,
+            [ name ]: value,
         }));
 
         clearTimeout(timer); // Clear the previous timer
@@ -68,7 +65,7 @@ const ChangePassword = (props) => {
     const handleEmailChangeDebounced = debounce(handleEmailChange, 1000);
 
     const checkEmailAndSetSecurityQuestion = async (email) => {
-        if (email !== null && email !== "" ) {
+        if (email !== null && email !== "") {
             const user = await checkEmailExists(email);
 
             if (!user) {
@@ -120,11 +117,12 @@ const ChangePassword = (props) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
             ...prevValues,
-            [name]: value,
+            [ name ]: value,
         }));
-
     };
-    const submitHandler = async () => {
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
         try {
             const { email, newPassword } = formValues; // Assuming these are the values you want to send to the backend
             // Make a POST request to your backend route
@@ -164,7 +162,7 @@ const ChangePassword = (props) => {
         <>
             <fieldset disabled>
                 <FormInput
-                    placeholder={formValues.securityQuestion ? formValues.securityQuestion : "provide a valid user email"}
+                    placeholder={ formValues.securityQuestion ? formValues.securityQuestion : "provide a valid user email" }
                     name="question"
                     label="Security Question"
                     type="text"
@@ -174,12 +172,12 @@ const ChangePassword = (props) => {
                 type="text"
                 placeholder="write your answer"
                 name="inputAnswer"
-                value={formValues.inputAnswer}
-                onChange={handleInputChange}
-                pattern={user ? user.securityQuestion.answer : ''}
+                value={ formValues.inputAnswer }
+                onChange={ handleInputChange }
+                pattern={ user ? user.securityQuestion.answer : '' }
                 errorMessage="Wrong answer!"
                 label="answer"
-                required={true}
+                required={ true }
             />
 
 
@@ -195,13 +193,13 @@ const ChangePassword = (props) => {
                 label="email"
                 placeholder="enter your email"
                 name="email"
-                value={formValues.email}
-                onChange={handleEmailChange}
-                errorMessage={errors.email || "invalid email!"}
-                required={true}
+                value={ formValues.email }
+                onChange={ handleEmailChange }
+                errorMessage={ errors.email || "invalid email!" }
+                required={ true }
             />
 
-            {showForgotPassword && showForgotPassword}
+            { showForgotPassword && showForgotPassword }
         </>
     )
     const showChangePassword = (
@@ -210,10 +208,10 @@ const ChangePassword = (props) => {
                 type="password"
                 placeholder="Current Password"
                 name="currentPassword"
-                onChange={handleInputChange}
-                pattern={user ? user.password : ''}
+                onChange={ handleInputChange }
+                pattern={ user ? user.password : '' }
                 errorMessage="incorrect password!"
-                required={true}
+                required={ true }
                 label="Current Password"
 
 
@@ -236,21 +234,21 @@ const ChangePassword = (props) => {
                     className="btn-close"
                     aria-label="Close"
                     dal
-                    onClick={props.onClose}
+                    onClick={ props.onClose }
                 ></button>
             </div>
 
-            <form className="form-check " onSubmit={submitHandler}>
+            <form className="form-check " onSubmit={ submitHandler }>
                 <p className="text-center display-7">change Password</p>
-                {whatToShow}
+                { whatToShow }
                 <FormInput
                     type="password"
                     placeholder="enter new Password"
                     name="newPassword"
-                    onChange={handleInputChange}
-                    pattern={`^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`}
+                    onChange={ handleInputChange }
+                    pattern={ `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$` }
                     errorMessage="Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!"
-                    required={true}
+                    required={ true }
                     label="New Password"
 
                 />
@@ -258,10 +256,10 @@ const ChangePassword = (props) => {
                 <FormInput type="password"
                     placeholder="enter password again"
                     name="confirmPassword"
-                    onChange={handleInputChange}
-                    pattern={formValues.newPassword}
+                    onChange={ handleInputChange }
+                    pattern={ formValues.newPassword }
                     errorMessage="Password do not match"
-                    required={true}
+                    required={ true }
                     label="Conffirm Password"
                 />
 
