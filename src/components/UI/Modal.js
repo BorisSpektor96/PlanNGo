@@ -31,9 +31,6 @@ const Modal = (props) => {
         )
         }
       </div>
-
-
-
       <div>
         { createPortal(<Backdrop onClose={ props.onClose } />, portalElement) }
         { createPortal(
@@ -42,7 +39,7 @@ const Modal = (props) => {
         ) }
       </div>
       <div>
-        { createPortal(<Backdrop onClose={ props.onClose } />, portalCalendar) }
+        { createPortal(<Backdrop onClose={ () => props.onClose([]) } />, portalCalendar) }
         { createPortal(
           <ModalOverlay>{ props.children }</ModalOverlay>,
           portalCalendar

@@ -108,6 +108,9 @@ userBusinessRouter.post("/getMessages", async (req, res) => {
 
 userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
   const { email, increment, productId } = req.body;
+  console.log(`email ${email}`)
+  console.log(`increment ${increment}`)
+  console.log(`productId ${productId}`)
   try {
     const user = await userBusinessModel.findOne({ email: email })
 
@@ -127,9 +130,38 @@ userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
   }
 });
 
+userBusinessRouter.post("/incrementProductQuantityArray", async (req, res) => {
+  const { email, productsArray } = req.body;
+  console.log(email, productsArray)
+  try {
+    const user = await userBusinessModel.findOne({ email: email });
+
+    if (!user || !user.products) {
+      return res.status(404)
+      // return res.status(404).json();
+    }
+
+    productsArray.forEach((product) => {
+      const existingProduct = user.products.find(p => p.productId === product.productId);
+
+      if (existingProduct) {
+        existingProduct.quantity += product.amount;
+      }
+    });
+    await user.save();
+
+    res.status(200).json({ message: "Product quantities incremented successfully", type: "Success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, type: "Error" });
+  }
+});
+
 userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
   const { email, decrement, productId } = req.body;
-  console.log(email, decrement, productId)
+  console.log(`email ${email}`)
+  console.log(`decrement ${decrement}`)
+  console.log(`productId ${productId}`)
   try {
     const user = await userBusinessModel.findOne({ email: email })
 

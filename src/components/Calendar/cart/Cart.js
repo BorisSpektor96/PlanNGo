@@ -1,9 +1,9 @@
 import React from "react";
 import CartItem from "./CartItem";
 
-const Cart = ({ selectedProducts, onIncrease, onDecrease,deleteProductHandler,currentStep}) => {
+const Cart = ({ selectedProducts, onIncrease, onDecrease, deleteProductHandler, currentStep }) => {
 
-  if(selectedProducts.length===0 ||currentStep !==4){
+  if (selectedProducts.length === 0 || currentStep !== 4) {
     return
   }
   return (
@@ -17,25 +17,24 @@ const Cart = ({ selectedProducts, onIncrease, onDecrease,deleteProductHandler,cu
             >
               <thead>
                 <tr>
-                  <th style={{ width: "20%" }}>Product</th>
-                  <th style={{ width: "5%" }}>amount </th>
-                  <th style={{ width: "20%" }}>action </th>
-                  <th style={{ width: "20%" }}>delete </th>
+                  <th style={ { width: "20%" } }>Product</th>
+                  <th style={ { width: "5%" } }>amount </th>
+                  <th style={ { width: "20%" } }>action </th>
+                  <th style={ { width: "20%" } }>delete </th>
 
 
                 </tr>
               </thead>
               <tbody>
-                {selectedProducts.map((product) => (
+                { selectedProducts.map((product) => (
                   <CartItem
-                    key={product.productId}
-                    product={product}
-                    onIncrease={onIncrease}
-                    onDecrease={onDecrease}
-                    deleteProductHandler={deleteProductHandler}
-
+                    key={ product.productId }
+                    product={ product }
+                    onIncrease={ onIncrease }
+                    onDecrease={ onDecrease }
+                    deleteProductHandler={ deleteProductHandler }
                   />
-                ))}
+                )) }
               </tbody>
             </table>
           </div>

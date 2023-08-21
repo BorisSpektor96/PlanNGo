@@ -13,33 +13,64 @@ import { updateFavorites } from '../../../profileInfoSlice'
 import CustomAlert from "../../Calendar/CustomAlert ";
 const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [ showConfirmation, setShowConfirmation ] = useState(false);
 
   const location = useLocation();
   const businessDetails = location.state;
 
   const profileInfo = useSelector(state => state.profileInfo)
   const dispatch = useDispatch()
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [ isFavorite, setIsFavorite ] = useState(false);
 
-  const [addReviewIsShown, setAddReviewIsShown] = useState(false);
-  const [calendarIsShown, setCalendarIsShown] = useState(false);
-  const [AddMassageIsShown, setAddMassageIsShown] = useState(false);
+  const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
+  const [ calendarIsShown, setCalendarIsShown ] = useState(false);
+  const [ AddMassageIsShown, setAddMassageIsShown ] = useState(false);
 
-  const [workingHours, setWorkingHours] = useState('')
-  const [appointmentsDef, setAppointmentDef] = useState({})
-  const [currentStep, setCurrentStep] = useState(0);
+  const [ workingHours, setWorkingHours ] = useState('')
+  const [ appointmentsDef, setAppointmentDef ] = useState({})
+  const [ currentStep, setCurrentStep ] = useState(0);
+
+  const [ cartList, setCartList ] = useState([])
+  const [ checkOut, setCheckOut ] = useState(false)
+
+  useEffect(() => {
+    console.log(`currentStep ${currentStep}`)
+  }, [ currentStep ])
 
   let type = "user"
   if (profileInfo.isBusiness) {
     type = "business"
   }
 
+  const sendCartListToServer = async (cart) => {
+    try {
+      const response = await fetch("http://localhost:3001/business/incrementProductQuantityArray", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: businessDetails.email,
+          productsArray: cart,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Server request failed");
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      throw new Error("Server request failed");
+    }
+  }
+
   useEffect(() => {
-    if ("businessHours" in businessDetails.appointmentsDef[0]) {
+    if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
       setWorkingHours({
-        start: businessDetails.appointmentsDef[0].businessHours.start,
-        end: businessDetails.appointmentsDef[0].businessHours.end
+        start: businessDetails.appointmentsDef[ 0 ].businessHours.start,
+        end: businessDetails.appointmentsDef[ 0 ].businessHours.end
       })
       setAppointmentDef(businessDetails.appointmentsDef)
     } else {
@@ -111,21 +142,23 @@ const BusinessPage = () => {
   const showCalendarHandler = () => {
     setCalendarIsShown(true)
   }
-  const hideCalendarHandler = () => {
+  const hideCalendarHandler = async () => {
+    if (checkOut) {
+      console.log('appointment submitted and cart')
+      setCartList([])
+    } else {
+      await sendCartListToServer(cartList)
+      console.log('not submitted and delete cart')
+    }
     if (currentStep === 5) {
       setCalendarIsShown(false);
       handleStepChange(0)
-
       setShowConfirmation(false); // If the current step is 5, also hide the confirmation
     } else {
       setShowConfirmation(true);
 
     }
   };
-  useEffect(() => {
-  console.log('currentStep: '+currentStep)
-  }, [ currentStep ])
-
 
   const handleAlertConfirm = () => {
     setShowConfirmation(false);
@@ -133,7 +166,6 @@ const BusinessPage = () => {
       setCalendarIsShown(false); // Hide the calendar only if current step is 5
     }
     handleStepChange(0)
-
   };
 
   const showAddReview = () => {
@@ -146,36 +178,43 @@ const BusinessPage = () => {
     setCurrentStep(step);
   };
 
-
+  useEffect(() => {
+    console.log('cartList', cartList)
+  }, [ cartList ])
 
 
   const pathToBackMenu = "/BusinessesMenu";
 
   return (
     <Fragment>
-      {showConfirmation && (
+      { showConfirmation && (
         <CustomAlert
-          isOpen={showConfirmation}
-          toggle={() => setShowConfirmation(false)}
+          isOpen={ showConfirmation }
+          toggle={ () => setShowConfirmation(false) }
           message="Are you sure you want to close? Any unsaved changes will be lost."
-          onConfirm={handleAlertConfirm}
+          onConfirm={ handleAlertConfirm }
         />
-      )}
+      ) }
 
-      {calendarIsShown &&
+      { calendarIsShown &&
         <Calendar
-          profileInfo={profileInfo}
-          workingHours={workingHours}
-          businessDetails={businessDetails}
-          onClose={hideCalendarHandler}
-          appointmentsDef={appointmentsDef}
-          onStepChange={handleStepChange}
-          currentStep={currentStep}
+          sendCartListToServer={ sendCartListToServer }
+          profileInfo={ profileInfo }
+          workingHours={ workingHours }
+          businessDetails={ businessDetails }
+          onClose={ hideCalendarHandler }
+          appointmentsDef={ appointmentsDef }
+          onStepChange={ handleStepChange }
+          currentStep={ currentStep }
+          cartList={ cartList }
+          setCartList={ setCartList }
+          checkOut={ checkOut }
+          setCheckOut={ setCheckOut }
         />
       }
 
       <div className="d-flex justify-content-between  p-3 ">
-        <Link className="btn border-dark rounded pt-2" to={pathToBackMenu}>
+        <Link className="btn border-dark rounded pt-2" to={ pathToBackMenu }>
           <lord-icon
             src="https://cdn.lordicon.com/iiueiwdd.json"
             trigger="hover"
@@ -190,26 +229,26 @@ const BusinessPage = () => {
         <div className="  col-lg-5 m-4 pb-4">
 
           <div className="d-flex justify-content-center pb-2  ">
-            <img className=" rounded-circle border " src={businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png"} alt="..." />
+            <img className=" rounded-circle border " src={ businessDetails.profileImg ? `data:image/jpeg;base64,${businessDetails.profileImg}` : "./logo512.png" } alt="..." />
           </div>
           <div className="d-flex  flex-column ">
-            <h5 className="card-title d-flex justify-content-center">{businessDetails.business_name}</h5>
-            <p className="card-text pt-1 d-flex justify-content-center">{businessDetails.business_description}</p>
+            <h5 className="card-title d-flex justify-content-center">{ businessDetails.business_name }</h5>
+            <p className="card-text pt-1 d-flex justify-content-center">{ businessDetails.business_description }</p>
           </div>
 
 
           <div class="hstack gap-1 pt-2  d-flex justify-content-center">
 
-            {businessDetails.phoneNumber}
+            { businessDetails.phoneNumber }
             <div class="vr"></div>
 
-            {businessDetails.email}
+            { businessDetails.email }
             <div class="vr"></div>
 
-            {businessDetails.address}
+            { businessDetails.address }
             <div class="vr"></div>
 
-            {workingHours.start} - {workingHours.end}
+            { workingHours.start } - { workingHours.end }
 
           </div>
         </div>
@@ -219,7 +258,7 @@ const BusinessPage = () => {
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
             <button
               className="d-flex btn btn-outline-primary align-items-center"
-              onClick={scheduleOpenView}
+              onClick={ scheduleOpenView }
             >
               <lord-icon
                 src="https://cdn.lordicon.com/kbtmbyzy.json"
@@ -232,7 +271,7 @@ const BusinessPage = () => {
             </button>
 
             <button
-              onClick={showAddReview}
+              onClick={ showAddReview }
               className="d-flex btn btn-outline-success align-items-center"
             >
               <lord-icon
@@ -245,7 +284,7 @@ const BusinessPage = () => {
             </button>
 
             <button
-              onClick={showAddMessage}
+              onClick={ showAddMessage }
               className="d-flex btn btn-outline-info align-items-center"
             >
               <lord-icon
@@ -258,11 +297,11 @@ const BusinessPage = () => {
               <p className="m-0 ms-2">Send Message</p>
             </button>
 
-            {isFavorite ?
+            { isFavorite ?
               (<button
-                className={`d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
-                  }`}
-                onClick={deleteBusinessFromFavorites}
+                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }` }
+                onClick={ deleteBusinessFromFavorites }
               >
                 <lord-icon
                   src="https://cdn.lordicon.com/ytuosppc.json"
@@ -276,9 +315,9 @@ const BusinessPage = () => {
               </button>)
               :
               (<button
-                className={`d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
-                  }`}
-                onClick={addBusinessToFavorite}
+                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                  }` }
+                onClick={ addBusinessToFavorite }
               >
                 <lord-icon
                   src="https://cdn.lordicon.com/ytuosppc.json"
@@ -297,24 +336,24 @@ const BusinessPage = () => {
         </div>
 
         <div className="d-flex flex-column col-10 mt-4">
-          <Review reviews={businessDetails.reviews} />
+          <Review reviews={ businessDetails.reviews } />
         </div>
       </div>
 
-      {AddMassageIsShown && (
+      { AddMassageIsShown && (
         <MessageForm
-          from={profileInfo.email}
-          to={businessDetails.email}
-          type={type}
-          onClose={hideMessages}
+          from={ profileInfo.email }
+          to={ businessDetails.email }
+          type={ type }
+          onClose={ hideMessages }
         />
-      )}
+      ) }
 
-      {addReviewIsShown &&
+      { addReviewIsShown &&
         <AddReview
-          profileInfo={profileInfo}
-          businessDetails={businessDetails}
-          onClose={hideFormHandler}
+          profileInfo={ profileInfo }
+          businessDetails={ businessDetails }
+          onClose={ hideFormHandler }
         />
       }
       <Recommendations />

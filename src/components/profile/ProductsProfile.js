@@ -1,5 +1,5 @@
 import FormInput from "../forms/FormInput"
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import './profile.css'
 import { PopupMessageContext } from "../../PopupMessage";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,7 +18,6 @@ const ProductsProfile = () => {
 
   const profileInfo = useSelector(state => state.profileInfo)
 
-  const [ productId, setProductId ] = useState(0);
   const [ products, setProducts ] = useState([]);
 
   const [ product, setProduct ] = useState({
@@ -33,19 +32,6 @@ const ProductsProfile = () => {
   const editProductsModeHandler = () => {
     setEditProductsMode(!editProductsMode)
   }
-
-  useEffect(() => {
-    if (profileInfo.isBusiness) {
-      setProducts(profileInfo.products)
-    }
-    let id = 0
-    for (let product of products) {
-      if (id < product.productId) {
-        id = (product.productId + 1)
-      }
-    }
-    setProductId(id)
-  }, [ profileInfo.products ]);
 
   const inputProductHandlerChange = (e) => {
     const { name, value } = e.target
@@ -137,7 +123,6 @@ const ProductsProfile = () => {
       });
       const data = await response.json()
       if (response.ok) {
-        console.log(productId)
         const updateQuantity = {
           productId: productId,
           increment: increment
@@ -150,6 +135,7 @@ const ProductsProfile = () => {
       console.log('Error:', error);
     }
   };
+
   const decrementProductQuantityHandler = async (productId, decrement) => {
     try {
       const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {

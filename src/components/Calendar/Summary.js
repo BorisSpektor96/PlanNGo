@@ -1,8 +1,7 @@
-import React from "react";
-
 import "./summary.css";
-const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,profileInfo,businessDetails,currentStep}) => {
-  
+
+const Summary = ({ selectedDate, selectedTime, selectedService, selectedProducts, profileInfo, businessDetails, currentStep }) => {
+
   if (currentStep !== 5) {
     return null
   }
@@ -10,7 +9,6 @@ const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,pro
   const totalProductsPrice = selectedProducts.reduce((acc, product) => {
     return acc + product.price * product.amount;
   }, 0);
-
 
   // Calculate the total price with tax
   const totalWithTax =
@@ -24,29 +22,29 @@ const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,pro
       <hr />
       <div className="d-flex justify-content-sm-between">
         <div className="lh-1 Dp">
-          <p>Name: {profileInfo.fullname}</p>
-          <p>Email: {profileInfo.email}</p>
-          <p>Phone Number: {profileInfo.phoneNumber}</p>
+          <p>Name: { profileInfo.fullname }</p>
+          <p>Email: { profileInfo.email }</p>
+          <p>Phone Number: { profileInfo.phoneNumber }</p>
         </div>
         <div className="lh-1 Dp">
-          <p>Business: {businessDetails.business_name}</p>
-          <p>Email: {businessDetails.email}</p>
-          <p>Phone: {businessDetails.phoneNumber}</p>
-          <p>Address: {businessDetails.address}</p>
+          <p>Business: { businessDetails.business_name }</p>
+          <p>Email: { businessDetails.email }</p>
+          <p>Phone: { businessDetails.phoneNumber }</p>
+          <p>Address: { businessDetails.address }</p>
         </div>
       </div>
       <hr />
       <h4 className="text-center">Appointment Details</h4>
       <hr />
       <div className="lh-1 pr-1 pl-1 m-2 d-flex justify-content-sm-between Ap ">
-        <p>Date: {selectedDate.toLocaleDateString()}</p>
-        <p>Time: {selectedTime}</p>
-        <p>Service: {selectedService.name}</p>
+        <p>Date: { selectedDate.toLocaleDateString() }</p>
+        <p>Time: { selectedTime }</p>
+        <p>Service: { selectedService.name }</p>
         <p className="text-danger">Payment: To be made at the business </p>
       </div>
       <hr />
 
-      {selectedProducts.length > 0 && (
+      { selectedProducts.length > 0 && (
         <div>
           <table className="table table-striped">
             <thead>
@@ -57,17 +55,17 @@ const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,pro
               </tr>
             </thead>
             <tbody>
-              {selectedProducts.map((product) => (
-                <tr key={product.productId}>
-                  <td>{product.name}</td>
-                  <td>{product.amount}</td>
-                  <td>{product.price}$</td>
+              { selectedProducts.map((product) => (
+                <tr key={ product.productId }>
+                  <td>{ product.name }</td>
+                  <td>{ product.amount }</td>
+                  <td>{ product.price }$</td>
                 </tr>
-              ))}
+              )) }
               <tr>
-                <td>{selectedService.name}</td>
+                <td>{ selectedService.name }</td>
                 <td>1</td>
-                <td>{selectedService.price}$</td>
+                <td>{ selectedService.price }$</td>
               </tr>
               <tr>
                 <td>Tax</td>
@@ -79,7 +77,7 @@ const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,pro
               <tr>
                 <td>Total</td>
                 <td></td>
-                <td>${totalWithTaxAndPercentage}</td>
+                <td>${ totalWithTaxAndPercentage }</td>
               </tr>
             </tfoot>
           </table>
@@ -91,7 +89,7 @@ const Summary = ({selectedDate,selectedTime,selectedService,selectedProducts,pro
           </div>
 
         </div>
-      )}
+      ) }
 
     </div>
   );

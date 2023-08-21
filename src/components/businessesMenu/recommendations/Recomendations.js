@@ -18,7 +18,6 @@ const Recommendations = () => {
       }
 
       const data = await response.json();
-      console.log(data)
       const loadedBusiness = [];
 
       for (const key in data) {

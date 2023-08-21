@@ -19,20 +19,21 @@ const AppointmentCalendar = (props) => {
   const dispatch = useDispatch()
 
   const { showMessage } = useContext(PopupMessageContext);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [timeList, setTimeList] = useState([]);
+  const [ selectedDate, setSelectedDate ] = useState(null);
+  const [ selectedTime, setSelectedTime ] = useState(null);
+  const [ selectedService, setSelectedService ] = useState(null);
+  const [ timeList, setTimeList ] = useState([]);
 
-  const appointmentsDef = props.appointmentsDef[0];
+  const appointmentsDef = props.appointmentsDef[ 0 ];
 
   const handleDateSelect = (date) => {
+    if (selectedTime !== null) {
+      handleRemoveLockAppointment()
+    }
+    setSelectedTime(null)
     setSelectedDate(new Date(date));
     props.onStepChange(2);
   };
-
-
 
   const handleLockAppointmentTemp = async () => {
     const newAppointmentBusiness = {
@@ -61,18 +62,12 @@ const AppointmentCalendar = (props) => {
           }),
         }
       );
-
       const businessData = await businessResponse.json();
-
-      if (businessResponse.ok) {
-        showMessage(businessData.message, businessData.type);
-      }
     }
     catch (error) {
       console.log("Error:", error.message);
     }
   }
-
 
   const handleRemoveLockAppointment = async () => {
     const deleteDate = {
@@ -99,12 +94,8 @@ const AppointmentCalendar = (props) => {
           type: 'lock'
         }),
       });
-      const data = await response.json();
-
-      if (response.ok) {
-        showMessage(data.message, data.type);
-      } else {
-        console.log("Failed to remove lock appointment:", data.message);
+      if (!response.ok) {
+        throw new Error("Server request failed");
       }
     } catch (error) {
       console.log("Error:", error.message);
@@ -120,26 +111,37 @@ const AppointmentCalendar = (props) => {
     if (selectedTime !== null) {
       handleLockAppointmentTemp();
     }
-  }, [selectedTime])
+  }, [ selectedTime ])
 
-
-  const handleBack = () => {
+  const handleBack = async () => {
     if (props.currentStep === 1 || props.currentStep === 2 || props.currentStep === 3) {
       props.onStepChange(0);
       setSelectedDate(null);
       setSelectedTime(null);
       setSelectedService(null)
-
+      props.setCartList([])
     } else if (props.currentStep === 4) {
+      if (props.cartList.length > 0) {
+        try {
+          await props.sendCartListToServer(props.cartList);
+          console.log("Cart list sent to the server:", props.cartList);
+        } catch (error) {
+          console.error("Error sending cart list to server:", error);
+        }
+      }
+      console.log(props.cartList)
+      handleRemoveLockAppointment()
       setSelectedTime(null);
       props.onStepChange(1);
+      props.setCartList([])
     } else if (props.currentStep === 5) {
       props.onStepChange(4);
     }
   };
+
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const isoDayDate = date.toISOString().split('T')[0]; // Convert to ISO format
+    const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
 
     const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => dateTime);
 
@@ -150,13 +152,13 @@ const AppointmentCalendar = (props) => {
   };
 
   const addProduct = (product) => {
-    const updatedProducts = [...selectedProducts];
+    const updatedProducts = [ ...props.cartList ];
     const existingProductIndex = updatedProducts.findIndex(
       (item) => item.productId === product.productId
     );
 
     if (existingProductIndex !== -1) {
-      updatedProducts[existingProductIndex].amount++;
+      updatedProducts[ existingProductIndex ].amount++;
     } else {
       // Product doesn't exist, add as a new item
       updatedProducts.push({
@@ -167,22 +169,54 @@ const AppointmentCalendar = (props) => {
         photo: product.photo,
       });
     }
-
-    setSelectedProducts(updatedProducts);
+    props.setCartList(updatedProducts)
   };
 
-  const handleIncrease = (productId) => {
-    setSelectedProducts((prevProducts) =>
+  const incrementProductQuantityHandler = async (productId, increment) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: props.businessDetails.email,
+          productId: productId,
+          increment: increment
+        })
+      });
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const decrementProductQuantityHandler = async (productId, decrement) => {
+    try {
+      const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: props.businessDetails.email,
+          productId: productId,
+          decrement: decrement
+        })
+      });
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+  const handleIncrease = async (productId) => {
+    props.setCartList((prevProducts) =>
       prevProducts.map((product) =>
         product.productId === productId
           ? { ...product, amount: product.amount + 1 }
           : product
       )
-    );
+    )
+    await decrementProductQuantityHandler(productId, 1)
   };
 
-  const handleDecrease = (productId) => {
-    setSelectedProducts((prevProducts) =>
+  const handleDecrease = async (productId) => {
+    props.setCartList((prevProducts) =>
       prevProducts
         .map((product) =>
           product.productId === productId
@@ -191,15 +225,17 @@ const AppointmentCalendar = (props) => {
         )
         .filter((product) => product.amount > 0) // Remove products with amount 0
     );
+    await incrementProductQuantityHandler(productId, 1)
   };
 
-  const deleteProductHandler = (productId) => {
-    setSelectedProducts((prevProducts) =>
-      prevProducts.filter((product) => product.productId !== productId)
+  const deleteProductHandler = async (product) => {
+    const productQuantityBack = []
+    productQuantityBack.push(product)
+    await props.sendCartListToServer(productQuantityBack)
+    props.setCartList((prevProducts) =>
+      prevProducts.filter((p) => p.productId !== product.productId)
     );
   };
-
-
 
   const scheduleHandler = async () => {
     const newAppointmentBusiness = {
@@ -227,9 +263,9 @@ const AppointmentCalendar = (props) => {
     newAppointmentUser.date.setHours(parseInt(selectedTime.slice(0, 2)));
     newAppointmentUser.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
 
-    if (selectedProducts.length > 0) {
-      newAppointmentUser.purchase = selectedProducts;
-      newAppointmentBusiness.purchase = selectedProducts;
+    if (props.cartList.length > 0) {
+      newAppointmentUser.purchase = props.cartList;
+      newAppointmentBusiness.purchase = props.cartList;
     }
 
     try {
@@ -252,7 +288,7 @@ const AppointmentCalendar = (props) => {
       if (businessResponse.ok) {
         showMessage(businessData.message, businessData.type);
         await handleRemoveLockAppointment();
-
+        props.setCheckOut(true)
         props.onClose();
 
         // Now, add the appointment to the user
@@ -329,10 +365,10 @@ const AppointmentCalendar = (props) => {
       ) {
         let time = {};
         if (
-          formattedTime(appointmentsDef.fixedBreak[0].start).getTime() <=
+          formattedTime(appointmentsDef.fixedBreak[ 0 ].start).getTime() <=
           i.getTime() &&
           i.getTime() <
-          formattedTime(appointmentsDef.fixedBreak[0].end).getTime()
+          formattedTime(appointmentsDef.fixedBreak[ 0 ].end).getTime()
         ) {
           time = { time: i, isTaken: true };
         } else {
@@ -347,7 +383,7 @@ const AppointmentCalendar = (props) => {
     } else {
       setSelectedDate("");
     }
-  }, [selectedService, selectedDate]);
+  }, [ selectedService, selectedDate ]);
 
   const formattedTime = (timeString) => {
     if (!selectedDate) {
@@ -355,7 +391,7 @@ const AppointmentCalendar = (props) => {
     }
 
     const selectedDateObj = new Date(selectedDate);
-    const [hours, minutes] = timeString.split(":").map(Number);
+    const [ hours, minutes ] = timeString.split(":").map(Number);
     selectedDateObj.setHours(hours, minutes, 0);
     return selectedDateObj;
   };
@@ -363,9 +399,9 @@ const AppointmentCalendar = (props) => {
   const isAppointmentExist = (time, date) => {
     const selectedDateTime = new Date(date);
     const formattedTime = time.split(":");
-    selectedDateTime.setHours(formattedTime[0], formattedTime[1], 0);
+    selectedDateTime.setHours(formattedTime[ 0 ], formattedTime[ 1 ], 0);
 
-    const appointments = props.appointmentsDef[0].appointments;
+    const appointments = props.appointmentsDef[ 0 ].appointments;
     for (const appointment of appointments) {
       const appointmentDateTime = new Date(appointment.date);
       if (selectedDateTime.getTime() === appointmentDateTime.getTime()) {
@@ -389,18 +425,18 @@ const AppointmentCalendar = (props) => {
       if (!isSelectedTimeTaken) {
         return (
           <button
-            className={`btn ${isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
-              } m-2`}
-            key={time}
-            onClick={() => handleTimeSelect(formattedTime)}
+            className={ `btn ${isSelectedTime ? "btn btn-success" : " btn btn-outline-success"
+              } m-2` }
+            key={ time }
+            onClick={ () => handleTimeSelect(formattedTime) }
           >
-            {formattedTime}
+            { formattedTime }
           </button>
         );
       }
       return (
-        <button className="btn btn-dark m-2 disabled" key={formattedTime}>
-          {formattedTime}
+        <button className="btn btn-dark m-2 disabled" key={ formattedTime }>
+          { formattedTime }
         </button>
       );
     });
@@ -411,7 +447,7 @@ const AppointmentCalendar = (props) => {
 
     return (
       <div className="d-flex justify-content-center flex-wrap">
-        {availableTimes}
+        { availableTimes }
       </div>
     );
   };
@@ -424,97 +460,97 @@ const AppointmentCalendar = (props) => {
 
 
   return (
-    <Modal onClose={props.onClose}>
+    <Modal onClose={ () => props.onClose() }>
       <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={props.onClose}
+          onClick={ () => { props.onClose(); handleRemoveLockAppointment() } }
         ></button>
       </div>
 
       <Services
-        businessDetails={props.businessDetails}
-        setServiceAndShowCalendar={setServiceAndShowCalendar}
-        currentStep={props.currentStep}
+        businessDetails={ props.businessDetails }
+        setServiceAndShowCalendar={ setServiceAndShowCalendar }
+        currentStep={ props.currentStep }
       />
 
       <div className="d-flex flex-column flex-wrap align-items-center gap-1 pb-2">
-        {props.currentStep > 0 && props.currentStep < 4 && (
+        { props.currentStep > 0 && props.currentStep < 4 && (
           <>
             <p className="text-center display-6">Schedule</p>
             <Calendar
               calendarType="hebrew"
               locale="en-US"
-              value={selectedDate}
-              onChange={handleDateSelect}
-              minDate={new Date()}
-              mraxDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)} // Show one month forward
-              tileDisabled={({ date }) => isDayDisabled(date)}
+              value={ selectedDate }
+              onChange={ handleDateSelect }
+              minDate={ new Date() }
+              mraxDate={ new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // Show one month forward
+              tileDisabled={ ({ date }) => isDayDisabled(date) }
             />
           </>
-        )}
+        ) }
       </div>
 
       <div className="d-flex flex-wrap justify-content-center gap-1">
-        {props.currentStep > 1 && props.currentStep < 4 && (
+        { props.currentStep > 1 && props.currentStep < 4 && (
           <>
             <div className="">
-              {selectedDate && (
+              { selectedDate && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill ">
-                  Available times for {selectedDate.toLocaleDateString()}:
+                  Available times for { selectedDate.toLocaleDateString() }:
                 </p>
-              )}
-              {renderAvailableTimes()}
+              ) }
+              { renderAvailableTimes() }
 
-              {selectedTime && (
+              { selectedTime && (
                 <p className="d-flex justify-content-center fs-6 border border-success rounded-pill">
-                  You have selected {selectedDate.toLocaleDateString()} at{" "}
-                  {selectedTime}.
+                  You have selected { selectedDate.toLocaleDateString() } at{ " " }
+                  { selectedTime }.
                 </p>
-              )}
+              ) }
             </div>
           </>
-        )}
+        ) }
       </div>
 
 
       <Products
-        addProduct={addProduct}
-        businessDetails={props.businessDetails}
-        selectedDate={selectedDate}
-        currentStep={props.currentStep}
+        addProduct={ addProduct }
+        businessDetails={ props.businessDetails }
+        selectedDate={ selectedDate }
+        currentStep={ props.currentStep }
       />
+
       <Cart
-        selectedProducts={selectedProducts}
-        onIncrease={handleIncrease}
-        onDecrease={handleDecrease}
-        deleteProductHandler={deleteProductHandler}
-        currentStep={props.currentStep}
+        selectedProducts={ props.cartList }
+        onIncrease={ handleIncrease }
+        onDecrease={ handleDecrease }
+        deleteProductHandler={ deleteProductHandler }
+        currentStep={ props.currentStep }
 
       />
-
 
       <Summary
-        selectedDate={selectedDate}
-        selectedTime={selectedTime}
-        selectedService={selectedService}
-        selectedProducts={selectedProducts}
-        profileInfo={profileInfo}
-        businessDetails={props.businessDetails}
-        currentStep={props.currentStep}
+        selectedDate={ selectedDate }
+        selectedTime={ selectedTime }
+        selectedService={ selectedService }
+        selectedProducts={ props.cartList }
+        profileInfo={ profileInfo }
+        businessDetails={ props.businessDetails }
+        currentStep={ props.currentStep }
       />
 
 
-      {props.currentStep !== 0 && (
+      { props.currentStep !== 0 && (
         <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">
           <button
             className={
               props.currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={() => handleBack()}
+            onClick={ () => handleBack() }
           >
             back
           </button>
@@ -522,7 +558,7 @@ const AppointmentCalendar = (props) => {
             className={
               props.currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
             }
-            onClick={() => scheduleHandler()}
+            onClick={ () => scheduleHandler() }
           >
             Schedule
           </button>
@@ -532,14 +568,14 @@ const AppointmentCalendar = (props) => {
                 ? "btn btn-primary disabled"
                 : "btn btn-primary"
             }
-            onClick={() => {
+            onClick={ () => {
               props.onStepChange(props.currentStep + 1);
-            }}
+            } }
           >
             continue
           </button>
         </div>
-      )}
+      ) }
     </Modal>
   );
 };

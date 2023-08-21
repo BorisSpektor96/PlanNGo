@@ -57,7 +57,9 @@ const AppointmentsProfile = () => {
         const dateB = new Date(b.date);
         return dateA - dateB;
       });
-      setAppointments(sortedAppointments)
+      const filteredAppointments = sortedAppointments.filter(appointment => appointment.type !== 'lock');
+      setAppointments(filteredAppointments);
+
       setAppointmentsDef(profileInfo.appointmentsDef[ 0 ])
     } else {
       let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
