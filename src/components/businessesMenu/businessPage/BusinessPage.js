@@ -33,10 +33,6 @@ const BusinessPage = () => {
   const [ cartList, setCartList ] = useState([])
   const [ checkOut, setCheckOut ] = useState(false)
 
-  useEffect(() => {
-    console.log(`currentStep ${currentStep}`)
-  }, [ currentStep ])
-
   let type = "user"
   if (profileInfo.isBusiness) {
     type = "business"
@@ -177,11 +173,6 @@ const BusinessPage = () => {
   const handleStepChange = (step) => {
     setCurrentStep(step);
   };
-
-  useEffect(() => {
-    console.log('cartList', cartList)
-  }, [ cartList ])
-
 
   const pathToBackMenu = "/BusinessesMenu";
 
@@ -356,7 +347,7 @@ const BusinessPage = () => {
           onClose={ hideFormHandler }
         />
       }
-      <Recommendations />
+      <Recommendations currentBusiness={ businessDetails.email } />
 
     </Fragment>
   );
