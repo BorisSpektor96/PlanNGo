@@ -17,7 +17,13 @@ import Products from "./Products";
 import Services from "./Services";
 import MultiStepProgressBar from "./MultiStepProgressBar";
 import AppointmentsDef from "./AppointmentsDef";
+
+import { PopupMessageContext } from "../../../PopupMessage";
+
 class MainBusinessForm extends Component {
+
+  static contextType = PopupMessageContext;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -115,10 +121,6 @@ class MainBusinessForm extends Component {
         confirmPassword:
           name === "confirmPassword" ? value : prevState.confirmPassword,
         phoneNumber: name === "phoneNumber" ? value : prevState.phoneNumber,
-
-
-
-
       }));
     } else if (currentStep === 2) {
       this.setState((prevState) => ({
@@ -153,7 +155,7 @@ class MainBusinessForm extends Component {
       const data = await response.json();
       return data.exists; // Assuming the response from the server contains a field 'exists' indicating email existence
     } catch (error) {
-      console.error("Email existence check failed:", error);
+      this.context.showMessage('Email existence check failed', 'Error')
       return false;
     }
   };
@@ -459,13 +461,6 @@ class MainBusinessForm extends Component {
           };
         }
       },
-      () => {
-        // Callback function that runs after the state has been updated
-        console.log(
-          "Updated fixedDaysOff:",
-          this.state.appointmentsDef.fixedDaysOff
-        );
-      }
     );
   };
   /************************AppointmentsDef************************/
@@ -490,10 +485,8 @@ class MainBusinessForm extends Component {
       }
       this.props.hideForm();
       const data = await response.json();
-      console.log("User registered successfully:", data);
-      console.log(data);
     } catch (error) {
-      console.error("Registration failed:", error);
+      this.context.showMessage('No Connection To Server, Try Again Later', 'Error')
     }
   };
   // Test current step with ternary

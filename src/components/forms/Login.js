@@ -65,7 +65,7 @@ const Login = (props) => {
         return false;
       }
     } catch (err) {
-      console.log('Error:', err);
+      showMessage('No Connection To Server, Try Again Later', 'Error')
       return false;
     }
   };

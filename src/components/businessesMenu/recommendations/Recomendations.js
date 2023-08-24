@@ -6,68 +6,19 @@ import "./recommendations.css";
 const Recommendations = (props) => {
   const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
   const [ listOfUsers, setListOfUsers ] = useState([]);
+  const [ update, setUpdate ] = useState(0)
+
+  useEffect(() => {
+    props.setUpdate(props.update + 1)
+  }, []);
 
   useEffect(() => {
     fetchUsersArr();
-    fetchBusinessesArr();
-  }, [ props.currentBusiness ]);
+    console.log(update)
+  }, [ props.update ]);
 
-  const fetchUsersArr = async () => {
-    try {
-      let response = await fetch('http://localhost:3001/users/getAllUsers', {
-        method: "get",
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const data = await response.json();
-
-      const filteredUsers = data.filter(user => !user.isBusiness);
-      const listOfUsersWithIdAndAppointments = filteredUsers.map(user => ({
-        id: user._id,
-        appointments: user.appointments
-      }));
-
-      setListOfUsers(listOfUsersWithIdAndAppointments);
-    } catch (error) {
-      console.log(error.message)
-    }
-  };
-
-  const fetchBusinessesArr = async () => {
-    try {
-      let response = await fetch('http://localhost:3001/business/getAllUsersBusiness', {
-        method: "get",
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const data = await response.json();
-      const loadedBusiness = [];
-
-      for (const key in data) {
-        loadedBusiness.push({
-          id: data[ key ]._id,
-          business_name: data[ key ].business_name,
-          fullname: data[ key ].fullname,
-          phoneNumber: data[ key ].phoneNumber,
-          email: data[ key ].email,
-          address: data[ key ].address,
-          isBusiness: data[ key ].isBusiness,
-          business_description: data[ key ].business_description,
-          services: data[ key ].services,
-          products: data[ key ].products,
-          profileImg: data[ key ].profileImg,
-          reviews: data[ key ].reviews,
-          appointmentsDef: data[ key ].appointmentsDef
-        });
-      }
+  useEffect(() => {
+    if (listOfUsers.length && props.listOfBusinesses) {
 
       /* filtering a list of users (listOfUsers) to find those who have visited a business identified by the props.currentBusiness email. */
       const usersWhoVisited = listOfUsers.filter(user => {
@@ -95,8 +46,6 @@ const Recommendations = (props) => {
           }
         });
       });
-
-
       /* Sort businesses by visit count in descending order
              takes the businessVisitsMap and converts it into an array of entries using Object.entries(). 
              Then, it converts that array back into an object with Object.fromEntries().
@@ -112,9 +61,32 @@ const Recommendations = (props) => {
       const top5Businesses = sortedBusinesses.slice(0, 5); // Get the top 5 most visited businesses
 
       /*  sets the listOfBusinesses to contain only those businesses whose email addresses are found in the top5Businesses array.*/
-      setListOfBusinesses(loadedBusiness.filter(business => top5Businesses.includes(business.email)));
+      setListOfBusinesses(props.listOfBusinesses.filter(business => top5Businesses.includes(business.email)));
+    }
+  }, [ props.currentBusiness, listOfUsers, update ]);
+
+  const fetchUsersArr = async () => {
+    try {
+      let response = await fetch('http://localhost:3001/users/getAllUsers', {
+        method: "get",
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+
+      const filteredUsers = data.filter(user => !user.isBusiness);
+      const listOfUsersWithIdAndAppointments = filteredUsers.map(user => ({
+        id: user._id,
+        appointments: user.appointments
+      }));
+
+      setListOfUsers(listOfUsersWithIdAndAppointments);
     } catch (error) {
-      console.log(error.message);
+      console.log(error.message)
     }
   };
 

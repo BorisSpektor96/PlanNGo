@@ -1,4 +1,4 @@
-import { Fragment, useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Review from "../../review/Review";
 import { Link } from "react-router-dom";
@@ -11,12 +11,21 @@ import MessageForm from "../../messages/MessageForm";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFavorites } from '../../../profileInfoSlice'
 import CustomAlert from "../../Calendar/CustomAlert ";
+import styles from "./BusinessPage.module.css"
+
 const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
   const [ showConfirmation, setShowConfirmation ] = useState(false);
 
+  const [ update, setUpdate ] = useState(0)
+
   const location = useLocation();
   const businessDetails = location.state;
+  const listOfBusinesses = location.state.listOfBusinesses
+
+  useEffect(() => {
+    console.log(listOfBusinesses)
+  }, [ listOfBusinesses ])
 
   const profileInfo = useSelector(state => state.profileInfo)
   const dispatch = useDispatch()
@@ -177,7 +186,7 @@ const BusinessPage = () => {
   const pathToBackMenu = "/BusinessesMenu";
 
   return (
-    <Fragment>
+    <div>
       { showConfirmation && (
         <CustomAlert
           isOpen={ showConfirmation }
@@ -247,24 +256,10 @@ const BusinessPage = () => {
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
 
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
-            <button
-              className="d-flex btn btn-outline-primary align-items-center"
-              onClick={ scheduleOpenView }
-            >
-              <lord-icon
-                src="https://cdn.lordicon.com/kbtmbyzy.json"
-                trigger="loop"
-                colors="primary:#121331,secondary:#e83a30"
-                state="loop"
-                styles="width:250px;height:250px"
-              ></lord-icon>
-              <p className="m-0 ms-2">Schedule appointment</p>
-            </button>
 
             <button
               onClick={ showAddReview }
-              className="d-flex btn btn-outline-success align-items-center"
-            >
+              className={ `d-flex btn btn-outline-success align-items-center ${styles.btn}` }            >
               <lord-icon
                 src="https://cdn.lordicon.com/puvaffet.json"
                 trigger="loop"
@@ -274,23 +269,9 @@ const BusinessPage = () => {
               <p className="m-0 ms-2">Add Review</p>
             </button>
 
-            <button
-              onClick={ showAddMessage }
-              className="d-flex btn btn-outline-info align-items-center"
-            >
-              <lord-icon
-                src="https://cdn.lordicon.com/rhvddzym.json"
-                trigger="loop"
-                colors="primary:#121331,secondary:#08a88a"
-                styles="width:250px;height:250px">
-              </lord-icon>
-
-              <p className="m-0 ms-2">Send Message</p>
-            </button>
-
             { isFavorite ?
               (<button
-                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                className={ `d-flex btn btn-outline-warning align-items-center ${styles.btn} ${isFavorite ? "active" : ""
                   }` }
                 onClick={ deleteBusinessFromFavorites }
               >
@@ -306,7 +287,7 @@ const BusinessPage = () => {
               </button>)
               :
               (<button
-                className={ `d-flex btn btn-outline-warning align-items-center ${isFavorite ? "active" : ""
+                className={ `d-flex btn btn-outline-warning align-items-center ${styles.btn} ${isFavorite ? "active" : ""
                   }` }
                 onClick={ addBusinessToFavorite }
               >
@@ -322,6 +303,33 @@ const BusinessPage = () => {
                 <p className="m-0 ">Add to favorites</p>
               </button>)
             }
+
+            <button
+              onClick={ showAddMessage }
+              className={ `d-flex btn btn-outline-info align-items-center ${styles.btn}` }            >
+              <lord-icon
+                src="https://cdn.lordicon.com/rhvddzym.json"
+                trigger="loop"
+                colors="primary:#121331,secondary:#08a88a"
+                styles="width:250px;height:250px">
+              </lord-icon>
+
+              <p className="m-0 ms-2">Send Message</p>
+            </button>
+
+            <button
+              className={ `d-flex btn btn-outline-primary align-items-center ${styles.btn}` }
+              onClick={ scheduleOpenView }
+            >
+              <lord-icon
+                src="https://cdn.lordicon.com/kbtmbyzy.json"
+                trigger="loop"
+                colors="primary:#121331,secondary:#e83a30"
+                state="loop"
+                styles="width:250px;height:250px"
+              ></lord-icon>
+              <p className="m-0 ms-2">Schedule appointment</p>
+            </button>
           </div>
 
         </div>
@@ -347,9 +355,14 @@ const BusinessPage = () => {
           onClose={ hideFormHandler }
         />
       }
-      <Recommendations currentBusiness={ businessDetails.email } />
+      <Recommendations
+        update={ update }
+        setUpdate={ setUpdate }
+        currentBusiness={ businessDetails.email }
+        listOfBusinesses={ listOfBusinesses }
+      />
 
-    </Fragment>
+    </div>
   );
 };
 
