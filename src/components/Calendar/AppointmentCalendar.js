@@ -7,9 +7,11 @@ import Services from "./Services";
 import Summary from "./Summary";
 import { PopupMessageContext } from "../../PopupMessage";
 import Cart from "./cart/Cart";
+import { sendMessage, createMessage } from '../messages/sendMessage'; // Import the sendMessage function
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
+import { updateMessages } from "../../profileInfoSlice";
 
 import dayjs from 'dayjs';
 
@@ -24,7 +26,7 @@ const AppointmentCalendar = (props) => {
   const [ selectedService, setSelectedService ] = useState(null);
   const [ timeList, setTimeList ] = useState([]);
 
-  const appointmentsDef = props.appointmentsDef[ 0 ];
+  const appointmentsDef = props.appointmentsDef;
 
   const handleDateSelect = (date) => {
     if (selectedTime !== null) {
@@ -129,7 +131,6 @@ const AppointmentCalendar = (props) => {
           console.error("Error sending cart list to server:", error);
         }
       }
-      console.log(props.cartList)
       handleRemoveLockAppointment()
       setSelectedTime(null);
       props.onStepChange(1);
@@ -160,12 +161,11 @@ const AppointmentCalendar = (props) => {
     if (existingProductIndex !== -1) {
       updatedProducts[ existingProductIndex ].amount++;
     } else {
-      // Product doesn't exist, add as a new item
       updatedProducts.push({
         productId: product.productId,
         name: product.name,
         price: product.price,
-        amount: 1, // Initialize the quantity to 1
+        amount: 1,
         photo: product.photo,
       });
     }
@@ -236,6 +236,68 @@ const AppointmentCalendar = (props) => {
       prevProducts.filter((p) => p.productId !== product.productId)
     );
   };
+  const currentDate = new Date();
+  const status = "received";
+  const read = false;
+  let subject = ""
+  let content = ""
+  if (props.currentStep > 4) {
+    subject = `New appointment at: ${selectedDate?.toLocaleDateString()}`;
+    content = `Appointment Summary:\n\n`;
+    content += `Date: ${selectedDate.toLocaleDateString()}\n`;
+    content += `Time: ${selectedTime}\n`;
+    content += `Service: ${selectedService.name}\n`;
+    content += `Total: ${props.cartList.reduce((total, product) => total + product.price * product.amount, 0) + selectedService.price}$`
+    content += `User Name: ${profileInfo.fullname}\n`;
+    content += `User Email: ${profileInfo.email}\n`;
+    content += `User Phone Number: ${profileInfo.phoneNumber}\n`;
+    content += `Business: ${props.businessDetails.business_name}\n`;
+    content += `Business Email: ${props.businessDetails.email}\n`;
+    content += `Business Phone: ${props.businessDetails.phoneNumber}\n`;
+    content += `Business Address: ${props.businessDetails.address}\n\n`;
+  }
+
+  const sendMessageToBusiness = async () => {
+    try {
+      const messageData = createMessage(
+        read,
+        profileInfo.email,
+        currentDate.toISOString(),
+        content,
+        status,
+        subject,
+        true
+      );
+      const response = await sendMessage(props.businessDetails.email, messageData, true);
+
+    } catch (error) {
+      console.log("Error:", error);
+      showMessage("Failed to send message to business", "Error");
+    }
+  }
+  const sendMessageToUser = async () => {
+
+    try {
+      const messageData = createMessage(
+        read,
+        props.businessDetails.email,
+        currentDate.toISOString(),
+        content,
+        status,
+        subject,
+        false,
+      );
+
+      const response = await sendMessage(profileInfo.email, messageData, false);
+
+      if (response) {
+        dispatch(updateMessages(response.messages));
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      showMessage("Failed to send message to business", "Error");
+    }
+  };
 
   const scheduleHandler = async () => {
     const newAppointmentBusiness = {
@@ -286,6 +348,7 @@ const AppointmentCalendar = (props) => {
       const businessData = await businessResponse.json();
 
       if (businessResponse.ok) {
+        await sendMessageToBusiness();
         showMessage(businessData.message, businessData.type);
         await handleRemoveLockAppointment();
         props.setCheckOut(true)
@@ -309,7 +372,7 @@ const AppointmentCalendar = (props) => {
         const userData = await userResponse.json();
 
         if (userResponse.ok) {
-
+          await sendMessageToUser();
           showMessage(userData.message, userData.type);
           dispatch(updateAppointments(userData.appointments))
           props.onClose();
@@ -401,7 +464,7 @@ const AppointmentCalendar = (props) => {
     const formattedTime = time.split(":");
     selectedDateTime.setHours(formattedTime[ 0 ], formattedTime[ 1 ], 0);
 
-    const appointments = props.appointmentsDef[ 0 ].appointments;
+    const appointments = props.appointmentsDef.appointments;
     for (const appointment of appointments) {
       const appointmentDateTime = new Date(appointment.date);
       if (selectedDateTime.getTime() === appointmentDateTime.getTime()) {
@@ -456,6 +519,12 @@ const AppointmentCalendar = (props) => {
     setSelectedService(service);
     props.onStepChange(1);
   };
+
+  const sendSummary = () => {
+    let msg = {
+
+    }
+  }
 
 
 

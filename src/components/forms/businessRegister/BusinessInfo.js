@@ -4,8 +4,17 @@ import Select from "react-select";
 import { Input, Label } from "reactstrap";
 
 const BusinessInfo = (props) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedBusinessType, setSelectedBusinessType] = useState(null);
+  const [ selectedImage, setSelectedImage ] = useState(null);
+  const [ selectedBusinessType, setSelectedBusinessType ] = useState(null);
+
+  useEffect(() => {
+    if (props.profileImg === '') {
+      setSelectedImage(null)
+    } else {
+      setSelectedImage(props.profileImg)
+    }
+    console.log(selectedImage)
+  }, [ props.profileImg ])
 
   useEffect(() => {
     if (props.formInput.businessType) {
@@ -14,7 +23,7 @@ const BusinessInfo = (props) => {
         label: props.formInput.businessType,
       });
     }
-  }, [props.formInput.businessType]);
+  }, [ props.formInput.businessType ]);
 
   const handleBusinessTypeChange = (selectedOption) => {
     setSelectedBusinessType(selectedOption);
@@ -68,52 +77,52 @@ const BusinessInfo = (props) => {
     <>
       <p className="text-center display-6">Business Information</p>
       <form className="form-check p-0">
-        {inputs.map((input) => (
-          <div key={input.id}>
-            <Label className="mt-2 mb-0" for={input.name}>
-              {input.label}
+        { inputs.map((input) => (
+          <div key={ input.id }>
+            <Label className="mt-2 mb-0" for={ input.name }>
+              { input.label }
             </Label>
             <Input
-              type={input.type}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={props.formInput[input.name]}
-              onChange={props.handleChange}
-              invalid={props.errors[input.name] !== undefined}
+              type={ input.type }
+              name={ input.name }
+              placeholder={ input.placeholder }
+              value={ props.formInput[ input.name ] }
+              onChange={ props.handleChange }
+              invalid={ props.errors[ input.name ] !== undefined }
             />
-            {props.errors[input.name] && (
+            { props.errors[ input.name ] && (
               <p
-                style={{
+                style={ {
                   fontSize: "12px",
                   padding: "3px",
                   color: "red",
-                }}
+                } }
               >
-                {props.errors[input.name]}
+                { props.errors[ input.name ] }
               </p>
-            )}
+            ) }
           </div>
-        ))}
+        )) }
 
         <div className="pt-2 w-50 ">
           <Select
             name="BusinessType"
-            options={options}
-            value={selectedBusinessType}
-            onChange={handleBusinessTypeChange}
-            autoFocus={true}
+            options={ options }
+            value={ selectedBusinessType }
+            onChange={ handleBusinessTypeChange }
+            autoFocus={ true }
             size="3"
             className="custom-select text-center form-control form-select-sm"
             placeholder="Select business type"
           />
           <p
-            style={{
+            style={ {
               fontSize: "12px",
               padding: "3px",
               color: "red",
-            }}
+            } }
           >
-            {props.errors["businessType"]}
+            { props.errors[ "businessType" ] }
           </p>
         </div>
 
@@ -126,28 +135,29 @@ const BusinessInfo = (props) => {
             type="file"
             name="profileImg"
             label="choose image"
-            onChange={props.handleInsertImage}
+            onChange={ props.handleInsertImage }
           />
-          {props.profileImg && (
+          { props.profileImg && (
             <div className="d-flex justify-content-around">
-              {/* Display selected images */}
+              {/* Display selected images */ }
 
               <img
                 alt="not found"
-                width={"50px"}
-                height={"50px"}
-                src={`data:image/jpeg;base64,${props.profileImg}`}
+                width={ "50px" }
+                height={ "50px" }
+                // src={ `data:image/jpeg;base64,${props.profileImg}` }
+                src={ `data:image/jpeg;base64,${selectedImage}` }
               />
               <br />
               <button
                 type="button"
                 className="btn btn-outline-danger"
-                onClick={() => props.handleDeleteImage()}
+                onClick={ props.handleDeleteImage }
               >
                 Remove
               </button>
             </div>
-          )}
+          ) }
         </div>
       </form>
     </>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import {
   Form,
   Button,
@@ -24,6 +24,7 @@ class MainBusinessForm extends Component {
 
   static contextType = PopupMessageContext;
 
+
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +40,7 @@ class MainBusinessForm extends Component {
       businessType: "",
       services: [],
       products: [],
-      profileImg: "",
+      profileImg: null,
       errors: {},
       reviews: [],
       securityQuestion: {
@@ -48,10 +49,7 @@ class MainBusinessForm extends Component {
       },
 
       appointmentsDef: {
-        fixedBreak: {
-          start: "",
-          end: "",
-        },
+        fixedBreak: [],
         fixedDaysOff: [],
         OneTimeDayOff: [],
         appointments: [],
@@ -59,7 +57,6 @@ class MainBusinessForm extends Component {
           start: "",
           end: "",
         },
-
       },
 
 
@@ -83,8 +80,6 @@ class MainBusinessForm extends Component {
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
   }
-
-
 
   // Use the submitted data to set the state
   handleChange(event) {
@@ -266,6 +261,7 @@ class MainBusinessForm extends Component {
   handleServices(serviceType, name, price, duration, id) {
     price = parseFloat(price)
     duration = parseFloat(duration)
+
     this.setState((state) => {
       const services = [
         ...state.services,
@@ -282,7 +278,6 @@ class MainBusinessForm extends Component {
       const services = state.services.filter(
         (service) => service.id !== serviceId
       );
-
       return {
         services,
       };
@@ -303,10 +298,11 @@ class MainBusinessForm extends Component {
     };
 
     reader.readAsDataURL(imageFile); // Use readAsDataURL to read the file as base64 data
+    console.log(this.state.profileImg)
   }
 
   handleDeleteImage = () => {
-    this.state.profileImg = "";
+    this.setState({ profileImg: null })
   };
 
   handleProducts(productId, price, description, name, quantity, lables, photoFile) {
@@ -314,10 +310,9 @@ class MainBusinessForm extends Component {
     quantity = parseInt(quantity)
 
     const reader = new FileReader();
-
+    // console.log("Price Type:", typeof price);
     reader.onload = () => {
       const photoData = reader.result.split(",")[ 1 ]; // Extract the base64 data part
-      // Rest of your code ...
 
       this.setState((state) => {
         const products = [
@@ -413,12 +408,15 @@ class MainBusinessForm extends Component {
         end: formattedEndTime.format("HH:mm"),
       };
 
-      this.setState((prevState) => ({
-        appointmentsDef: {
-          ...prevState.appointmentsDef,
-          fixedBreak: breakTimeRange, // Set the new break time range object
-        },
-      }));
+      this.state.appointmentsDef.fixedBreak.push(breakTimeRange)
+      // this.setState((prevState) => ({
+      //   appointmentsDef: {
+      //     ...prevState.appointmentsDef,
+      //     fixedBreak: breakTimeRange, // Set the new break time range object
+      //   },
+      // }));
+
+
     } else {
       alert("Invalid break time range. End time should be after start time.");
     }

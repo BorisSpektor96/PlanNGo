@@ -4,21 +4,17 @@ import Recommendation from './Recommendation';
 import "./recommendations.css";
 
 const Recommendations = (props) => {
-  const [ listOfBusinesses, setListOfBusinesses ] = useState([]);
+  const [ filteredBusinesses, setFilteredBusinesses ] = useState([]);
   const [ listOfUsers, setListOfUsers ] = useState([]);
-  const [ update, setUpdate ] = useState(0)
+  const [ listOfbusinesses, setListOfbusinesses ] = useState([]);
 
   useEffect(() => {
-    props.setUpdate(props.update + 1)
-  }, []);
-
-  useEffect(() => {
+    setFilteredBusinesses([])
     fetchUsersArr();
-    console.log(update)
-  }, [ props.update ]);
+  }, [ props.currentBusiness ]);
 
   useEffect(() => {
-    if (listOfUsers.length && props.listOfBusinesses) {
+    if (listOfUsers.length && listOfbusinesses.length) {
 
       /* filtering a list of users (listOfUsers) to find those who have visited a business identified by the props.currentBusiness email. */
       const usersWhoVisited = listOfUsers.filter(user => {
@@ -60,10 +56,10 @@ const Recommendations = (props) => {
 
       const top5Businesses = sortedBusinesses.slice(0, 5); // Get the top 5 most visited businesses
 
-      /*  sets the listOfBusinesses to contain only those businesses whose email addresses are found in the top5Businesses array.*/
-      setListOfBusinesses(props.listOfBusinesses.filter(business => top5Businesses.includes(business.email)));
+      /*  sets the filteredBusinesses to contain only those businesses whose email addresses are found in the top5Businesses array.*/
+      setFilteredBusinesses(listOfbusinesses.filter(business => top5Businesses.includes(business.email)));
     }
-  }, [ props.currentBusiness, listOfUsers, update ]);
+  }, [ listOfbusinesses ]);
 
   const fetchUsersArr = async () => {
     try {
@@ -79,12 +75,15 @@ const Recommendations = (props) => {
       const data = await response.json();
 
       const filteredUsers = data.filter(user => !user.isBusiness);
+      const filteredBusiness = data.filter(business => business.isBusiness);
+
       const listOfUsersWithIdAndAppointments = filteredUsers.map(user => ({
         id: user._id,
         appointments: user.appointments
       }));
 
       setListOfUsers(listOfUsersWithIdAndAppointments);
+      setListOfbusinesses(filteredBusiness)
     } catch (error) {
       console.log(error.message)
     }
@@ -95,7 +94,7 @@ const Recommendations = (props) => {
       <div className="d-flex flex-column justify-content-center">
         <hr />
         <p className="text-center display-7 text-muted p-1 ">Customers with similar interests also explored:</p>
-        { listOfBusinesses.length === 0 ?
+        { filteredBusinesses.length === 0 ?
           <div className="d-flex justify-content-center ">
             <lord-icon
               src="https://cdn.lordicon.com/xjovhxra.json"
@@ -106,7 +105,7 @@ const Recommendations = (props) => {
           </div>
           :
           <div className="sample_container card_sample d-flex flex-wrap justify-content-center gap-2">
-            { listOfBusinesses.map((business) => (
+            { filteredBusinesses.map((business) => (
               <Recommendation
                 key={ business.id }
                 { ...business }

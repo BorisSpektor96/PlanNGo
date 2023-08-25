@@ -108,9 +108,6 @@ userBusinessRouter.post("/getMessages", async (req, res) => {
 
 userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
   const { email, increment, productId } = req.body;
-  console.log(`email ${email}`)
-  console.log(`increment ${increment}`)
-  console.log(`productId ${productId}`)
   try {
     const user = await userBusinessModel.findOne({ email: email })
 
@@ -132,7 +129,6 @@ userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
 
 userBusinessRouter.post("/incrementProductQuantityArray", async (req, res) => {
   const { email, productsArray } = req.body;
-  console.log(email, productsArray)
   try {
     const user = await userBusinessModel.findOne({ email: email });
 
@@ -159,9 +155,6 @@ userBusinessRouter.post("/incrementProductQuantityArray", async (req, res) => {
 
 userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
   const { email, decrement, productId } = req.body;
-  console.log(`email ${email}`)
-  console.log(`decrement ${decrement}`)
-  console.log(`productId ${productId}`)
   try {
     const user = await userBusinessModel.findOne({ email: email })
 
@@ -378,7 +371,7 @@ userBusinessRouter.post("/addAppointment", async (req, res) => {
   try {
     const user = await userBusinessModel.findOneAndUpdate(
       { email: email },
-      { $push: { "appointmentsDef.0.appointments": appointment } },
+      { $push: { "appointmentsDef.appointments": appointment } },
       { new: true }
     );
 
@@ -405,14 +398,14 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
     }
     let appointmentIndex = -1
     if (type === 'lock') {
-      appointmentIndex = user.appointmentsDef[ 0 ].appointments.findIndex(appointment =>
+      appointmentIndex = user.appointmentsDef.appointments.findIndex(appointment =>
         appointment.date === date &&
         appointment.type === 'lock' &&
         appointment.userDetails.email === userEmail
       );
     }
     else {
-      appointmentIndex = user.appointmentsDef[ 0 ].appointments.findIndex(appointment =>
+      appointmentIndex = user.appointmentsDef.appointments.findIndex(appointment =>
         appointment.date === date &&
         appointment.userDetails.email === userEmail
       );
@@ -423,10 +416,10 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
         type: "Error"
       });
     }
-    user.appointmentsDef[ 0 ].appointments.splice(appointmentIndex, 1)
+    user.appointmentsDef.appointments.splice(appointmentIndex, 1)
     await user.save()
 
-    res.status(200).json({ appointments: user.appointmentsDef[ 0 ].appointments, message: "Appointment removed successfully", type: "Success" });
+    res.status(200).json({ appointments: user.appointmentsDef.appointments, message: "Appointment removed successfully", type: "Success" });
   } catch (error) {
     res.status(500).json({ message: error.message, type: "Error" });
   }
@@ -441,7 +434,7 @@ userBusinessRouter.post("/getAppointmentsDetails", async (req, res) => {
       return res.status(404).json({ message: "User / Appointments not found", type: "Error" });
     }
 
-    res.status(200).json(user.appointmentsDef[ 0 ].appointments)
+    res.status(200).json(user.appointmentsDef.appointments)
   } catch (error) {
     res.status(500).json({ message: error, type: "Error" })
   }
@@ -454,10 +447,10 @@ userBusinessRouter.post("/updateAppointmentsDef", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User / AppointmentsDef not found", type: "Error" });
     }
-    user.appointmentsDef[ 0 ] = newAppointmentsDef
+    user.appointmentsDef = newAppointmentsDef
     await user.save()
 
-    res.status(200).json({ appointmentsDef: user.appointmentsDef[ 0 ], message: "updated calendar times", type: "Info" })
+    res.status(200).json({ appointmentsDef: user.appointmentsDef, message: "updated calendar times", type: "Info" })
   } catch (error) {
     res.status(500).json({ message: error, type: "Error" })
   }
@@ -471,7 +464,7 @@ userBusinessRouter.post("/getAppointmentsDef", async (req, res) => {
       return res.status(404).json({ message: "User not found", type: "Error" });
     }
 
-    res.status(200).json(user.appointmentsDef[ 0 ])
+    res.status(200).json(user.appointmentsDef)
   } catch (error) {
     res.status(500).json({ message: error, type: "Error" })
   }

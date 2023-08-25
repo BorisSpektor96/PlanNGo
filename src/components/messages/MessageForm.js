@@ -4,6 +4,7 @@ import Modal from "../UI/Modal";
 import { PopupMessageContext } from "./../../PopupMessage";
 import { updateMessages } from "../../profileInfoSlice";
 import { useDispatch } from "react-redux";
+import { sendMessage, createMessage } from './sendMessage';
 
 const MessageForm = ({ to, from, type, onClose }) => {
 
@@ -27,30 +28,22 @@ const MessageForm = ({ to, from, type, onClose }) => {
   const onChange = (e) => {
     setFormValues({ ...formValues, [ e.target.name ]: e.target.value });
   };
-
   const currentDate = new Date();
+
   const sendMessageToBusiness = async () => {
     try {
-      const response = await fetch("http://localhost:3001/business/addMessage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: reqEmailBusiness, // Use reqEmailBusiness instead of reqEmail
-          message: {
-            read: bRead,
-            userEmail: messageEmailBusiness, // Use changedTo instead of to
-            date: currentDate.toISOString(),
-            content: formValues.content,
-            status: bStatus,
-            subject: formValues.subject,
-          },
-        }),
-      });
-      const data = await response.json();
-      showMessage(data.message, data.type);
-      dispatch(updateMessages(data.messages))
+      const messageData = createMessage(
+        bRead,
+        messageEmailBusiness,
+        currentDate.toISOString(),
+        formValues.content,
+        bStatus,
+        formValues.subject,
+        true
+      );
+      const response = await sendMessage(reqEmailBusiness, messageData, true);
+      showMessage(response.message, response.type);
+
     } catch (error) {
       console.log("Error:", error);
       showMessage("Failed to send message to business", "Error");
@@ -59,33 +52,28 @@ const MessageForm = ({ to, from, type, onClose }) => {
 
   const sendMessageToUser = async () => {
     try {
-      const currentDate = new Date();
-      const response = await fetch("http://localhost:3001/users/addMessage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: reqEmailUser, // Use reqEmailUser instead of to
-          message: {
-            read: uRead,
-            businessEmail: messageEmailUser, // Use changedFrom instead of from
-            date: currentDate.toISOString(),
-            content: formValues.content,
-            status: uStatus,
-            subject: formValues.subject,
-          },
-        }),
-      });
+      const messageData = createMessage(
+        uRead,
+        messageEmailUser,
+        currentDate.toISOString(),
+        formValues.content,
+        uStatus,
+        formValues.subject,
+        false,
+      );
 
-      const data = await response.json();
-      showMessage(data.message, data.type);
-      dispatch(updateMessages(data.messages))
+      const response = await sendMessage(reqEmailUser, messageData, false);
+      showMessage(response.message, response ? "Success" : "Error");
+
+      if (response) {
+        dispatch(updateMessages(response.messages));
+      }
     } catch (error) {
       console.log("Error:", error);
-      showMessage("Failed to send message to user", "Error");
+      showMessage("Failed to send message to business", "Error");
     }
   };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();

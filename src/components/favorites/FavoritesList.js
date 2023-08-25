@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FavoriteItem from "./FavoriteItem";
 import "./favoritesList.css"
 import { useDispatch, useSelector } from "react-redux";
@@ -43,6 +43,7 @@ const FavoritesList = () => {
                 name={ item.business_name }
                 service={ item.businessType }
                 deleteFavItem={ deleteFavoriteHandler }
+                { ...item }
               />
             )) }
           </>)

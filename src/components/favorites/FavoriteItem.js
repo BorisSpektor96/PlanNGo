@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 
 const FavoriteItem = (props) => {
-
+  useEffect(() => {
+    console.log(props)
+  }, [])
   return (
     <li className="d-flex flex-wrap justify-content-between align-items-center border rounded border-secondary m-1 p-2">
 

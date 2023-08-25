@@ -239,13 +239,7 @@ userRouter.post('/addToFavorite', async (req, res) => {
       return res.status(200).json({ message: 'Business is already in favorites.', type: "Info" });
     }
 
-    const favBusiness = {
-      id: business._id.toString(),
-      business_name: business.business_name,
-      email: business.email,
-      businessType: business.business_type
-    }
-    user.favorites.push(favBusiness)
+    user.favorites.push(business)
     await user.save()
     res.json({ user: user.favorites, message: 'Business Added succesfully favorites.', type: "Success" })
   } catch (err) {

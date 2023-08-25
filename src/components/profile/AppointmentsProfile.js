@@ -51,7 +51,7 @@ const AppointmentsProfile = () => {
 
   useEffect(() => {
     if (isBusiness) {
-      let sortedAppointments = [ ...profileInfo.appointmentsDef[ 0 ].appointments ]; // Create a copy of the array
+      let sortedAppointments = [ ...profileInfo.appointmentsDef.appointments ]; // Create a copy of the array
       sortedAppointments.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
@@ -60,7 +60,7 @@ const AppointmentsProfile = () => {
       const filteredAppointments = sortedAppointments.filter(appointment => appointment.type !== 'lock');
       setAppointments(filteredAppointments);
 
-      setAppointmentsDef(profileInfo.appointmentsDef[ 0 ])
+      setAppointmentsDef(profileInfo.appointmentsDef)
     } else {
       let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
       sortedAppointments.sort((a, b) => {

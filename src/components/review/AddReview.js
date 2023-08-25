@@ -10,9 +10,9 @@ const AddReview = (props) => {
 
   const hasReviewed = props.businessDetails.reviews.some(review => review.userEmail === props.profileInfo.email);
 
-  const [anonymous, setAnonymous] = useState(false)
-  const [reviewContent, setReviewContent] = useState("");
-  const [reviewRate, setreviewRate] = useState("");
+  const [ anonymous, setAnonymous ] = useState(false)
+  const [ reviewContent, setReviewContent ] = useState("");
+  const [ reviewRate, setreviewRate ] = useState("");
 
   const anonymousHandler = () => {
     setAnonymous(!anonymous)
@@ -73,16 +73,16 @@ const AddReview = (props) => {
           className="btn-close"
           aria-label="Close"
           dal
-          onClick={props.onClose}
+          onClick={ props.onClose }
         ></button>
       </div>
 
-      <form onSubmit={handleSubmit} className="form-outline">
+      <form onSubmit={ handleSubmit } className="form-outline">
         <p className="d-flex justify-content-center">add a review</p>
         <div className="d-flex flex-column justify-content-center">
           <div className="d-flex p-2 justify-content-between">
             <label>how was your visit?</label>
-            <StarRating onChange={starHandler} />
+            <StarRating onChange={ starHandler } />
           </div>
           <div className="form-check mt-2">
             <input
@@ -91,25 +91,32 @@ const AddReview = (props) => {
               value="anonymous"
               id="anonymous"
               name="anonymous"
-              onClick={anonymousHandler}
+              onClick={ anonymousHandler }
             />
             <label className="form-check-label" htmlFor="anonymous">
               anonymous?
             </label>
           </div>
-          <textarea className="mt-4" name="content" value={reviewContent} onChange={handleReviewContent} />
-          {hasReviewed && (
+          <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } />
+          { hasReviewed && (
             <div className=" p-1 text-center ">
-              <p className="text-danger">You can review this business only once.</p>
-          
-            </div>)}
-            <div className="p-1 d-flex justify-content-center"> 
+              <p
+                style={ {
+                  fontSize: "12px",
+                  padding: "3px",
+                  color: "red",
+                } }
+              >
+                You can review this business only once.
+              </p>
+            </div>) }
+          <div className="p-1 d-flex justify-content-center">
             <input
-                className="btn btn-outline-success "
-                type="submit"
-                value="Post Review"
-                disabled={hasReviewed}
-              /></div>
+              className={ !hasReviewed ? "btn btn-outline-success " : "btn btn-outline-danger " }
+              type="submit"
+              value="Post Review"
+              disabled={ hasReviewed }
+            /></div>
         </div>
       </form>
     </Modal>

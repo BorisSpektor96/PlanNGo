@@ -276,6 +276,7 @@ const AccountProfile = () => {
         if (data.user !== null) {
           showMessage(data.message, data.type)
           setLocalProfileInfo(data.user)
+          dispatch(updateProfileInfo(data.user))
           editImgHandler()
         }
       } else {

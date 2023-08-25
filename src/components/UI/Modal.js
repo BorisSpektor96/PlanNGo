@@ -13,55 +13,19 @@ const ModalOverlay = (props) => {
   );
 };
 
-
 const portalElement = document.getElementById('overLay');
-const portalCalendar = document.getElementById('calendarOverlay');
-const ReviewportalElement = document.getElementById("ReviewOverLay");
-const AddMessagePortalElement = document.getElementById("addMessageOverLay");
-const ChangePassword = document.getElementById("ChangePassword");
 
 const Modal = (props) => {
   return (
     <div>
-      <div>
-        { createPortal(<Backdrop onClose={ props.onClose } />, ChangePassword) }
-        { createPortal(
-          <ModalOverlay>{ props.children }</ModalOverlay>,
-          ChangePassword
-        )
-        }
-      </div>
-      <div>
-        { createPortal(<Backdrop onClose={ props.onClose } />, portalElement) }
-        { createPortal(
-          <ModalOverlay>{ props.children }</ModalOverlay>,
-          portalElement
-        ) }
-      </div>
-      <div>
-        { createPortal(<Backdrop onClose={ () => props.onClose([]) } />, portalCalendar) }
-        { createPortal(
-          <ModalOverlay>{ props.children }</ModalOverlay>,
-          portalCalendar
-        )
-        }
-      </div>
-      <div>
-        { createPortal(<Backdrop onClose={ props.onClose } />, ReviewportalElement) }
-        { createPortal(
-          <ModalOverlay>{ props.children }</ModalOverlay>,
-          ReviewportalElement
-        ) }
-      </div>
-      <div>
-        { createPortal(<Backdrop onClose={ props.onClose } />, AddMessagePortalElement) }
-        { createPortal(
-          <ModalOverlay>{ props.children }</ModalOverlay>,
-          AddMessagePortalElement
-        )
-        }
-      </div>
+      { createPortal(<Backdrop onClose={ props.onClose } />, portalElement) }
+      { createPortal(
+        <ModalOverlay>{ props.children }</ModalOverlay>,
+        portalElement
+      ) }
     </div>
+
+
   );
 };
 

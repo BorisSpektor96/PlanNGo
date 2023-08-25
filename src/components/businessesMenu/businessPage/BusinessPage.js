@@ -17,15 +17,8 @@ const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
   const [ showConfirmation, setShowConfirmation ] = useState(false);
 
-  const [ update, setUpdate ] = useState(0)
-
   const location = useLocation();
   const businessDetails = location.state;
-  const listOfBusinesses = location.state.listOfBusinesses
-
-  useEffect(() => {
-    console.log(listOfBusinesses)
-  }, [ listOfBusinesses ])
 
   const profileInfo = useSelector(state => state.profileInfo)
   const dispatch = useDispatch()
@@ -72,10 +65,10 @@ const BusinessPage = () => {
   }
 
   useEffect(() => {
-    if ("businessHours" in businessDetails.appointmentsDef[ 0 ]) {
+    if (businessDetails.appointmentsDef.businessHours) {
       setWorkingHours({
-        start: businessDetails.appointmentsDef[ 0 ].businessHours.start,
-        end: businessDetails.appointmentsDef[ 0 ].businessHours.end
+        start: businessDetails.appointmentsDef.businessHours.start,
+        end: businessDetails.appointmentsDef.businessHours.end
       })
       setAppointmentDef(businessDetails.appointmentsDef)
     } else {
@@ -271,19 +264,21 @@ const BusinessPage = () => {
 
             { isFavorite ?
               (<button
-                className={ `d-flex btn btn-outline-warning align-items-center ${styles.btn} ${isFavorite ? "active" : ""
+                className={ `d-flex btn btn-outline-warning align-items-center  ${styles.btn} ${isFavorite ? "active" : ""
                   }` }
                 onClick={ deleteBusinessFromFavorites }
               >
+
                 <lord-icon
                   src="https://cdn.lordicon.com/ytuosppc.json"
                   trigger="loop"
                   delay="1200"
                   colors="primary:#c71f16,secondary:#c71f16"
                   stroke="80"
-                  styles="width:350px;height:350px;"
                 >
                 </lord-icon>
+                <p className="m-0 ms-2 text-center">Is Favorite</p>
+
               </button>)
               :
               (<button
@@ -328,7 +323,7 @@ const BusinessPage = () => {
                 state="loop"
                 styles="width:250px;height:250px"
               ></lord-icon>
-              <p className="m-0 ms-2">Schedule appointment</p>
+              <p className="m-0 ms-2">Schedule Appointment</p>
             </button>
           </div>
 
@@ -356,10 +351,7 @@ const BusinessPage = () => {
         />
       }
       <Recommendations
-        update={ update }
-        setUpdate={ setUpdate }
         currentBusiness={ businessDetails.email }
-        listOfBusinesses={ listOfBusinesses }
       />
 
     </div>

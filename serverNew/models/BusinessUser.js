@@ -28,21 +28,20 @@ const businessSchema = new mongoose.Schema(
         description: String,
         name: String,
         quantity: Number,
+        lables: String,
         photo: String
       }
     ],
     profileImg: String,
     reviews: Array,
     securityQuestion: Object,
-    appointmentsDef: [
-      {
-        fixedBreak: Array,
-        fixedDaysOff: Array,
-        OneTimeDayOff: Array,
-        appointments: Array,
-        businessHours: Object
-      }
-    ],
+    appointmentsDef: {
+      fixedBreak: Array,
+      fixedDaysOff: Array,
+      OneTimeDayOff: Array,
+      appointments: Array,
+      businessHours: Object
+    },
     messages: [
       {
         read: Boolean,

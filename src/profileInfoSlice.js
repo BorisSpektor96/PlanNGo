@@ -16,7 +16,7 @@ const initialState = {
   reviews: [],
   favorites: [],
   appointments: [],
-  appointmentsDef: [ {} ],
+  appointmentsDef: {},
   messages: [],
   profileImg: "",
   securityQuestion: {},
@@ -36,12 +36,12 @@ const profileInfoSlice = createSlice({
       state.messages = action.payload;
     },
     updateAppointmentsDef: (state, action) => {
-      state.appointmentsDef[ 0 ] = action.payload;
+      state.appointmentsDef = action.payload;
     },
     updateAppointments: (state, action) => {
       if (state.isBusiness) {
         console.log("dispatch Business")
-        state.appointmentsDef[ 0 ].appointments = action.payload;
+        state.appointmentsDef.appointments = action.payload;
       } else {
         state.appointments = action.payload;
       }
@@ -95,6 +95,6 @@ export const { updateProfileInfo,
   deleteProduct,
   addProduct,
   addService,
-  deleteService
+  deleteService,
 } = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;

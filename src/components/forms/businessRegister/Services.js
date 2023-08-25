@@ -3,11 +3,11 @@ import { Button } from "reactstrap";
 import { Input, Label } from "reactstrap";
 
 const Services = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredPrice, setEnteredPrice] = useState("");
-  const [enteredDuration, setEnteredDuration] = useState(30); // Default duration is set to 30 minutes
-  const [enteredType, setEnteredType] = useState("");
-  const [serviceId, setServiceId] = useState(1);
+  const [ enteredName, setEnteredName ] = useState("");
+  const [ enteredPrice, setEnteredPrice ] = useState("");
+  const [ enteredDuration, setEnteredDuration ] = useState(0.5);
+  const [ enteredType, setEnteredType ] = useState("");
+  const [ serviceId, setServiceId ] = useState(1);
 
   const addServiceHandler = (event) => {
     event.preventDefault();
@@ -16,12 +16,10 @@ const Services = (props) => {
       (input) => input.errorMessage === ""
     );
 
-    // If the form is not valid, log a message and return
     if (!formIsValid) {
       console.log("Form has errors. service not added.");
       return;
     }
-
 
     setServiceId(serviceId + 1);
     props.handleServices(
@@ -31,10 +29,9 @@ const Services = (props) => {
       enteredDuration,
       serviceId
     );
-    // Clear the input fields after adding a service
     setEnteredName("");
     setEnteredPrice("");
-    setEnteredDuration(0.5); // Reset duration to the default (30 minutes)
+    setEnteredDuration(0.5);
     setEnteredType("");
   };
 
@@ -42,7 +39,7 @@ const Services = (props) => {
     return null;
   }
 
-  const durationOptions = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4,4.5,5];
+  const durationOptions = [ 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5 ];
 
   const formInputs = [
     {
@@ -54,6 +51,7 @@ const Services = (props) => {
       errorMessage: enteredName.trim() === "" ? "Please enter Service Name" : "",
       pattern: "^[a-zA-Z0-9 ]+$",
       required: true,
+      type: "text",
     },
     {
       id: "type",
@@ -63,11 +61,13 @@ const Services = (props) => {
       onChange: (event) => setEnteredType(event.target.value),
       errorMessage: enteredType.trim() === "" ? "Please enter Service Type" : "",
       required: true,
+      type: "text",
     },
     {
       id: "price",
       label: "Price",
       placeholder: "Enter Price",
+      type: "number",
       value: enteredPrice,
       onChange: (event) => setEnteredPrice(event.target.value),
       errorMessage:
@@ -80,6 +80,7 @@ const Services = (props) => {
     {
       id: "duration",
       label: "Duration (enter in hours)",
+      type: "number",
       value: enteredDuration,
       onChange: (event) => setEnteredDuration(event.target.value),
       errorMessage: isNaN(enteredDuration) ? "Duration must be a number" : "",
@@ -90,52 +91,52 @@ const Services = (props) => {
     <div>
       <p className="display-6 text-center">Add Your Services</p>
       <form className="form-check p-0">
-        {formInputs.map((input) => (
-          <React.Fragment key={input.id}>
-            {input.id === "duration" ? (
+        { formInputs.map((input) => (
+          <React.Fragment key={ input.id }>
+            { input.id === "duration" ? (
               <div className="form-group">
-                <label htmlFor="duration">{input.label}</label>
+                <label htmlFor="duration">{ input.label }</label>
                 <select
                   id="duration"
                   className="form-control"
-                  value={enteredDuration}
-                  onChange={input.onChange}
-                  required={input.required}
+                  value={ enteredDuration }
+                  onChange={ input.onChange }
+                  required={ input.required }
                 >
-                  {durationOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option} hours
+                  { durationOptions.map((option) => (
+                    <option key={ option } value={ option }>
+                      { option } hours
                     </option>
-                  ))}
+                  )) }
                 </select>
               </div>
             ) : (
-              <div key={input.id}>
-                <Label className="mt-2 mb-0" for={input.id}>
-                  {input.label}
+              <div key={ input.id }>
+                <Label className="mt-2 mb-0" for={ input.id }>
+                  { input.label }
                 </Label>
                 <Input
-                  type="text"
-                  name={input.id}
-                  id={input.id}
-                  placeholder={input.placeholder}
-                  value={input.value}
-                  onChange={input.onChange}
-                  invalid={input.errorMessage && input.errorMessage.length > 0}
+                  type={ input.type }
+                  name={ input.id }
+                  id={ input.id }
+                  placeholder={ input.placeholder }
+                  value={ input.value }
+                  onChange={ input.onChange }
+                  invalid={ input.errorMessage && input.errorMessage.length > 0 }
                 />
-                {input.errorMessage && (
-                  <p style={{ fontSize: "12px", padding: "3px", color: "red" }}>
-                    {input.errorMessage}
+                { input.errorMessage && (
+                  <p style={ { fontSize: "12px", padding: "3px", color: "red" } }>
+                    { input.errorMessage }
                   </p>
-                )}
+                ) }
               </div>
-            )}
+            ) }
           </React.Fragment>
-        ))}
+        )) }
 
         <Button
           className="btn btn-success mt-3"
-          onClick={addServiceHandler}
+          onClick={ addServiceHandler }
           type="submit"
         >
           Add Service
@@ -143,7 +144,7 @@ const Services = (props) => {
 
         <table className="table table-striped table-hover mt-3 mb-3">
           <thead>
-            {props.services.length > 0 && (
+            { props.services.length > 0 && (
               <tr className="table-secondary ">
                 <th className="text-center" scope="col">
                   Service Name
@@ -159,22 +160,22 @@ const Services = (props) => {
                 </th>
                 <th scope="col">Remove</th>
               </tr>
-            )}
+            ) }
           </thead>
           <tbody>
-            {props.services.map((service) => (
-              <tr key={service.id} className="table-secondary">
-                <td className="text-center">{service.name}</td>
-                <td className="text-center">{service.price}</td>
-                <td className="text-center">{service.duration}</td>
-                <td className="text-center">{service.serviceType}</td>
+            { props.services.map((service) => (
+              <tr key={ service.id } className="table-secondary">
+                <td className="text-center">{ service.name }</td>
+                <td className="text-center">{ service.price }</td>
+                <td className="text-center">{ service.duration }</td>
+                <td className="text-center">{ service.serviceType }</td>
                 <td className="text-center">
                   <button
                     className="btn"
                     type="button"
-                    onClick={() => {
+                    onClick={ () => {
                       props.deleteServicesHandler(service.id);
-                    }}
+                    } }
                   >
                     <lord-icon
                       src="https://cdn.lordicon.com/gsqxdxog.json"
@@ -185,7 +186,7 @@ const Services = (props) => {
                   </button>
                 </td>
               </tr>
-            ))}
+            )) }
           </tbody>
         </table>
       </form>
