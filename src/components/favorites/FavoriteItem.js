@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const FavoriteItem = (props) => {
+const FavoriteItem = ({ Business, deleteFavItem }) => {
 
   const pathToBusinessPage = '/BusinessPage';
 
@@ -8,15 +8,15 @@ const FavoriteItem = (props) => {
     <li className="d-flex flex-wrap justify-content-between align-items-center border rounded border-secondary m-1 p-2">
 
       <div className="d-flex justify-content-between align-items-baseline ">
-        <p className="p-1"> { props.business_name }</p>
-        <p className="p-1">{ props.service }</p>
+        <p className="p-1"> { Business.business_name }</p>
+        <p className="p-1">{ Business.service }</p>
       </div>
       <div className="d-flex">
         <div>
           <Link className="btn"
             to={ pathToBusinessPage }
-            id={ props.business_name }
-            state={ props }
+            id={ Business.business_name }
+            state={ Business }
           >
             <lord-icon
               src="https://cdn.lordicon.com/kbtmbyzy.json"
@@ -28,8 +28,8 @@ const FavoriteItem = (props) => {
           </Link>
         </div>
         <div>
-          <button className="btn " value={ props.id } onClick={ () => {
-            props.deleteFavItem(props.email)
+          <button className="btn " value={ Business.id } onClick={ () => {
+            deleteFavItem(Business.email)
           } }>
             <lord-icon
               src="https://cdn.lordicon.com/gclzwloa.json"

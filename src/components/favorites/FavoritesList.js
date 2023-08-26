@@ -35,7 +35,7 @@ const FavoritesList = () => {
               <FavoriteItem
                 key={ Business.id }
                 deleteFavItem={ deleteFavoriteHandler }
-                { ...Business }
+                Business={ Business }
               />
             )) }
           </>)
