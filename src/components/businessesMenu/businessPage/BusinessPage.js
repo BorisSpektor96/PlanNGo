@@ -75,12 +75,13 @@ const BusinessPage = () => {
     } else {
       setWorkingHours({ start: "--:--", end: "--:--" })
     }
-
-    profileInfo.favorites.forEach(fav => {
-      if (fav.email === businessDetails.email) {
-        setIsFavorite(true)
-      }
-    });
+    if (profileInfo.favorites) {
+      profileInfo.favorites.forEach(fav => {
+        if (fav.email === businessDetails.email) {
+          setIsFavorite(true)
+        }
+      })
+    }
   }, [])
 
   const addBusinessToFavoriteReq = async () => {
