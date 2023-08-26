@@ -123,7 +123,7 @@ userRouter.post("/removeAppointment", async (req, res) => {
     user.appointments.splice(appointmentIndex, 1)
     await user.save()
 
-    res.status(200).json({ message: "Appointment removed successfully", type: "Success" });
+    res.status(200).json({ appointments: user.appointments, message: "Appointment removed successfully", type: "Success" });
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: error.message, type: "Error" });
@@ -241,18 +241,18 @@ userRouter.post('/addToFavorite', async (req, res) => {
 
     user.favorites.push(business)
     await user.save()
-    res.json({ user: user.favorites, message: 'Business Added succesfully favorites.', type: "Success" })
+    res.json({ favorites: user.favorites, message: 'Business Added succesfully favorites.', type: "Success" })
   } catch (err) {
     res.json({ message: 'Error Occurred.', type: "Error" })
     res.send("Error " + err)
   }
 })
 
-userRouter.post('/deleteFromFavoriteById', async (req, res) => {
+userRouter.post('/deleteFromFavorite', async (req, res) => {
   try {
-    const { userEmail, favoriteId } = req.body;
+    const { userEmail, businessEmail } = req.body;
     const user = await userModel.findOne({ email: userEmail });
-    const favoriteIndex = user.favorites.findIndex(favorite => favorite.id === favoriteId);
+    const favoriteIndex = user.favorites.findIndex(fav => fav.email === businessEmail);
 
     if (favoriteIndex !== -1) {
       user.favorites.splice(favoriteIndex, 1);

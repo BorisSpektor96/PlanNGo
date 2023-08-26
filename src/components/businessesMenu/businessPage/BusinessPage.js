@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateFavorites } from '../../../profileInfoSlice'
 import CustomAlert from "../../Calendar/CustomAlert ";
 import styles from "./BusinessPage.module.css"
+import { addBusinessToFavorite, deleteBusinessFromFavorites } from '../../favorites/FavoriteService';
 
 const BusinessPage = () => {
   const { showMessage } = useContext(PopupMessageContext)
@@ -82,46 +83,23 @@ const BusinessPage = () => {
     });
   }, [])
 
-  const addBusinessToFavorite = async () => {
+  const addBusinessToFavoriteReq = async () => {
     try {
-      const response = await fetch('http://localhost:3001/users/addToFavorite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: profileInfo.email,
-          businessEmail: businessDetails.email
-        })
-      });
-      const data = await response.json()
-      if (response.ok) {
-        setIsFavorite(true)
-        dispatch(updateFavorites(data.user))
-      } else {
-        showMessage(data.message, data.type)
-      }
+      const data = await addBusinessToFavorite(profileInfo.email, businessDetails.email);
+      setIsFavorite(true);
+      showMessage(data.message, data.type);
+      dispatch(updateFavorites(data.favorites));
     } catch (error) {
       console.log('Error:', error);
     }
   };
 
-  const deleteBusinessFromFavorites = async () => {
-    console.log(businessDetails)
+  const deleteBusinessFromFavoritesReq = async () => {
     try {
-      const response = await fetch('http://localhost:3001/users/deleteFromFavoriteById', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: profileInfo.email,
-          favoriteId: businessDetails.id
-        })
-      });
-      const data = await response.json()
-
-      if (response.ok) {
-        setIsFavorite(false)
-        showMessage(data.message, data.type)
-        dispatch(updateFavorites(data.favorites))
-      }
+      const data = await deleteBusinessFromFavorites(profileInfo.email, businessDetails.email);
+      setIsFavorite(false);
+      showMessage(data.message, data.type);
+      dispatch(updateFavorites(data.favorites));
     } catch (error) {
       console.log('Error:', error);
     }
@@ -266,7 +244,7 @@ const BusinessPage = () => {
               (<button
                 className={ `d-flex btn btn-outline-warning align-items-center  ${styles.btn} ${isFavorite ? "active" : ""
                   }` }
-                onClick={ deleteBusinessFromFavorites }
+                onClick={ deleteBusinessFromFavoritesReq }
               >
 
                 <lord-icon
@@ -284,7 +262,7 @@ const BusinessPage = () => {
               (<button
                 className={ `d-flex btn btn-outline-warning align-items-center ${styles.btn} ${isFavorite ? "active" : ""
                   }` }
-                onClick={ addBusinessToFavorite }
+                onClick={ addBusinessToFavoriteReq }
               >
                 <lord-icon
                   src="https://cdn.lordicon.com/ytuosppc.json"

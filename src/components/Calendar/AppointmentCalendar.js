@@ -141,11 +141,13 @@ const AppointmentCalendar = (props) => {
   };
 
   const isDayDisabled = (date) => {
+
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const isoDayDate = date.toISOString().split('T')[ 0 ]; // Convert to ISO format
-
-    const oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => dateTime);
-
+    const isoDayDate = date.toISOString().split('T')[ 0 ];
+    let oneTimeDates = []
+    if (appointmentsDef.OneTimeDayOff) {
+      oneTimeDates = appointmentsDef.OneTimeDayOff.map(dateTime => dateTime);
+    }
     return (
       appointmentsDef.fixedDaysOff.includes(dayName) ||
       oneTimeDates.includes(dayjs(isoDayDate).add(1, 'day').format('YYYY-MM-DD'))

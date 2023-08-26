@@ -9,8 +9,10 @@ import { Label, Row, Col, Button } from "reactstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointmentsDef, updateAppointments } from '../../profileInfoSlice'
+import { sendMessage, createMessage } from "../messages/sendMessage";
 
 dayjs.extend(customParseFormat);
+
 const AppointmentsProfile = () => {
 
   const dispatch = useDispatch()
@@ -62,6 +64,7 @@ const AppointmentsProfile = () => {
 
       setAppointmentsDef(profileInfo.appointmentsDef)
     } else {
+      console.log(profileInfo)
       let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
       sortedAppointments.sort((a, b) => {
         const dateA = new Date(a.date);
@@ -72,6 +75,47 @@ const AppointmentsProfile = () => {
 
     }
   }, [ profileInfo ])
+
+  const sendCancellationMessages = async (userEmail, businessEmail, appointmentDate, serviceName) => {
+    const currentDate = new Date();
+    const status = "received";
+    const read = false;
+    const subject = `Appointment Cancellation.`;
+    const content = `Appointment at ${appointmentDate.toLocaleDateString()}, ${appointmentDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} 
+     for ${serviceName} for has been canceled.`;
+
+    try {
+      // Send a cancellation message to the user
+      const messageDataToUser = createMessage(
+        read,
+        businessEmail,
+        currentDate.toISOString(),
+        content,
+        status,
+        subject,
+        false
+      );
+      await sendMessage(userEmail, messageDataToUser, false);
+    } catch (error) {
+      console.log("Error sending cancellation message to user:", error);
+    }
+
+    try {
+      // Send a cancellation message to the business
+      const messageDataToBusiness = createMessage(
+        read,
+        userEmail,
+        currentDate.toISOString(),
+        content,
+        status,
+        subject,
+        true
+      );
+      await sendMessage(businessEmail, messageDataToBusiness, true);
+    } catch (error) {
+      console.log("Error sending cancellation message to business:", error);
+    }
+  };
 
   const removeAppointment = async (appointment) => {
 
@@ -92,6 +136,7 @@ const AppointmentsProfile = () => {
 
       const data = await response.json();
       if (response.ok) {
+        await sendCancellationMessages(email, otherEmail, appointment.date, appointment.service.name);
         if (data.appointments !== null) {
           showMessage(data.message, data.type)
           if (isBusiness) {

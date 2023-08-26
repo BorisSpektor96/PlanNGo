@@ -295,7 +295,6 @@ const AccountProfile = () => {
         setImgUrl(reader.result.split(",")[ 1 ])
       };
       reader.readAsDataURL(selectedFile);
-      console.log(imgUrl)
     }
   };
 

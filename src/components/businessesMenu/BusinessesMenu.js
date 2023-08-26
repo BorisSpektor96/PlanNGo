@@ -112,7 +112,6 @@ const BusinessesMenu = () => {
             ) : (
               filteredBusinesses.map((business) => (
                 <BusinessFormat
-                  listOfBusinesses={ listOfBusinesses }
                   key={ business.id }
                   { ...business }
                 />

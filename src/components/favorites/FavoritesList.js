@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateFavorites } from "../../profileInfoSlice";
 import { PopupMessageContext } from './../../PopupMessage';
 
+import { deleteBusinessFromFavorites } from './FavoriteService';
+
 const FavoritesList = () => {
 
   const { showMessage } = useContext(PopupMessageContext)
@@ -12,19 +14,12 @@ const FavoritesList = () => {
   const profileInfo = useSelector(state => state.profileInfo)
   const dispatch = useDispatch()
 
-  const deleteFavoriteHandler = async (favId) => {
+  const deleteFavoriteHandler = async (businessEmail) => {
     try {
-      const response = await fetch('http://localhost:3001/users/deleteFromFavoriteById', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userEmail: profileInfo.email, favoriteId: favId })
-      });
+      const data = await deleteBusinessFromFavorites(profileInfo.email, businessEmail)
 
-      if (response.ok) {
-        const data = await response.json()
-        dispatch(updateFavorites(data.favorites))
-        showMessage(data.message, data.type)
-      }
+      showMessage(data.message, data.type)
+      dispatch(updateFavorites(data.favorites))
     } catch (error) {
       console.log('Error:', error);
     }
@@ -36,14 +31,11 @@ const FavoritesList = () => {
       <ul className="p-3 list-group list-group-flush">
         { profileInfo.favorites && profileInfo.favorites.length > 0 ?
           (<>
-            { profileInfo.favorites.map((item) => (
+            { profileInfo.favorites.map((Business) => (
               <FavoriteItem
-                key={ item.id }
-                id={ item.id }
-                name={ item.business_name }
-                service={ item.businessType }
+                key={ Business.id }
                 deleteFavItem={ deleteFavoriteHandler }
-                { ...item }
+                { ...Business }
               />
             )) }
           </>)
