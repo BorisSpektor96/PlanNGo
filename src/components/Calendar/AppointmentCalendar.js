@@ -171,6 +171,7 @@ const AppointmentCalendar = (props) => {
         photo: product.photo,
       });
     }
+    handleIncrease(product.productId)
     props.setCartList(updatedProducts)
   };
 
