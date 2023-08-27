@@ -21,8 +21,6 @@ const Cart = ({ selectedProducts, onIncrease, onDecrease, deleteProductHandler, 
                   <th style={ { width: "5%" } }>amount </th>
                   <th style={ { width: "20%" } }>action </th>
                   <th style={ { width: "20%" } }>delete </th>
-
-
                 </tr>
               </thead>
               <tbody>

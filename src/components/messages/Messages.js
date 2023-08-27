@@ -3,10 +3,8 @@ import MessageItem from "./MessageItem";
 import { useState, useEffect, useContext } from 'react';
 import MessageForm from './MessageForm'
 import { PopupMessageContext } from "../../PopupMessage";
-// *************** redux ***************
 import { useDispatch, useSelector } from "react-redux";
 import { updateMessages } from "../../profileInfoSlice";
-// *************** redux ***************
 
 const Messages = () => {
 
@@ -32,7 +30,6 @@ const Messages = () => {
 
     const api = type === 'business' ? "http://localhost:3001/business/" : "http://localhost:3001/users/"
 
-    // Function to handle showing the reply form
     const handleShowReply = (email) => {
         setEmailForReply(email);
         setShowReply(true);
@@ -40,9 +37,8 @@ const Messages = () => {
 
     if (!profileInfo || !messagesData) return null;
 
-    // Filter the messages based on the selected statuses
     const filteredMessages = messagesData.filter((message) => {
-        if (showSent && showReceived) return true; // Show all messages if both checkboxes are checked
+        if (showSent && showReceived) return true;
         if (showSent && message.status === "sent") return true;
         if (showReceived && message.status === "received") return true;
         return false;
@@ -165,7 +161,7 @@ const Messages = () => {
                             index={ index }
                             onChangeRead={ onChangeRead }
                             onShowReply={ handleShowReply }
-                            type={ type } // Pass the current user type to the MessageItem component
+                            type={ type }
                             onRemoveMessage={ handleRemoveMessage }
                         />
                     )) }

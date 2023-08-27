@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import FavoriteItem from "./FavoriteItem";
 import "./favoritesList.css"
 import { useDispatch, useSelector } from "react-redux";

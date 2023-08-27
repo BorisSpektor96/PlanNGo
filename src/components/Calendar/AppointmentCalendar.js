@@ -13,6 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
 import { updateMessages } from "../../profileInfoSlice";
 
+import { incrementProductQuantityHandler, decrementProductQuantityHandler } from "./products/productService";
+
 import dayjs from 'dayjs';
 
 const AppointmentCalendar = (props) => {
@@ -175,37 +177,37 @@ const AppointmentCalendar = (props) => {
     props.setCartList(updatedProducts)
   };
 
-  const incrementProductQuantityHandler = async (productId, increment) => {
-    try {
-      const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: props.businessDetails.email,
-          productId: productId,
-          increment: increment
-        })
-      });
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  // const incrementProductQuantityHandler = async (productId, increment) => {
+  //   try {
+  //     const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         email: props.businessDetails.email,
+  //         productId: productId,
+  //         increment: increment
+  //       })
+  //     });
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // };
 
-  const decrementProductQuantityHandler = async (productId, decrement) => {
-    try {
-      const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: props.businessDetails.email,
-          productId: productId,
-          decrement: decrement
-        })
-      });
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  // const decrementProductQuantityHandler = async (productId, decrement) => {
+  //   try {
+  //     const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         email: props.businessDetails.email,
+  //         productId: productId,
+  //         decrement: decrement
+  //       })
+  //     });
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // };
 
   const handleIncrease = async (productId) => {
     props.setCartList((prevProducts) =>
@@ -215,7 +217,7 @@ const AppointmentCalendar = (props) => {
           : product
       )
     )
-    await decrementProductQuantityHandler(productId, 1)
+    await decrementProductQuantityHandler(productId, 1, props.businessDetails.email)
   };
 
   const handleDecrease = async (productId) => {
@@ -228,7 +230,7 @@ const AppointmentCalendar = (props) => {
         )
         .filter((product) => product.amount > 0) // Remove products with amount 0
     );
-    await incrementProductQuantityHandler(productId, 1)
+    await incrementProductQuantityHandler(productId, 1, props.businessDetails.email)
   };
 
   const deleteProductHandler = async (product) => {
@@ -239,6 +241,7 @@ const AppointmentCalendar = (props) => {
       prevProducts.filter((p) => p.productId !== product.productId)
     );
   };
+
   const currentDate = new Date();
   const status = "received";
   const read = false;
@@ -354,10 +357,8 @@ const AppointmentCalendar = (props) => {
         await sendMessageToBusiness();
         showMessage(businessData.message, businessData.type);
         await handleRemoveLockAppointment();
-        props.setCheckOut(true)
         props.onClose();
 
-        // Now, add the appointment to the user
         const userResponse = await fetch(
           "http://localhost:3001/users/addAppointmentToUser",
           {
@@ -393,12 +394,10 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-
   useEffect(() => {
     if (selectedService !== null && selectedDate !== "") {
       const start = new Date();
       const end = new Date();
-
       const currentDate = new Date();
 
       if (
@@ -406,7 +405,6 @@ const AppointmentCalendar = (props) => {
         selectedDate.getMonth() === currentDate.getMonth() &&
         selectedDate.getFullYear() === currentDate.getFullYear()
       ) {
-        // If selectedDate is today, start time is 3 hours from now
         start.setHours(start.getHours() + 3);
         start.setMinutes(0);
       } else {
@@ -444,7 +442,6 @@ const AppointmentCalendar = (props) => {
           filteredList.push(time);
         }
       }
-
       setTimeList(filteredList);
     } else {
       setSelectedDate("");
@@ -523,14 +520,6 @@ const AppointmentCalendar = (props) => {
     props.onStepChange(1);
   };
 
-  const sendSummary = () => {
-    let msg = {
-
-    }
-  }
-
-
-
   return (
     <Modal onClose={ () => props.onClose() }>
       <div class="d-flex flex-row justify-content-end p-1 w-100 ">
@@ -588,7 +577,6 @@ const AppointmentCalendar = (props) => {
         ) }
       </div>
 
-
       <Products
         addProduct={ addProduct }
         businessDetails={ props.businessDetails }
@@ -602,7 +590,6 @@ const AppointmentCalendar = (props) => {
         onDecrease={ handleDecrease }
         deleteProductHandler={ deleteProductHandler }
         currentStep={ props.currentStep }
-
       />
 
       <Summary
@@ -614,7 +601,6 @@ const AppointmentCalendar = (props) => {
         businessDetails={ props.businessDetails }
         currentStep={ props.currentStep }
       />
-
 
       { props.currentStep !== 0 && (
         <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">

@@ -27,14 +27,13 @@ const BusinessPage = () => {
 
   const [ addReviewIsShown, setAddReviewIsShown ] = useState(false);
   const [ calendarIsShown, setCalendarIsShown ] = useState(false);
-  const [ AddMassageIsShown, setAddMassageIsShown ] = useState(false);
+  const [ addMassageIsShown, setAddMassageIsShown ] = useState(false);
 
   const [ workingHours, setWorkingHours ] = useState('')
   const [ appointmentsDef, setAppointmentDef ] = useState({})
   const [ currentStep, setCurrentStep ] = useState(0);
 
   const [ cartList, setCartList ] = useState([])
-  const [ checkOut, setCheckOut ] = useState(false)
 
   let type = "user"
   if (profileInfo.isBusiness) {
@@ -110,47 +109,38 @@ const BusinessPage = () => {
     showCalendarHandler()
   };
 
-  const showAddMessage = () => {
-    setAddMassageIsShown(true)
-  }
-  const hideMessages = () => {
-    setAddMassageIsShown(false)
-  }
   const showCalendarHandler = () => {
     setCalendarIsShown(true)
   }
+
+  const messageFormHandler = () => {
+    setAddMassageIsShown(!addMassageIsShown)
+  }
+
+  const reviewFormHandler = () => {
+    setAddReviewIsShown(!addReviewIsShown);
+  };
+
   const hideCalendarHandler = async () => {
-    if (checkOut) {
-      console.log('appointment submitted and cart')
-      setCartList([])
-    } else {
-      await sendCartListToServer(cartList)
-      console.log('not submitted and delete cart')
-    }
     if (currentStep === 5) {
       setCalendarIsShown(false);
       handleStepChange(0)
-      setShowConfirmation(false); // If the current step is 5, also hide the confirmation
+      setShowConfirmation(false);
     } else {
       setShowConfirmation(true);
-
     }
   };
 
-  const handleAlertConfirm = () => {
+  const handleAlertConfirm = async () => {
     setShowConfirmation(false);
     if (currentStep !== 5) {
-      setCalendarIsShown(false); // Hide the calendar only if current step is 5
+      setCalendarIsShown(false);
     }
+    await sendCartListToServer(cartList)
+    setCartList([])
     handleStepChange(0)
   };
 
-  const showAddReview = () => {
-    setAddReviewIsShown(true);
-  };
-  const hideFormHandler = () => {
-    setAddReviewIsShown(false);
-  };
   const handleStepChange = (step) => {
     setCurrentStep(step);
   };
@@ -180,8 +170,6 @@ const BusinessPage = () => {
           currentStep={ currentStep }
           cartList={ cartList }
           setCartList={ setCartList }
-          checkOut={ checkOut }
-          setCheckOut={ setCheckOut }
         />
       }
 
@@ -208,29 +196,21 @@ const BusinessPage = () => {
             <p className="card-text pt-1 d-flex justify-content-center">{ businessDetails.business_description }</p>
           </div>
 
-
           <div class="hstack gap-1 pt-2  d-flex justify-content-center">
-
             { businessDetails.phoneNumber }
             <div class="vr"></div>
-
             { businessDetails.email }
             <div class="vr"></div>
-
             { businessDetails.address }
             <div class="vr"></div>
-
             { workingHours.start } - { workingHours.end }
-
           </div>
         </div>
 
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
-
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
-
             <button
-              onClick={ showAddReview }
+              onClick={ reviewFormHandler }
               className={ `d-flex btn btn-outline-success align-items-center ${styles.btn}` }            >
               <lord-icon
                 src="https://cdn.lordicon.com/puvaffet.json"
@@ -279,7 +259,7 @@ const BusinessPage = () => {
             }
 
             <button
-              onClick={ showAddMessage }
+              onClick={ messageFormHandler }
               className={ `d-flex btn btn-outline-info align-items-center ${styles.btn}` }            >
               <lord-icon
                 src="https://cdn.lordicon.com/rhvddzym.json"
@@ -313,12 +293,12 @@ const BusinessPage = () => {
         </div>
       </div>
 
-      { AddMassageIsShown && (
+      { addMassageIsShown && (
         <MessageForm
           from={ profileInfo.email }
           to={ businessDetails.email }
           type={ type }
-          onClose={ hideMessages }
+          onClose={ messageFormHandler }
         />
       ) }
 
@@ -326,7 +306,7 @@ const BusinessPage = () => {
         <AddReview
           profileInfo={ profileInfo }
           businessDetails={ businessDetails }
-          onClose={ hideFormHandler }
+          onClose={ reviewFormHandler }
         />
       }
       <Recommendations

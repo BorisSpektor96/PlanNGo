@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import MessageContent from './MessageContent';
 
 const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowReply, type }) => {
     const [ showContent, setShowContent ] = useState(false); // Add useState here
@@ -26,11 +27,8 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
                 <td className="text-center">
                     <button type="button" class={ showContent ? "btn btn-success btn-sm" : "btn btn-outline-success btn-sm" }
                         onClick={ () => setShowContent(!showContent) }>
-                        { showContent ? "Hide " : "Show " }
+                        Show
                     </button>
-                    { showContent && (
-                        <td className=" d-flex justify-content-center p-2"> { data.content } </td>
-                    ) }
                 </td>
 
                 <td className="text-center">
@@ -46,6 +44,10 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
                     </button>
                 </td>
             </tr>
+            {
+                showContent &&
+                <MessageContent message={ data } onClose={ () => setShowContent(!showContent) } />
+            }
         </>
     );
 };

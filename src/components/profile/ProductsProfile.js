@@ -8,6 +8,8 @@ import {
   deleteProduct, addProduct
 } from "../../profileInfoSlice";
 
+import { incrementProductQuantityHandler, decrementProductQuantityHandler } from "../Calendar/products/productService";
+
 const ProductsProfile = () => {
 
   const dispatch = useDispatch()
@@ -110,59 +112,34 @@ const ProductsProfile = () => {
     }
   };
 
-  const incrementProductQuantityHandler = async (productId, increment) => {
-    try {
-      const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: profileInfo.email,
-          productId: productId,
-          increment: increment
-        })
-      });
-      const data = await response.json()
-      if (response.ok) {
-        const updateQuantity = {
-          productId: productId,
-          increment: increment
-        }
-        dispatch(incrementProductQuantity(updateQuantity))
-      } else {
-        showMessage(data.message, data.type)
+  const incrementHandler = async (productId, increment) => {
+    const response = await incrementProductQuantityHandler(productId, increment, profileInfo.email)
+    const data = await response.json()
+    if (response.ok) {
+      const updateQuantity = {
+        productId: productId,
+        increment: increment
       }
-    } catch (error) {
-      console.log('Error:', error);
+      dispatch(incrementProductQuantity(updateQuantity))
+    } else {
+      showMessage(data.message, data.type)
     }
+
   };
 
-  const decrementProductQuantityHandler = async (productId, decrement) => {
-    try {
-      const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: profileInfo.email,
-          productId: productId,
-          decrement: decrement
-        })
-      });
-      const data = await response.json()
-      if (response.ok) {
-        const updateQuantity = {
-          productId: productId,
-          decrement: decrement
-        }
-        dispatch(decrementProductQuantity(updateQuantity))
-      } else {
-        showMessage(data.message, data.type)
+  const decrementHandler = async (productId, decrement) => {
+    const response = await decrementProductQuantityHandler(productId, decrement, profileInfo.email)
+    const data = await response.json()
+    if (response.ok) {
+      const updateQuantity = {
+        productId: productId,
+        decrement: decrement
       }
-    } catch (error) {
-      console.log('Error:', error);
+      dispatch(decrementProductQuantity(updateQuantity))
+    } else {
+      showMessage(data.message, data.type)
     }
   };
-
-
 
   const productsListInputs = [
     {
@@ -346,7 +323,7 @@ const ProductsProfile = () => {
                         <div className='d-flex gap-1'>
                           <button className='btn p-0 m-0'
                             onClick={ () => {
-                              incrementProductQuantityHandler(
+                              incrementHandler(
                                 product.productId, 1
                               )
                             } }
@@ -360,7 +337,7 @@ const ProductsProfile = () => {
                           </button>
                           <button className='btn p-0 m-0'
                             onClick={ () => {
-                              decrementProductQuantityHandler(
+                              decrementHandler(
                                 product.productId, 1
                               )
                             } }

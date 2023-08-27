@@ -74,7 +74,6 @@ const MessageForm = ({ to, from, type, onClose }) => {
     }
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     await sendMessageToBusiness();
