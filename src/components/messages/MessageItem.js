@@ -19,20 +19,20 @@ const MessageItem = ({ id, data, index, onRemoveMessage, onChangeRead, onShowRep
                 <td className="text-center">{ email }</td>
                 <td className="text-center">{ data.subject }</td>
                 <td className="text-center">
-                    <input type="checkbox" class="custom-control-input" id="customSwitches"
+                    <input type="checkbox" className="custom-control-input" id="customSwitches"
                         checked={ data.read }
                         onChange={ () => onChangeRead(id, data.read) }
                     />
                 </td>
                 <td className="text-center">
-                    <button type="button" class={ showContent ? "btn btn-success btn-sm" : "btn btn-outline-success btn-sm" }
+                    <button type="button" className={ showContent ? "btn btn-success btn-sm" : "btn btn-outline-success btn-sm" }
                         onClick={ () => setShowContent(!showContent) }>
                         Show
                     </button>
                 </td>
 
                 <td className="text-center">
-                    <button type="button" class="btn  btn-outline-primary btn-sm"
+                    <button type="button" className="btn  btn-outline-primary btn-sm"
                         onClick={ () => onShowReply(email) } >reply
                     </button>
                 </td>

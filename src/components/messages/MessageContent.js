@@ -17,7 +17,7 @@ const MessageContent = ({ onClose, message }) => {
       </div>
       <div>
         <div>
-          <div >
+          <div>
             <p className="text-center text-muted">
               Message { message.status === "sent" ? "to:  " : "from:  " } { message.businessEmail ? message.businessEmail : message.userEmail }
             </p>

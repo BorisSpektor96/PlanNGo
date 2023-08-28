@@ -74,7 +74,6 @@ const AppointmentCalendar = (props) => {
   }
 
   const handleRemoveLockAppointment = async () => {
-    console.log('delete appointment lock')
     const deleteDate = {
       type: "lock",
       date: new Date(selectedDate),
@@ -494,10 +493,10 @@ const AppointmentCalendar = (props) => {
 
   return (
     <Modal onClose={ () => props.onClose() }>
-      <div class="d-flex flex-row justify-content-end p-1 w-100 ">
+      <div className="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
-          class="btn-close"
+          className="btn-close"
           aria-label="Close"
           onClick={ () => { props.onClose() } }
         ></button>
