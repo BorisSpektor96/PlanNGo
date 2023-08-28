@@ -196,13 +196,13 @@ const BusinessPage = () => {
             <p className="card-text pt-1 d-flex justify-content-center">{ businessDetails.business_description }</p>
           </div>
 
-          <div class="hstack gap-1 pt-2  d-flex justify-content-center">
+          <div className="hstack gap-1 pt-2  d-flex justify-content-center">
             { businessDetails.phoneNumber }
-            <div class="vr"></div>
+            <div className="vr"></div>
             { businessDetails.email }
-            <div class="vr"></div>
+            <div className="vr"></div>
             { businessDetails.address }
-            <div class="vr"></div>
+            <div className="vr"></div>
             { workingHours.start } - { workingHours.end }
           </div>
         </div>

@@ -74,6 +74,7 @@ const AppointmentCalendar = (props) => {
   }
 
   const handleRemoveLockAppointment = async () => {
+    console.log('delete appointment lock')
     const deleteDate = {
       type: "lock",
       date: new Date(selectedDate),
@@ -106,7 +107,10 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-  const handleTimeSelect = (time) => {
+  const handleTimeSelect = async (time) => {
+    if (selectedTime !== null) {
+      await handleRemoveLockAppointment()
+    }
     setSelectedTime(time);
     props.onStepChange(3);
   };
@@ -120,6 +124,9 @@ const AppointmentCalendar = (props) => {
   const handleBack = async () => {
     if (props.currentStep === 1 || props.currentStep === 2 || props.currentStep === 3) {
       props.onStepChange(0);
+      if (selectedTime !== null) {
+        await handleRemoveLockAppointment()
+      }
       setSelectedDate(null);
       setSelectedTime(null);
       setSelectedService(null)
@@ -133,7 +140,7 @@ const AppointmentCalendar = (props) => {
           console.error("Error sending cart list to server:", error);
         }
       }
-      handleRemoveLockAppointment()
+      await handleRemoveLockAppointment()
       setSelectedTime(null);
       props.onStepChange(1);
       props.setCartList([])
@@ -176,38 +183,6 @@ const AppointmentCalendar = (props) => {
     handleIncrease(product.productId)
     props.setCartList(updatedProducts)
   };
-
-  // const incrementProductQuantityHandler = async (productId, increment) => {
-  //   try {
-  //     const response = await fetch('http://localhost:3001/business/incrementProductQuantity', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         email: props.businessDetails.email,
-  //         productId: productId,
-  //         increment: increment
-  //       })
-  //     });
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // };
-
-  // const decrementProductQuantityHandler = async (productId, decrement) => {
-  //   try {
-  //     const response = await fetch('http://localhost:3001/business/decrementProductQuantity', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         email: props.businessDetails.email,
-  //         productId: productId,
-  //         decrement: decrement
-  //       })
-  //     });
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // };
 
   const handleIncrease = async (productId) => {
     props.setCartList((prevProducts) =>
@@ -282,7 +257,6 @@ const AppointmentCalendar = (props) => {
     }
   }
   const sendMessageToUser = async () => {
-
     try {
       const messageData = createMessage(
         read,
@@ -293,9 +267,7 @@ const AppointmentCalendar = (props) => {
         subject,
         false,
       );
-
       const response = await sendMessage(profileInfo.email, messageData, false);
-
       if (response) {
         dispatch(updateMessages(response.messages));
       }
@@ -527,8 +499,7 @@ const AppointmentCalendar = (props) => {
           type="button"
           class="btn-close"
           aria-label="Close"
-          dal
-          onClick={ () => { props.onClose(); handleRemoveLockAppointment() } }
+          onClick={ () => { props.onClose() } }
         ></button>
       </div>
 
@@ -579,9 +550,9 @@ const AppointmentCalendar = (props) => {
 
       <Products
         addProduct={ addProduct }
-        businessDetails={ props.businessDetails }
-        selectedDate={ selectedDate }
+        productList={ props.businessDetails.products }
         currentStep={ props.currentStep }
+        serviceName={ selectedService ? selectedService.name : null }
       />
 
       <Cart

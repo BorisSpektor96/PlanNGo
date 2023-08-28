@@ -33,7 +33,7 @@ const FavoritesList = () => {
           (<>
             { profileInfo.favorites.map((Business) => (
               <FavoriteItem
-                key={ Business.id }
+                key={ String(Business.id) }
                 deleteFavItem={ deleteFavoriteHandler }
                 Business={ Business }
               />

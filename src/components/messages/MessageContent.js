@@ -1,8 +1,8 @@
 import Modal from "../UI/Modal"
-
+import { Input, Label } from "reactstrap";
 const MessageContent = ({ onClose, message }) => {
 
-
+  if (!message) return
 
   return (
     <Modal>
@@ -16,9 +16,30 @@ const MessageContent = ({ onClose, message }) => {
         ></button>
       </div>
       <div>
-        <p>
-          { message.content }
-        </p>
+        <div>
+          <div >
+            <p className="text-center text-muted">
+              Message { message.status === "sent" ? "to:  " : "from:  " } { message.businessEmail ? message.businessEmail : message.userEmail }
+            </p>
+          </div>
+          <Label>Subject</Label>
+          <fieldset disabled>
+            <Input
+              className=" w-100 form-control-sm"
+              placeholder={ message.subject ? message.subject : "" }
+              name="question"
+              type="text"
+            />
+            <div className="mt-2">
+              <Label>Content</Label>
+              <textarea
+                rows="13"
+                placeholder={ message.content }
+                className="form-control-sm form-control"
+              ></textarea>
+            </div>
+          </fieldset>
+        </div>
       </div>
     </Modal>
   )

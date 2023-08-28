@@ -64,7 +64,6 @@ const AppointmentsProfile = () => {
 
       setAppointmentsDef(profileInfo.appointmentsDef)
     } else {
-      console.log(profileInfo)
       let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
       sortedAppointments.sort((a, b) => {
         const dateA = new Date(a.date);
