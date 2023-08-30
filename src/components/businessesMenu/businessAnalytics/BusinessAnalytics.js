@@ -12,7 +12,7 @@ Chart.register(...registerables);
 const BusinessAnalytics = () => {
     const profileInfo = useSelector(state => state.profileInfo)
 
-    const appointments = profileInfo?.appointmentsDef?.[ 0 ]?.appointments;
+    const appointments = profileInfo?.appointmentsDef?.appointments;
     if (!profileInfo || !appointments) return null;
 
     const calculateTotalPaymentByMonth = (appointments) => {

@@ -76,11 +76,10 @@ const BusinessesMenu = () => {
   const handleFilter = () => {
     const filtered = listOfBusinesses.filter((business) => {
       if (business.isBusiness) {
-        const nameMatch = business.business_name?.toLowerCase().includes(filterName.toLowerCase());
-        const serviceMatch = business.services?.some(service => service.serviceType.toLowerCase().includes(filterService.toLowerCase()));
-        const locationMatch =
-          filterLocation === '' || business.address?.toLowerCase().includes(filterLocation.toLowerCase());
-        return nameMatch && serviceMatch && locationMatch;
+        const nameMatch = filterName ? business.business_name?.toLowerCase().includes(filterName.toLowerCase()) : "";
+        const serviceMatch = filterService ? business.services?.some(service => service.name.toLowerCase().includes(filterService.toLowerCase())) : "";
+        const locationMatch = filterLocation ? business.address?.toLowerCase().includes(filterLocation.toLowerCase()) : "";
+        return nameMatch || serviceMatch || locationMatch;
       }
       return false
     });
@@ -111,6 +110,7 @@ const BusinessesMenu = () => {
               <div>No businesses found based on the filter criteria.</div>
             ) : (
               filteredBusinesses.map((business) => (
+
                 <BusinessFormat
                   key={ business.id }
                   { ...business }

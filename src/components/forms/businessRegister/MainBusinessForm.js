@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import {
   Form,
   Button,
@@ -258,14 +258,14 @@ class MainBusinessForm extends Component {
   }
 
 
-  handleServices(serviceType, name, price, duration, id) {
+  handleServices(name, price, duration, id) {
     price = parseFloat(price)
     duration = parseFloat(duration)
 
     this.setState((state) => {
       const services = [
         ...state.services,
-        { serviceType, name, price, duration, id },
+        { name, price, duration, id },
       ];
 
       return {
@@ -350,7 +350,7 @@ class MainBusinessForm extends Component {
     });
   };
 
-  /************************AppointmentsDef************************/
+  /***********************AppointmentsDef***********************/
   handleOpeningStartTimeChange = (value) => {
     this.setState((prevState) => ({
       appointmentsDef: {
@@ -461,7 +461,7 @@ class MainBusinessForm extends Component {
       },
     );
   };
-  /************************AppointmentsDef************************/
+  /***********************AppointmentsDef***********************/
 
   handleSubmit = async (e) => {
     e.preventDefault();

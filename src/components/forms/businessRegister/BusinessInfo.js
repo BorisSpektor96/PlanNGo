@@ -13,7 +13,6 @@ const BusinessInfo = (props) => {
     } else {
       setSelectedImage(props.profileImg)
     }
-    console.log(selectedImage)
   }, [ props.profileImg ])
 
   useEffect(() => {
@@ -32,10 +31,19 @@ const BusinessInfo = (props) => {
   };
 
   const options = [
-    { value: "barber shop", label: "barber shop", name: "businessType" },
-    { value: "nail tech", label: "nail tech", name: "businessType" },
-    { value: "spa", label: "spa", name: "businessType" },
-    { value: "other", label: "other", name: "businessType" },
+    { value: "barber shop", label: "Barber Shop", name: "businessType" },
+    { value: "nail tech", label: "Nail Technician", name: "businessType" },
+    { value: "spa", label: "Spa", name: "businessType" },
+    { value: "hair salon", label: "Hair Salon", name: "businessType" },
+    { value: "makeup artist", label: "Makeup Artist", name: "businessType" },
+    { value: "esthetician", label: "Esthetician", name: "businessType" },
+    { value: "massage therapist", label: "Massage Therapist", name: "businessType" },
+    { value: "tanning salon", label: "Tanning Salon", name: "businessType" },
+    { value: "lash technician", label: "Lash Technician", name: "businessType" },
+    { value: "waxing studio", label: "Waxing Studio", name: "businessType" },
+    { value: "microblading studio", label: "Microblading Studio", name: "businessType" },
+    { value: "skin care clinic", label: "Skin Care Clinic", name: "businessType" },
+    { value: "other", label: "Other", name: "businessType" },
   ];
 
   const inputs = [
@@ -139,13 +147,11 @@ const BusinessInfo = (props) => {
           />
           { props.profileImg && (
             <div className="d-flex justify-content-around">
-              {/* Display selected images */ }
 
               <img
                 alt="not found"
                 width={ "50px" }
                 height={ "50px" }
-                // src={ `data:image/jpeg;base64,${props.profileImg}` }
                 src={ `data:image/jpeg;base64,${selectedImage}` }
               />
               <br />

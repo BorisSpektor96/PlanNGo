@@ -6,9 +6,11 @@ const Services = (props) => {
   const [ enteredName, setEnteredName ] = useState("");
   const [ enteredPrice, setEnteredPrice ] = useState("");
   const [ enteredDuration, setEnteredDuration ] = useState(0.5);
-  const [ enteredType, setEnteredType ] = useState("");
   const [ serviceId, setServiceId ] = useState(1);
 
+  if (props.currentStep !== 3) {
+    return null;
+  }
   const addServiceHandler = (event) => {
     event.preventDefault();
 
@@ -17,13 +19,11 @@ const Services = (props) => {
     );
 
     if (!formIsValid) {
-      console.log("Form has errors. service not added.");
       return;
     }
 
     setServiceId(serviceId + 1);
     props.handleServices(
-      enteredType,
       enteredName,
       enteredPrice,
       enteredDuration,
@@ -32,12 +32,9 @@ const Services = (props) => {
     setEnteredName("");
     setEnteredPrice("");
     setEnteredDuration(0.5);
-    setEnteredType("");
   };
 
-  if (props.currentStep !== 3) {
-    return null;
-  }
+
 
   const durationOptions = [ 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5 ];
 
@@ -50,19 +47,10 @@ const Services = (props) => {
       onChange: (event) => setEnteredName(event.target.value),
       errorMessage: enteredName.trim() === "" ? "Please enter Service Name" : "",
       pattern: "^[a-zA-Z0-9 ]+$",
-      required: true,
+
       type: "text",
     },
-    {
-      id: "type",
-      label: "Service Type",
-      placeholder: "Enter Service Type",
-      value: enteredType,
-      onChange: (event) => setEnteredType(event.target.value),
-      errorMessage: enteredType.trim() === "" ? "Please enter Service Type" : "",
-      required: true,
-      type: "text",
-    },
+
     {
       id: "price",
       label: "Price",
@@ -75,7 +63,7 @@ const Services = (props) => {
           ? "Please enter a valid price"
           : "",
       pattern: "^[0-9]+$",
-      required: true,
+
     },
     {
       id: "duration",
@@ -84,7 +72,6 @@ const Services = (props) => {
       value: enteredDuration,
       onChange: (event) => setEnteredDuration(event.target.value),
       errorMessage: isNaN(enteredDuration) ? "Duration must be a number" : "",
-      required: true,
     },
   ];
   return (
@@ -155,9 +142,7 @@ const Services = (props) => {
                 <th className="text-center" scope="col">
                   Duration
                 </th>
-                <th className="text-center" scope="col">
-                  Type
-                </th>
+
                 <th scope="col">Remove</th>
               </tr>
             ) }
@@ -168,7 +153,6 @@ const Services = (props) => {
                 <td className="text-center">{ service.name }</td>
                 <td className="text-center">{ service.price }</td>
                 <td className="text-center">{ service.duration }</td>
-                <td className="text-center">{ service.serviceType }</td>
                 <td className="text-center">
                   <button
                     className="btn"

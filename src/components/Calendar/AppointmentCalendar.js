@@ -8,7 +8,7 @@ import Summary from "./Summary";
 import { PopupMessageContext } from "../../PopupMessage";
 import Cart from "./cart/Cart";
 import { sendMessage, createMessage } from '../messages/sendMessage'; // Import the sendMessage function
-
+import ButtonSection from "./ButtonSection"
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";
 import { updateMessages } from "../../profileInfoSlice";
@@ -106,10 +106,7 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-  const handleTimeSelect = async (time) => {
-    if (selectedTime !== null) {
-      await handleRemoveLockAppointment()
-    }
+  const handleTimeSelect = (time) => {
     setSelectedTime(time);
     props.onStepChange(3);
   };
@@ -123,9 +120,6 @@ const AppointmentCalendar = (props) => {
   const handleBack = async () => {
     if (props.currentStep === 1 || props.currentStep === 2 || props.currentStep === 3) {
       props.onStepChange(0);
-      if (selectedTime !== null) {
-        await handleRemoveLockAppointment()
-      }
       setSelectedDate(null);
       setSelectedTime(null);
       setSelectedService(null)
@@ -139,7 +133,7 @@ const AppointmentCalendar = (props) => {
           console.error("Error sending cart list to server:", error);
         }
       }
-      await handleRemoveLockAppointment()
+      handleRemoveLockAppointment()
       setSelectedTime(null);
       props.onStepChange(1);
       props.setCartList([])
@@ -183,6 +177,8 @@ const AppointmentCalendar = (props) => {
     props.setCartList(updatedProducts)
   };
 
+
+
   const handleIncrease = async (productId) => {
     props.setCartList((prevProducts) =>
       prevProducts.map((product) =>
@@ -221,18 +217,14 @@ const AppointmentCalendar = (props) => {
   const read = false;
   let subject = ""
   let content = ""
+
   if (props.currentStep > 4) {
-    subject = `New appointment at: ${selectedDate?.toLocaleDateString()}`;
+    subject = `New appointment at: ${selectedDate.toLocaleDateString()}`;
     content = `Appointment Summary:\n\n`;
     content += `Date: ${selectedDate.toLocaleDateString()}\n`;
     content += `Time: ${selectedTime}\n`;
     content += `Service: ${selectedService.name}\n`;
-    content += `Total: ${props.cartList.reduce((total, product) => total + product.price * product.amount, 0) + selectedService.price}$`
-    content += `User Name: ${profileInfo.fullname}\n`;
-    content += `User Email: ${profileInfo.email}\n`;
-    content += `User Phone Number: ${profileInfo.phoneNumber}\n`;
-    content += `Business: ${props.businessDetails.business_name}\n`;
-    content += `Business Email: ${props.businessDetails.email}\n`;
+    content += `Total: ${props.cartList.reduce((total, product) => total + product.price * product.amount, 0) + selectedService.price}$\n`
     content += `Business Phone: ${props.businessDetails.phoneNumber}\n`;
     content += `Business Address: ${props.businessDetails.address}\n\n`;
   }
@@ -256,6 +248,7 @@ const AppointmentCalendar = (props) => {
     }
   }
   const sendMessageToUser = async () => {
+
     try {
       const messageData = createMessage(
         read,
@@ -266,7 +259,9 @@ const AppointmentCalendar = (props) => {
         subject,
         false,
       );
+
       const response = await sendMessage(profileInfo.email, messageData, false);
+
       if (response) {
         dispatch(updateMessages(response.messages));
       }
@@ -493,12 +488,13 @@ const AppointmentCalendar = (props) => {
 
   return (
     <Modal onClose={ () => props.onClose() }>
-      <div className="d-flex flex-row justify-content-end p-1 w-100 ">
+      <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
-          className="btn-close"
+          class="btn-close"
           aria-label="Close"
-          onClick={ () => { props.onClose() } }
+          dal
+          onClick={ () => { props.onClose(); handleRemoveLockAppointment() } }
         ></button>
       </div>
 
@@ -572,38 +568,12 @@ const AppointmentCalendar = (props) => {
         currentStep={ props.currentStep }
       />
 
-      { props.currentStep !== 0 && (
-        <div className="d-flex flex-wrap justify-content-center gap-1 pt-1">
-          <button
-            className={
-              props.currentStep < 1 ? "btn btn-primary disabled" : "btn btn-primary"
-            }
-            onClick={ () => handleBack() }
-          >
-            back
-          </button>
-          <button
-            className={
-              props.currentStep < 5 ? "btn btn-primary disabled" : "btn btn-primary"
-            }
-            onClick={ () => scheduleHandler() }
-          >
-            Schedule
-          </button>
-          <button
-            className={
-              props.currentStep < 3 || props.currentStep > 4
-                ? "btn btn-primary disabled"
-                : "btn btn-primary"
-            }
-            onClick={ () => {
-              props.onStepChange(props.currentStep + 1);
-            } }
-          >
-            continue
-          </button>
-        </div>
-      ) }
+      <ButtonSection
+        currentStep={ props.currentStep }
+        onBackClick={ () => handleBack() }
+        onScheduleClick={ () => scheduleHandler() }
+        onContinueClick={ () => props.onStepChange(props.currentStep + 1) }
+      />
     </Modal>
   );
 };

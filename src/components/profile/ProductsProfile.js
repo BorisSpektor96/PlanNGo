@@ -13,15 +13,9 @@ import { incrementProductQuantityHandler, decrementProductQuantityHandler } from
 const ProductsProfile = () => {
 
   const dispatch = useDispatch()
-
   const { showMessage } = useContext(PopupMessageContext)
-
   const [ editProductsMode, setEditProductsMode ] = useState(false)
-
   const profileInfo = useSelector(state => state.profileInfo)
-
-  const [ products, setProducts ] = useState([]);
-
   const [ product, setProduct ] = useState({
     productId: 0,
     name: "",
@@ -124,7 +118,6 @@ const ProductsProfile = () => {
     } else {
       showMessage(data.message, data.type)
     }
-
   };
 
   const decrementHandler = async (productId, decrement) => {
@@ -267,7 +260,7 @@ const ProductsProfile = () => {
           </div>
           <table className="table table-striped table-hover">
             <thead>
-              { products.length > 0
+              { profileInfo.products.length > 0
                 &&
                 <tr className="table-secondary">
                   <th className="text-center" scope="col">
@@ -295,10 +288,10 @@ const ProductsProfile = () => {
               }
             </thead>
             <tbody>
-              { products.length > 0
+              { profileInfo.products.length > 0
                 ?
                 (
-                  products.map((product) => (
+                  profileInfo.products.map((product) => (
                     <tr tr key={ product.productId } className="table-secondary" >
 
                       <td className="text-center">

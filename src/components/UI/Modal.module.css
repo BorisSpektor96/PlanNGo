@@ -5,9 +5,9 @@
   width: 100%;
   height: 100vh;
   z-index: 20;
-  background: rgb(2,0,36);
-  background: linear-gradient(128deg, rgba(2,0,36,1) 3%, rgba(9,9,121,1) 47%, rgba(0,212,255,1) 100%);
-        animation: pop-up 500ms ease-in-out forwards;
+  opacity: 0.5;
+  background: linear-gradient(180deg, rgba(2,0,36,.9) 25%, rgba(14, 17, 100, 0.9) 50%, rgb(11, 94, 110) 100%);
+  animation: pop-up 500ms ease-in-out forwards;
 }
 
 .modal {

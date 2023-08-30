@@ -14,7 +14,7 @@ const PieChart = ({ id, business }) => {
       productsMap.set(name, { initialQuantity: Number(quantity), sold: 0 });
     });
 
-    business.appointmentsDef[ 0 ].appointments.forEach((appointment) => {
+    business.appointmentsDef.appointments.forEach((appointment) => {
       if (appointment.purchase) {
         appointment.purchase.forEach((purchase) => {
           const { name, amount } = purchase;

@@ -7,6 +7,7 @@ const SearchBar = ({
   setFilterLocation,
   handleFilter,
 }) => {
+
   const handleFilterClick = () => {
     handleFilter();
   };
@@ -38,16 +39,14 @@ const SearchBar = ({
       </div>
 
       <div className="p-2">
-        <select
-          className="custom-select font-weight-lighter form-contro btn btn-dark"
+        <input
+          type="text"
+          className="form-control border-primary"
+          id="inlineFormInputLocation"
+          placeholder="City"
           value={ filterLocation }
           onChange={ (e) => setFilterLocation(e.target.value) }
-        >
-          <option value="">Choose Location</option>
-          <option value="Jerusalem">Jerusalem</option>
-          <option value="Tel Aviv">Tel Aviv</option>
-          <option value="Haifa">Haifa</option>
-        </select>
+        />
       </div>
 
       <div className="d-flex justify-content-center p-2">
