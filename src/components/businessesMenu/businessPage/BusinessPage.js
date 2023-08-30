@@ -132,13 +132,13 @@ const BusinessPage = () => {
   };
 
   const handleAlertConfirm = async () => {
-    setShowConfirmation(false);
     if (currentStep !== 5) {
       setCalendarIsShown(false);
     }
+    handleStepChange(0)
+    setShowConfirmation(false);
     await sendCartListToServer(cartList)
     setCartList([])
-    handleStepChange(0)
   };
 
   const handleStepChange = (step) => {

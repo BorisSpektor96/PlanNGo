@@ -106,7 +106,10 @@ const AppointmentCalendar = (props) => {
     }
   };
 
-  const handleTimeSelect = (time) => {
+  const handleTimeSelect = async (time) => {
+    if (selectedTime !== null) {
+      await handleRemoveLockAppointment()
+    }
     setSelectedTime(time);
     props.onStepChange(3);
   };
@@ -143,7 +146,6 @@ const AppointmentCalendar = (props) => {
   };
 
   const isDayDisabled = (date) => {
-
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
     const isoDayDate = date.toISOString().split('T')[ 0 ];
     let oneTimeDates = []
@@ -176,8 +178,6 @@ const AppointmentCalendar = (props) => {
     handleIncrease(product.productId)
     props.setCartList(updatedProducts)
   };
-
-
 
   const handleIncrease = async (productId) => {
     props.setCartList((prevProducts) =>
@@ -494,7 +494,7 @@ const AppointmentCalendar = (props) => {
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={ () => { props.onClose(); handleRemoveLockAppointment() } }
+          onClick={ () => props.onClose() }
         ></button>
       </div>
 
