@@ -13,12 +13,13 @@ const Review = (props) => {
     const averageRating = sumRatings / totalReviews;
     return averageRating.toFixed(1); // Return average rating rounded to 2 decimal places
   }
+  const reversedReviews = [ ...props.reviews ].reverse();
   const averageRating = calculateAverageRating(props.reviews);
 
   return (
     <Fragment>
       <p>The average is  { averageRating } stars.</p>
-      { props.reviews.map((review, index) => (
+      { reversedReviews.map((review, index) => (
         <div className="container rounded mb-1" key={ index }>
 
           <div className="Rname">{ review.reviewer }</div>

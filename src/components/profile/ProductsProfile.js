@@ -17,13 +17,13 @@ const ProductsProfile = () => {
   const [ editProductsMode, setEditProductsMode ] = useState(false)
   const profileInfo = useSelector(state => state.profileInfo)
   const [ product, setProduct ] = useState({
-    productId: 0,
     name: "",
     quantity: 0,
     price: 0,
     description: "",
     photo: "",
   })
+  const [ seeFullId, setSeeFullId ] = useState(false)
 
   const editProductsModeHandler = () => {
     setEditProductsMode(!editProductsMode)
@@ -53,17 +53,8 @@ const ProductsProfile = () => {
 
   const submitProductForm = async (e) => {
     e.preventDefault()
-    const newProductId = profileInfo.products.reduce(
-      (maxId, product) => Math.max(maxId, product.productId),
-      0
-    ) + 1;
 
-    const newProduct = {
-      ...product,
-      productId: newProductId,
-    };
-    console.log(newProduct)
-    await addProductHandler(newProduct)
+    await addProductHandler(product)
   }
 
   const addProductHandler = async (product) => {
@@ -78,7 +69,7 @@ const ProductsProfile = () => {
 
       if (response.ok) {
         showMessage(data.message, data.type)
-        dispatch(addProduct(product))
+        dispatch(addProduct(data.products))
       } else {
         showMessage(data.message, data.type)
       }
@@ -105,7 +96,7 @@ const ProductsProfile = () => {
       console.log('Error:', error);
     }
   };
-
+  console.log(profileInfo.products)
   const incrementHandler = async (productId, increment) => {
     const response = await incrementProductQuantityHandler(productId, increment, profileInfo.email)
     const data = await response.json()
@@ -292,11 +283,25 @@ const ProductsProfile = () => {
                 ?
                 (
                   profileInfo.products.map((product) => (
-                    <tr tr key={ product.productId } className="table-secondary" >
-
+                    <tr key={ product.id } className="table-secondary" >
                       <td className="text-center">
                         <div>
-                          { product.productId }
+                          <p>
+                            { seeFullId ?
+                              product._id
+                              :
+                              product._id.slice(0, 5) + '...'
+                            }
+                          </p>
+                          <button
+                            onClick={ () => setSeeFullId(!seeFullId) }
+                            className="btn btn-success btn-sm">
+                            { seeFullId ?
+                              'See Less...'
+                              :
+                              'See More...'
+                            }
+                          </button>
                         </div>
                       </td>
                       <td className="text-center">
@@ -350,7 +355,7 @@ const ProductsProfile = () => {
                         <td className="text-center">
                           <button className="btn p-0 m-0"
                             onClick={ () => {
-                              deleteProductHandler(product.productId);
+                              deleteProductHandler(product._id);
                             } }
                           >
                             <lord-icon

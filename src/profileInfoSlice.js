@@ -56,20 +56,22 @@ const profileInfoSlice = createSlice({
     decrementProductQuantity: (state, action) => {
       for (let product of state.products) {
         if (product.productId === action.payload.productId) {
-          product.quantity -= action.payload.decrement
+          if (product.quantity > 0) {
+            product.quantity -= action.payload.decrement
+          }
         }
       }
     },
     deleteProduct: (state, action) => {
       const productIndex = state.products.findIndex(
-        product => product.productId === action.payload
+        product => product.id === action.payload
       )
       if (productIndex !== -1) {
         state.products.splice(productIndex, 1)
       }
     },
     addProduct: (state, action) => {
-      state.products = [ ...state.products, action.payload ]
+      state.products = action.payload
     },
     addService: (state, action) => {
       state.services = [ ...state.services, action.payload ]

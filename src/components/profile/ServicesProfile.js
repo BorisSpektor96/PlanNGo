@@ -18,11 +18,9 @@ const ServicesProfile = () => {
   const [ services, setServices ] = useState([]);
 
   const [ service, setService ] = useState({
-    serviceId: 0,
     name: "",
     price: 0,
     duration: 0,
-    type: "",
   })
 
   const editServicesModeHandler = () => {
@@ -123,15 +121,6 @@ const ServicesProfile = () => {
       required: true,
       errorMessage: "Must Be Duration to Service of 0.25 steps",
       step: "0.25"
-    },
-    {
-      id: "type",
-      name: "type",
-      type: "text",
-      label: "type",
-      placeholder: "Enter Service type: ",
-      required: true,
-      errorMessage: "Must Be type to the Service",
     }
   ]
 
@@ -218,9 +207,6 @@ const ServicesProfile = () => {
                   <th className="text-center  " scope="col">
                     Service Name
                   </th>
-                  <th className="text-center  " scope="col">
-                    Service Type
-                  </th>
                   <th className="text-center" scope="col">
                     Price
                   </th>
@@ -244,7 +230,6 @@ const ServicesProfile = () => {
                     <tr key={ service._id } className="table-secondary">
 
                       <td className="text-center">{ service.name }</td>
-                      <td className="text-center">{ service.type }</td>
                       <td className="text-center">{ service.price }$</td>
                       <td className="text-center">{ service.duration } (hour/s)</td>
 

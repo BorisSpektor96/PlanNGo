@@ -134,7 +134,6 @@ userBusinessRouter.post("/incrementProductQuantityArray", async (req, res) => {
 
     if (!user || !user.products) {
       return res.status(404)
-      // return res.status(404).json();
     }
 
     productsArray.forEach((product) => {
@@ -164,7 +163,9 @@ userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
     const productIndex = user.products.findIndex(product => product.productId === productId);
 
     const product = user.products[ productIndex ]
-    product.quantity -= decrement
+    if (product.quantity > 0) {
+      product.quantity -= decrement
+    }
     await user.save()
 
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
@@ -320,7 +321,7 @@ userBusinessRouter.post('/addProduct', async (req, res) => {
     user.products.push(product);
 
     await user.save();
-    res.status(200).json({ message: 'Product added successfully', type: "Success" });
+    res.status(200).json({ products: user.products, message: 'Product added successfully', type: "Success" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to add Product', error: error, type: "Error" });
   }
@@ -328,19 +329,20 @@ userBusinessRouter.post('/addProduct', async (req, res) => {
 
 userBusinessRouter.post('/deleteProduct', async (req, res) => {
   const { email, productId } = req.body;
+  console.log(productId)
   try {
     const user = await userBusinessModel.findOne({ email: email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const productIndex = user.products.findIndex(product => product.productId == productId);
+    const productIndex = user.products.findIndex(product => product.id === productId);
     if (productIndex === -1) {
       return res.status(404).json({ message: 'Product not found', type: "Error" });
     }
     user.products.splice(productIndex, 1);
 
     await user.save();
-    res.status(200).json({ message: 'Product deleted successfully', type: "Info" });
+    res.status(200).json({ products: user.products, message: 'Product deleted successfully', type: "Info" });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete Product', error: error, type: "Error" });
   }
@@ -359,10 +361,10 @@ userBusinessRouter.post("/addMessage", async (req, res) => {
       return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
 
-    res.status(200).json({ messages: user.messages, message: "message added successfully", type: "Success" });
+    res.status(200).json({ messages: user.messages, message: "message sent successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Failed to add message", error });
+    res.status(500).json({ message: "Failed to sent message", error });
   }
 });
 

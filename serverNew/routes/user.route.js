@@ -16,10 +16,10 @@ userRouter.post("/addMessage", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
-    res.status(200).json({ messages: user.messages, message: "message added successfully", type: "Success" });
+    res.status(200).json({ messages: user.messages, message: "message sent successfully", type: "Success" });
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Failed to add message", error });
+    res.status(500).json({ message: "Failed to sent message", error });
   }
 });
 
