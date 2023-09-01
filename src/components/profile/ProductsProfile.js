@@ -96,7 +96,7 @@ const ProductsProfile = () => {
       console.log('Error:', error);
     }
   };
-  console.log(profileInfo.products)
+
   const incrementHandler = async (productId, increment) => {
     const response = await incrementProductQuantityHandler(productId, increment, profileInfo.email)
     const data = await response.json()

@@ -104,7 +104,7 @@ const Login = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          onClick={ props.onClose }
+          onClick={ props.handleAlertConfirm }
         ></button>
       </div>
 

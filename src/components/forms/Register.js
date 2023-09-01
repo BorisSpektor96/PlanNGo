@@ -184,12 +184,13 @@ const Register = (props) => {
 
   return (
     <Modal>
+
       <div className="d-flex flex-row justify-content-end p-1 w-100 p-0 ">
         <button
           type="button"
           className="btn-close"
           aria-label="Close"
-          onClick={ props.onClose }
+          onClick={ props.handleAlertConfirm }
         ></button>
       </div>
 
@@ -223,7 +224,6 @@ const Register = (props) => {
         <Select
           name="security question"
           options={ securityQuestions }
-          //value={formValues.securityQuestion.question}
           onChange={ onChangeSecurityQuestion }
           autoFocus={ true }
           className="custom-select text-center form-control form-select-sm"

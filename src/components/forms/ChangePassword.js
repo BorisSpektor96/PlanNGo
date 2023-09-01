@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Modal from "../UI/Modal"
 import FormInput from "./FormInput";
+import { PopupMessageContext } from '../../PopupMessage'
+
 const ChangePassword = (props) => {
     const [ timer, setTimer ] = useState(null);
     const [ user, setuser ] = useState(props.profileInfo ? props.profileInfo : null);
     const [ errors, setErrors ] = useState({});
+    const { showMessage } = useContext(PopupMessageContext);
 
     const [ formValues, setFormValues ] = useState({
         securityQuestion: props.bType !== "forgotPasswordLogin" ? user.securityQuestion.question : null,
@@ -28,11 +31,6 @@ const ChangePassword = (props) => {
             clearTimeout(timer);
         };
     }, [ timer ]);
-
-    useEffect(() => {
-
-        console.log("email: " + formValues.email);
-    }, [ formValues.email ]);
 
     const handleEmailChange = (e) => {
         const { name, value } = e.target;
@@ -62,7 +60,6 @@ const ChangePassword = (props) => {
         // Set the timer reference
         setTimer(emailTimer);
     };
-    const handleEmailChangeDebounced = debounce(handleEmailChange, 1000);
 
     const checkEmailAndSetSecurityQuestion = async (email) => {
         if (email !== null && email !== "") {
@@ -139,20 +136,14 @@ const ChangePassword = (props) => {
 
             if (response.ok) {
                 const data = await response.json();
+                showMessage(data.message, data.type)
                 if (data.success) {
-                    // Password updated successfully
-                    console.log('Password updated successfully');
                     props.onClose()
-                } else {
-                    // User not found
-                    console.log('User not found');
                 }
             } else {
-                // Handle non-OK response
                 console.error('Password update failed:', response.status);
             }
         } catch (error) {
-            // Handle network or other errors
             console.error('Password update failed:', error);
         }
 

@@ -579,7 +579,7 @@ class MainBusinessForm extends Component {
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={ this.props.onClose }
+              onClick={ this.props.handleAlertConfirm }
             ></button>
           </div>
           <Card>

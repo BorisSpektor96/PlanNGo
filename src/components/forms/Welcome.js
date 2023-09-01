@@ -3,6 +3,7 @@ import Login from "./Login";
 import Register from "./Register";
 import styles from "./Welcome.module.css";
 import MainBusinessForm from "./businessRegister/MainBusinessForm";
+import CustomAlert from "../Calendar/CustomAlert ";
 
 import { AuthContext } from '../../AuthContext';
 import { useEffect } from "react";
@@ -17,6 +18,7 @@ const Welcome = () => {
   const [ loginIsShown, setLoginIsShown ] = useState(false);
   const [ RegisterIsShown, setRegisterIsShown ] = useState(false);
   const [ BusinessRegisterIsShown, setBusinessRegisterIsShown ] = useState(false);
+  const [ showConfirmation, setShowConfirmation ] = useState(false);
 
   const showLoginHandler = () => {
     setLoginIsShown(true);
@@ -30,6 +32,7 @@ const Welcome = () => {
   };
 
   const hideFormHandler = () => {
+    console.log('asdada')
     setRegisterIsShown(false);
     setLoginIsShown(false);
     setBusinessRegisterIsShown(false);
@@ -41,13 +44,39 @@ const Welcome = () => {
     }
   }, [ isLoggedIn ])
 
+  const handleAlertConfirm = () => {
+    setShowConfirmation(false);
+  };
+  useEffect(() => {
+    if (!showConfirmation) {
+      setLoginIsShown(false)
+      setRegisterIsShown(false)
+      setBusinessRegisterIsShown(false)
+    }
+  }, [ showConfirmation ])
+
+  useEffect(() => {
+    console.log(showConfirmation)
+  }, [ showConfirmation ])
+
   return (
     <Fragment>
+
+      { showConfirmation && (
+        <CustomAlert
+          isOpen={ showConfirmation }
+          toggle={ () => setShowConfirmation(false) }
+          message="Are you sure you want to close? Any unsaved changes will be lost."
+          onConfirm={ handleAlertConfirm }
+        />
+      ) }
+
       {
         loginIsShown &&
         <Login
           onClose={ hideFormHandler }
           hideForm={ hideFormHandler }
+          handleAlertConfirm={ handleAlertConfirm }
         />
       }
       {
@@ -55,6 +84,7 @@ const Welcome = () => {
         <Register
           onClose={ hideFormHandler }
           hideForm={ hideFormHandler }
+          handleAlertConfirm={ handleAlertConfirm }
         />
       }
       {
@@ -62,6 +92,7 @@ const Welcome = () => {
         <MainBusinessForm
           onClose={ hideFormHandler }
           hideForm={ hideFormHandler }
+          handleAlertConfirm={ handleAlertConfirm }
         />
       }
       { isLoggedIn ?
