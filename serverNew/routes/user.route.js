@@ -303,20 +303,17 @@ userRouter.post("/checkEmail", async (req, res) => {
 userRouter.post('/updatePassword', async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Find the user by email
     const user = await userModel.findOne({ email: email });
 
     if (user) {
-      // Update the user's password
       user.password = password;
       await user.save();
 
-      res.json({ success: true, message: 'Password updated successfully' });
+      res.json({ success: true, message: 'Password updated successfully', type: 'Info' });
     } else {
-      res.json({ success: false, message: 'User not found' });
+      res.json({ success: false, message: 'User not found', type: 'Error' });
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
