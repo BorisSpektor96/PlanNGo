@@ -10,8 +10,8 @@ const Register = (props) => {
 
   const { showMessage } = useContext(PopupMessageContext)
 
-  const [ previewUrl, setPreviewUrl ] = useState("");
-  const [ formValues, setformValues ] = useState({
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [formValues, setformValues] = useState({
     fullname: "",
     email: "",
     password: "",
@@ -64,7 +64,6 @@ const Register = (props) => {
       },
     });
   };
-
   const DBreq = async (e) => {
     try {
       const requestBody = {
@@ -75,7 +74,7 @@ const Register = (props) => {
         userType: formValues.userType,
         isBusiness: formValues.isBusiness,
         profileImg: formValues.profileImg,
-        securityQuestion: formValues.securityQuestion
+        securityQuestion: formValues.securityQuestion,
       };
 
       const response = await fetch("http://localhost:3001/users/signup", {
@@ -86,19 +85,16 @@ const Register = (props) => {
         body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) {
-        console.log(response)
-        throw new Error("Something went wrong!");
-      }
-
       const data = await response.json();
-      showMessage(data.message, data.type)
-      props.hideForm()
-
+      showMessage(data.message, data.type);
+      if (data.ok) {
+        props.onClose();
+      }
     } catch (error) {
       showMessage('No Connection To Server, Try Again Later', 'Error')
     }
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     await DBreq();
@@ -110,10 +106,8 @@ const Register = (props) => {
       name: "fullname",
       type: "text",
       placeholder: "full name",
-      errorMessage:
-        "fullname should be 3-16 characters and shouldn't include any special character!",
+      errorMessage: "fullname shouldn't include any special character!",
       label: "Fullname",
-      pattern: "^[A-Za-z0-9]{3,16}$",
       required: true,
     },
     {
@@ -158,23 +152,22 @@ const Register = (props) => {
       pattern: "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
       required: true,
     },
-
   ];
 
 
 
   const onChange = (e) => {
-    setformValues({ ...formValues, [ e.target.name ]: e.target.value });
+    setformValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
   const onFileChange = (e) => {
-    const selectedFile = e.target.files[ 0 ];
+    const selectedFile = e.target.files[0];
     if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setformValues({
           ...formValues,
-          profileImg: reader.result.split(",")[ 1 ], // Save the base64 string
+          profileImg: reader.result.split(",")[1], // Save the base64 string
         });
         setPreviewUrl(reader.result);
       };
@@ -190,57 +183,57 @@ const Register = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          onClick={ props.handleAlertConfirm }
+          onClick={props.showConfirmation}
         ></button>
       </div>
 
       <p className="text-center display-6">Register</p>
-      <form className=" p-1" onSubmit={ submitHandler }>
+      <form className=" p-1" onSubmit={submitHandler}>
         <div className="d-flex justify-content-center">
           <div className="card mb-4">
             <div className="card-header">Profile Picture</div>
             <div className="card-body text-center">
               <img
                 className="w-50 img-fluid mb-4"
-                src={ previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png" }
+                src={previewUrl || "http://bootdey.com/img/Content/avatar/avatar1.png"}
                 alt=""
               />
 
               <div className="d-flex flex-wrap form-group">
-                <input title="a" type="file" name="profileImg" onChange={ onFileChange } />
+                <input title="a" type="file" name="profileImg" onChange={onFileChange} />
               </div>
             </div>
           </div>
         </div>
-        { inputs.map((input) => (
+        {inputs.map((input) => (
           <FormInput
-            key={ input.id }
-            { ...input }
-            value={ formValues[ input.name ] }
-            onChange={ onChange }
+            key={input.id}
+            {...input}
+            value={formValues[input.name]}
+            onChange={onChange}
           />
-        )) }
+        ))}
         <Label for="security question" >Security question</Label>
         <Select
           name="security question"
-          options={ securityQuestions }
-          onChange={ onChangeSecurityQuestion }
-          autoFocus={ true }
+          options={securityQuestions}
+          onChange={onChangeSecurityQuestion}
+          autoFocus={true}
           className="custom-select text-center form-control form-select-sm"
           placeholder="choose a security question"
-          required={ true }
+          required={true}
 
         />
 
         <FormInput
-          key={ 6 }
+          key={6}
           name="securityAnswer"
           type="text"
           placeholder="Your answer"
           label="Security answer"
-          required={ true }
-          value={ formValues.securityQuestion.answer }
-          onChange={ onChangeSecurityAnswer }
+          required={true}
+          value={formValues.securityQuestion.answer}
+          onChange={onChangeSecurityAnswer}
         />
         <div className="row m-2  pt-4">
 

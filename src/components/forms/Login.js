@@ -55,7 +55,7 @@ const Login = (props) => {
         if (data !== null && data !== 'undefined' && data !== undefined) {
           showMessage(data.message, data.type)
           login(data.user)
-          props.hideForm()
+          props.onClose()
           return true;
         } else {
           return false;
@@ -104,7 +104,7 @@ const Login = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          onClick={ props.handleAlertConfirm }
+          onClick={ props.showConfirmation }
         ></button>
       </div>
 
@@ -132,9 +132,6 @@ const Login = (props) => {
 
         <div className="text-center">
 
-          <p>
-            Not a member? <a href="#!">Register</a>
-          </p>
           forgot password?
           <button
             className=" btn btn-link"

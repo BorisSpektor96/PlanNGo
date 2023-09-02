@@ -258,14 +258,14 @@ class MainBusinessForm extends Component {
   }
 
 
-  handleServices(name, price, duration, id) {
+  handleServices(name, price, duration) {
     price = parseFloat(price)
     duration = parseFloat(duration)
 
     this.setState((state) => {
       const services = [
         ...state.services,
-        { name, price, duration, id },
+        { name, price, duration },
       ];
 
       return {
@@ -273,10 +273,13 @@ class MainBusinessForm extends Component {
       };
     });
   }
-  deleteServicesHandler = (serviceId) => {
-    this.setState((state) => {
-      const services = state.services.filter(
-        (service) => service.id !== serviceId
+  deleteServicesHandler = (serviceToDelete) => {
+    this.setState((prevState) => {
+      const services = prevState.services.filter(
+        (service) =>
+          service.name !== serviceToDelete.name ||
+          service.price !== serviceToDelete.price ||
+          service.duration !== serviceToDelete.duration
       );
       return {
         services,
@@ -409,12 +412,6 @@ class MainBusinessForm extends Component {
       };
 
       this.state.appointmentsDef.fixedBreak.push(breakTimeRange)
-      // this.setState((prevState) => ({
-      //   appointmentsDef: {
-      //     ...prevState.appointmentsDef,
-      //     fixedBreak: breakTimeRange, // Set the new break time range object
-      //   },
-      // }));
 
 
     } else {
@@ -481,13 +478,15 @@ class MainBusinessForm extends Component {
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-      this.props.hideForm();
+      this.props.onClose();
       const data = await response.json();
+
+      this.context.showMessage(data.message, data.type)
+
     } catch (error) {
       this.context.showMessage('No Connection To Server, Try Again Later', 'Error')
     }
   };
-  // Test current step with ternary
   // _next and _previous functions will be called on button click
   _next() {
     let currentStep = this.state.currentStep;
@@ -579,8 +578,8 @@ class MainBusinessForm extends Component {
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={ this.props.handleAlertConfirm }
-            ></button>
+              onClick={this.props.showConfirmation}
+              ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>

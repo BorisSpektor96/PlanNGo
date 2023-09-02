@@ -6,7 +6,6 @@ const Services = (props) => {
   const [ enteredName, setEnteredName ] = useState("");
   const [ enteredPrice, setEnteredPrice ] = useState("");
   const [ enteredDuration, setEnteredDuration ] = useState(0.5);
-  const [ serviceId, setServiceId ] = useState(1);
 
   if (props.currentStep !== 3) {
     return null;
@@ -22,12 +21,10 @@ const Services = (props) => {
       return;
     }
 
-    setServiceId(serviceId + 1);
     props.handleServices(
       enteredName,
       enteredPrice,
       enteredDuration,
-      serviceId
     );
     setEnteredName("");
     setEnteredPrice("");
@@ -158,7 +155,7 @@ const Services = (props) => {
                     className="btn"
                     type="button"
                     onClick={ () => {
-                      props.deleteServicesHandler(service.id);
+                      props.deleteServicesHandler(service);
                     } }
                   >
                     <lord-icon
