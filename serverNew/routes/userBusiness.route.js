@@ -51,9 +51,9 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
 
   try {
     const savedUser = await newBusinessUser.save();
-    res.status(200).json({ user: savedUser, message: "Business register Succesfully", type: "Success" });
+    res.status(200).json({ ok: true, user: savedUser, message: "Business registered Succesfully", type: "Success" });
   } catch (error) {
-    res.status(500).json({ error: error.message, message: "Business register Succesfully", type: "Success" });
+    res.status(500).json({ ok: false, error: error.message, type: "Error" });
   }
 });
 

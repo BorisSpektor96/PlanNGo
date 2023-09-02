@@ -16,13 +16,21 @@ const Review = (props) => {
   const reversedReviews = [ ...props.reviews ].reverse();
   const averageRating = calculateAverageRating(props.reviews);
 
+  const ReviesTitle = () => (
+    <p className="text-center text-muted">
+      { averageRating === 0
+        ? "This business has no reviews, be the first one!"
+        : `The average is ${averageRating} stars` }
+    </p>
+  );
+
   return (
     <Fragment>
-      <p>The average is  { averageRating } stars.</p>
+      { ReviesTitle() }
       { reversedReviews.map((review, index) => (
         <div className="container rounded mb-1" key={ index }>
 
-          <div className="Rname">{ review.reviewer }</div>
+          <div className="Rname">{ review.reviewer ? review.reviewer : "Anonymous user" }</div>
 
           <div className="Rating_date">
             <div className="rating">

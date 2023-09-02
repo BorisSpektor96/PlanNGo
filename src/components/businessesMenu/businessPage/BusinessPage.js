@@ -105,22 +105,6 @@ const BusinessPage = () => {
     }
   };
 
-  const scheduleOpenView = () => {
-    showCalendarHandler()
-  };
-
-  const showCalendarHandler = () => {
-    setCalendarIsShown(true)
-  }
-
-  const messageFormHandler = () => {
-    setAddMassageIsShown(!addMassageIsShown)
-  }
-
-  const reviewFormHandler = () => {
-    setAddReviewIsShown(!addReviewIsShown);
-  };
-
   const hideCalendarHandler = async () => {
     if (currentStep === 5) {
       setCalendarIsShown(false);
@@ -149,14 +133,13 @@ const BusinessPage = () => {
 
   return (
     <div>
-      { showConfirmation && (
-        <CustomAlert
-          isOpen={ showConfirmation }
-          toggle={ () => setShowConfirmation(false) }
-          message="Are you sure you want to close? Any unsaved changes will be lost."
-          onConfirm={ handleAlertConfirm }
-        />
-      ) }
+
+      <CustomAlert
+        isOpen={ showConfirmation }
+        toggle={ () => setShowConfirmation(false) }
+        message="Are you sure you want to close? Any unsaved changes will be lost."
+        onConfirm={ handleAlertConfirm }
+      />
 
       { calendarIsShown &&
         <Calendar
@@ -210,7 +193,7 @@ const BusinessPage = () => {
         <div className="d-flex flex-wrap gap-5 justify-content-center align-items-start">
           <div className="d-flex flex-wrap justify-content-around col-lg-8 gap-3">
             <button
-              onClick={ reviewFormHandler }
+              onClick={ () => setAddReviewIsShown(true) }
               className={ `d-flex btn btn-outline-success align-items-center ${styles.btn}` }            >
               <lord-icon
                 src="https://cdn.lordicon.com/puvaffet.json"
@@ -259,7 +242,7 @@ const BusinessPage = () => {
             }
 
             <button
-              onClick={ messageFormHandler }
+              onClick={ () => setAddMassageIsShown(true) }
               className={ `d-flex btn btn-outline-info align-items-center ${styles.btn}` }            >
               <lord-icon
                 src="https://cdn.lordicon.com/rhvddzym.json"
@@ -273,7 +256,7 @@ const BusinessPage = () => {
 
             <button
               className={ `d-flex btn btn-outline-primary align-items-center ${styles.btn}` }
-              onClick={ scheduleOpenView }
+              onClick={ () => setCalendarIsShown(true) }
             >
               <lord-icon
                 src="https://cdn.lordicon.com/kbtmbyzy.json"
@@ -298,7 +281,7 @@ const BusinessPage = () => {
           from={ profileInfo.email }
           to={ businessDetails.email }
           type={ type }
-          onClose={ messageFormHandler }
+          onClose={ () => setAddMassageIsShown(false) }
         />
       ) }
 
@@ -306,13 +289,12 @@ const BusinessPage = () => {
         <AddReview
           profileInfo={ profileInfo }
           businessDetails={ businessDetails }
-          onClose={ reviewFormHandler }
+          onClose={ () => setAddReviewIsShown(false) }
         />
       }
       <Recommendations
         currentBusiness={ businessDetails.email }
       />
-
     </div>
   );
 };

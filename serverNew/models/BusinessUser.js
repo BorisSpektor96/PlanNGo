@@ -14,11 +14,9 @@ const businessSchema = new mongoose.Schema(
     business_type: String,
     services: [
       {
-        serviceId: Number,
         name: String,
         price: Number,
         duration: Number,
-        serviceType: String
       }
     ],
     products: [

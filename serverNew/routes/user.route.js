@@ -52,12 +52,12 @@ userRouter.post('/signup', async (req, res) => {
       securityQuestion
     });
 
-    res.status(200).json({ user: user, message: "Signed Up Succesfully ", type: "Success" });
+    res.status(200).json({ ok: true, user: user, message: "Signed Up Succesfully ", type: "Success" });
 
   } catch (error) {
     console.error(error);
     if (error.code === 11000) {
-      return res.status(400).json({ ok: false, error: 'duplicate' });
+      return res.status(400).json({ ok: false, type: "Error", error: 'duplicate', message: "User already exists. Please use a different email" });
     }
     return res.status(400).send(error);
   }

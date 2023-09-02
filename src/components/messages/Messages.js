@@ -1,34 +1,27 @@
-import React from "react";
-import MessageItem from "./MessageItem";
-import { useState, useEffect, useContext } from 'react';
-import MessageForm from './MessageForm'
-import { PopupMessageContext } from "../../PopupMessage";
-import { useDispatch, useSelector } from "react-redux";
-import { updateMessages } from "../../profileInfoSlice";
+import React, { useState, useEffect, useContext } from 'react';
+import MessageForm from './MessageForm';
+import { PopupMessageContext } from '../../PopupMessage';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateMessages } from '../../profileInfoSlice';
+import MessageItem from './MessageItem';
 
 const Messages = () => {
-
-    const { showMessage } = useContext(PopupMessageContext)
-    const profileInfo = useSelector((state) => state.profileInfo)
-    const dispatch = useDispatch()
+    const { showMessage } = useContext(PopupMessageContext);
+    const profileInfo = useSelector((state) => state.profileInfo);
+    const dispatch = useDispatch();
 
     const [ showSent, setShowSent ] = useState(false);
     const [ showReceived, setShowReceived ] = useState(true);
     const [ showReply, setShowReply ] = useState(false);
-    const [ emailForReply, setEmailForReply ] = useState("");
+    const [ emailForReply, setEmailForReply ] = useState('');
     const [ messagesData, setMessagesData ] = useState(profileInfo.messages);
 
     useEffect(() => {
-        dispatch(updateMessages(messagesData))
-    }, [ messagesData ])
+        dispatch(updateMessages(messagesData));
+    }, [ messagesData ]);
 
-    let type = "user";
-
-    if (profileInfo.isBusiness) {
-        type = "business"
-    }
-
-    const api = type === 'business' ? "http://localhost:3001/business/" : "http://localhost:3001/users/"
+    const type = profileInfo.isBusiness ? 'business' : 'user';
+    const api = type === 'business' ? 'http://localhost:3001/business/' : 'http://localhost:3001/users/';
 
     const handleShowReply = (email) => {
         setEmailForReply(email);
@@ -37,18 +30,12 @@ const Messages = () => {
 
     if (!profileInfo || !messagesData) return null;
 
-    const filteredMessages = messagesData.filter((message) => {
-        if (showSent && showReceived) return true;
-        if (showSent && message.status === "sent") return true;
-        if (showReceived && message.status === "received") return true;
-        return false;
-    });
     const onChangeRead = async (id, read) => {
         try {
-            const response = await fetch(api + "markAs", {
-                method: "POST",
+            const response = await fetch(`${api}markAs`, {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email: profileInfo.email,
@@ -60,28 +47,25 @@ const Messages = () => {
             const data = await response.json();
             if (response.ok) {
                 setMessagesData((prevMessages) =>
-                    prevMessages.map((message) => {
-                        if (message._id === id) {
-                            return { ...message, read: !read };
-                        }
-                        return message;
-                    })
+                    prevMessages.map((message) =>
+                        message._id === id ? { ...message, read: !read } : message
+                    )
                 );
-                showMessage(data.message, data.type)
+                showMessage(data.message, data.type);
             } else {
                 console.error(data.message);
             }
         } catch (error) {
-            console.error("Error while updating message status:", error);
+            console.error('Error while updating message status:', error);
         }
     };
 
     const handleRemoveMessage = async (id) => {
         try {
-            const response = await fetch(api + 'removeMessage', {
-                method: "POST",
+            const response = await fetch(`${api}removeMessage`, {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email: profileInfo.email, id }),
             });
@@ -89,22 +73,30 @@ const Messages = () => {
             const data = await response.json();
             if (response.ok) {
                 setMessagesData((prevMessages) =>
-                    prevMessages.filter(
-                        (message) =>
-                            message._id !== id
-                    )
+                    prevMessages.filter((message) => message._id !== id)
                 );
-                showMessage(data.message, data.type)
+                showMessage(data.message, data.type);
             } else {
                 console.error(data.message);
             }
         } catch (error) {
-            console.error("Error while removing message:", error);
+            console.error('Error while removing message:', error);
         }
     };
 
+    const filteredMessages = messagesData.filter((message) => {
+        if (showSent && showReceived) return true;
+        if (showSent && message.status === 'sent') return true;
+        if (showReceived && message.status === 'received') return true;
+        return false;
+    });
+
+    const sortedMessages = [ ...filteredMessages ].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+
     return (
-        <div className="p-4 ">
+        <div className="p-5 ">
             <p className="text-center display-6 pt-3">Messages</p>
             <div className="p-3 d-flex justify-content-center">
                 <div className="form-check form-check-inline">
@@ -135,27 +127,36 @@ const Messages = () => {
             <table className="table table-responsive table-striped table-hover mt-3 mb-3">
                 <thead>
                     <tr className="table-secondary">
-                        <th className="text-center" scope="col"> # </th>
-                        <th className="text-center" scope="col">date</th>
                         <th className="text-center" scope="col">
-                            {
-                                showReceived && !showSent
-                                    ? "From"
-                                    : showSent && !showReceived
-                                        ? "To"
-                                        : "From / To"
-                            }
+                            #
                         </th>
-                        <th className="text-center" scope="col">subject</th>
-                        <th className="text-center" scope="col">mark as read</th>
-                        <th className="text-center" scope="col">Content</th>
+                        <th className="text-center" scope="col">
+                            date
+                        </th>
+                        <th className="text-center" scope="col">
+                            { showReceived && !showSent
+                                ? 'From'
+                                : showSent && !showReceived
+                                    ? 'To'
+                                    : 'From / To' }
+                        </th>
+                        <th className="text-center" scope="col">
+                            subject
+                        </th>
+                        <th className="text-center" scope="col">
+                            mark as read
+                        </th>
+                        <th className="text-center" scope="col">
+                            Content
+                        </th>
                         <th className="text-center" scope="col"></th>
                         <th className="text-center" scope="col"> </th>
                     </tr>
                 </thead>
                 <tbody className="">
-                    { filteredMessages.map((message, index) => (
+                    { sortedMessages.map((message, index) => (
                         <MessageItem
+                            key={ message._id }
                             id={ message._id }
                             data={ message }
                             index={ index }

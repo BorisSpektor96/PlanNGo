@@ -32,7 +32,6 @@ const Welcome = () => {
   };
 
   const hideFormHandler = () => {
-    console.log('asdada')
     setRegisterIsShown(false);
     setLoginIsShown(false);
     setBusinessRegisterIsShown(false);
@@ -45,8 +44,9 @@ const Welcome = () => {
   }, [ isLoggedIn ])
 
   const handleAlertConfirm = () => {
-    setShowConfirmation(false);
+    setShowConfirmation(!showConfirmation);
   };
+
   useEffect(() => {
     if (!showConfirmation) {
       setLoginIsShown(false)

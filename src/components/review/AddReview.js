@@ -82,7 +82,7 @@ const AddReview = (props) => {
         <div className="d-flex flex-column justify-content-center">
           <div className="d-flex p-2 justify-content-between">
             <label>how was your visit?</label>
-            <StarRating onChange={ starHandler } />
+            <StarRating onChange={ starHandler } disableOnChange={ hasReviewed } />
           </div>
           <div className="form-check mt-2">
             <input
@@ -92,12 +92,14 @@ const AddReview = (props) => {
               id="anonymous"
               name="anonymous"
               onClick={ anonymousHandler }
+              disabled={ hasReviewed }
             />
             <label className="form-check-label" htmlFor="anonymous">
               anonymous?
             </label>
           </div>
-          <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } />
+          <textarea className="mt-4" name="content" value={ reviewContent } onChange={ handleReviewContent } disabled={ hasReviewed }
+          />
           { hasReviewed && (
             <div className=" p-1 text-center ">
               <p
