@@ -53,7 +53,7 @@ const AppointmentsProfile = () => {
 
   useEffect(() => {
     if (isBusiness) {
-      let sortedAppointments = [ ...profileInfo.appointmentsDef.appointments ]; // Create a copy of the array
+      let sortedAppointments = [ ...profileInfo.appointmentsDef.appointments ];
       sortedAppointments.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
@@ -64,7 +64,7 @@ const AppointmentsProfile = () => {
 
       setAppointmentsDef(profileInfo.appointmentsDef)
     } else {
-      let sortedAppointments = [ ...profileInfo.appointments ]; // Create a copy of the array
+      let sortedAppointments = [ ...profileInfo.appointments ];
       sortedAppointments.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
@@ -84,7 +84,6 @@ const AppointmentsProfile = () => {
      for ${serviceName} for has been canceled.`;
 
     try {
-      // Send a cancellation message to the user
       const messageDataToUser = createMessage(
         read,
         businessEmail,
@@ -100,7 +99,6 @@ const AppointmentsProfile = () => {
     }
 
     try {
-      // Send a cancellation message to the business
       const messageDataToBusiness = createMessage(
         read,
         userEmail,
@@ -239,7 +237,7 @@ const AppointmentsProfile = () => {
 
       setAppointmentsDef((prevState) => ({
         ...prevState,
-        fixedBreak: [ ...prevState.fixedBreak, newBreak ], // Add the new break time range to the array
+        fixedBreak: [ ...prevState.fixedBreak, newBreak ],
       }));
     } else {
       alert("Invalid break time range. End time should be after start time.");

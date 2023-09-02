@@ -26,13 +26,7 @@ const Login = (props) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const isLoginSuccessful = await userLogin();
-
-      if (isLoginSuccessful) {
-        console.log('Good information');
-      } else {
-        console.log('Bad information');
-      }
+      await userLogin();
 
     } catch (error) {
       console.log('Error:', error);

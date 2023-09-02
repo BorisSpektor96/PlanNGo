@@ -572,14 +572,14 @@ class MainBusinessForm extends Component {
 
     return (
       <Modal>
-        <Form className="pb-5" onSubmit={ this.handleSubmit }>
+        <Form className="pb-1" onSubmit={ this.handleSubmit }>
           <div class="d-flex flex-row justify-content-end p-1 w-100 p-3 ">
             <button
               type="button"
               class="btn-close"
               aria-label="Close"
-              onClick={this.props.showConfirmation}
-              ></button>
+              onClick={ this.props.showConfirmation }
+            ></button>
           </div>
           <Card>
             <CardHeader>Create an Business Account</CardHeader>

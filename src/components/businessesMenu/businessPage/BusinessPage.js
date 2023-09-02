@@ -65,6 +65,10 @@ const BusinessPage = () => {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [ businessDetails ]);
+
+  useEffect(() => {
     if (businessDetails.appointmentsDef.businessHours) {
       setWorkingHours({
         start: businessDetails.appointmentsDef.businessHours.start,
@@ -128,6 +132,40 @@ const BusinessPage = () => {
   const handleStepChange = (step) => {
     setCurrentStep(step);
   };
+
+  const postReviewToBusiness = async (reviewer, content, rating, date, userEmail) => {
+    try {
+      const formValues = {
+        email: businessDetails.email,
+        reviewer: reviewer,
+        content: content,
+        rating: rating,
+        date: date,
+        userEmail: userEmail
+      };
+      const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+      showMessage(data.message, data.type)
+      businessDetails.reviews = data.reviews
+    } catch (error) {
+      console.error('Add review failed:', error);
+    }
+  };
+
+  const handleReviewUpdate = async (name, reviewContent, reviewRate, reviewDate, userEmail) => {
+    await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate, userEmail)
+  }
 
   const pathToBackMenu = "/BusinessesMenu";
 
@@ -290,6 +328,7 @@ const BusinessPage = () => {
           profileInfo={ profileInfo }
           businessDetails={ businessDetails }
           onClose={ () => setAddReviewIsShown(false) }
+          handleReviewUpdate={ handleReviewUpdate }
         />
       }
       <Recommendations

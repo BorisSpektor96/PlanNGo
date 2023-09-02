@@ -13,12 +13,10 @@ import Messages from './components/messages/Messages'
 import PopupProvider from './PopupMessage';
 import AuthProvider from './AuthContext'
 
-// *************** redux ***************
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { Store } from './Store';
 import { updateProfileInfo } from './profileInfoSlice';
-//  ***************      ***************
 
 function App() {
 

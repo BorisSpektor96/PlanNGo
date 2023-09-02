@@ -244,7 +244,7 @@ userBusinessRouter.post("/addReviewToBusiness", async (req, res) => {
       user.reviews.push({ reviewer, date, content, rating, userEmail });
       await user.save();
 
-      res.status(200).json({ message: "Review added successfully", type: "Success" });
+      res.status(200).json({ reviews: user.reviews, message: "Review added successfully", type: "Success" });
     } else {
       res.status(400).json({ message: "Review Not Added / User not found", type: "Warning" });
     }

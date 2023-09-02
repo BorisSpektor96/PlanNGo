@@ -5,42 +5,46 @@
   width: 100%;
   height: 100vh;
   z-index: 20;
-  opacity: 0.5;
-  background: linear-gradient(180deg, rgba(2,0,36,.9) 25%, rgba(14, 17, 100, 0.9) 50%, rgb(11, 94, 110) 100%);
+  opacity: 0.8;
+  background: linear-gradient(180deg, rgba(2,0,36,0.9) 25%, rgba(14, 17, 100, 0.9) 50%, rgb(11, 94, 110) 100%);
   animation: pop-up 500ms ease-in-out forwards;
 }
 
 .modal {
   position: fixed;
-  top: 5vh;
-  left: 5%;
   background-color: white;
-  padding: 2rem;
+  padding: 15px;
   padding-bottom: 0;
   border-radius: 14px;
   box-shadow: 0 2px 2px rgba(236, 236, 236, 0.975);
   z-index: 30;
   animation: slide-down 500ms ease-out forwards;
   overflow-y: auto;
-  min-width: 350px;
   max-height: 90vh;
+  max-width: 600px;
+  width: 80%;
 }
-
+/* 
 @media (min-width: 768px) {
   .modal {
     width: 40rem;
     left: calc(50% - 20rem);
   }
-}
+} */
 
 @keyframes slide-down {
   from {
     opacity: 0;
+    top: 100%;
+    left: 50%;
     transform: translateY(100vh);
+    transform: translateX(-50%);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 

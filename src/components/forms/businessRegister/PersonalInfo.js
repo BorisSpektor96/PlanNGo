@@ -4,8 +4,8 @@ import Select from "react-select";
 
 const PersonalInfo = (props) => {
 
-  const [selectedQuestion, setSelectedQuestion] = useState(null)
-  const [enteredAnswer, setEnteredAnswer] = useState(null)
+  const [ selectedQuestion, setSelectedQuestion ] = useState(null)
+  const [ enteredAnswer, setEnteredAnswer ] = useState(null)
 
   const handleAnswer = (event) => {
     setEnteredAnswer(event.target.value);
@@ -82,79 +82,78 @@ const PersonalInfo = (props) => {
     <>
       <p className="text-center display-6">Personal Information</p>
       <form>
-        {inputs.map((input) => (
-          <div key={input.id}>
-            <Label className="mt-2 mb-0" for={input.name}>
-              {input.label}
+        { inputs.map((input) => (
+          <div key={ input.id }>
+            <Label className="mt-2 mb-0" for={ input.name }>
+              { input.label }
             </Label>
             <Input
-              type={input.type}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={props.formInput[input.name]}
-              onChange={props.handleChange}
-              invalid={props.errors[input.name] !== undefined}
+              type={ input.type }
+              name={ input.name }
+              placeholder={ input.placeholder }
+              value={ props.formInput[ input.name ] }
+              onChange={ props.handleChange }
+              invalid={ props.errors[ input.name ] !== undefined }
             />
-            {props.errors[input.name] && (
+            { props.errors[ input.name ] && (
               <p
-                style={{
+                style={ {
                   fontSize: "12px",
                   color: "red",
-                }}
+                } }
               >
-                {props.errors[input.name]}
+                { props.errors[ input.name ] }
               </p>
-            )}
+            ) }
           </div>
-        ))}
+        )) }
 
         <Label for="security question" >Security question</Label>
         <Select
           name="question"
-          options={securityQuestions}
-          autoFocus={true}
+          options={ securityQuestions }
           className="custom-select text-center form-control form-select-sm"
           placeholder="Choose a security question"
-          value={selectedQuestion}
-          onChange={(selectedOption) =>
+          value={ selectedQuestion }
+          onChange={ (selectedOption) =>
             handleQuestion(selectedOption)
 
           }
-          aria-errormessage={props.errors["securityQuestion"] !== undefined}
+          aria-errormessage={ props.errors[ "securityQuestion" ] !== undefined }
 
         />
-        {props.errors["securityQuestion"] && (
+        { props.errors[ "securityQuestion" ] && (
           <p
-            style={{
+            style={ {
               fontSize: "12px",
               color: "red",
-            }}
+            } }
           >
-            {props.errors["securityQuestion"]}
+            { props.errors[ "securityQuestion" ] }
           </p>
-        )}
+        ) }
         <Label for="securityAnswer">Security answer</Label>
         <Input
           name="answer"
           type="text"
           placeholder="Your answer"
           label="Security answer"
-          required={true}
-          value={enteredAnswer}
-          onChange={handleAnswer}
-          invalid={props.errors["securityAnswer"] !== undefined}
+          required={ true }
+          value={ enteredAnswer }
+          onChange={ handleAnswer }
+          invalid={ props.errors[ "securityAnswer" ] !== undefined }
 
         />
-        {props.errors["securityAnswer"] && (
+        { props.errors[ "securityAnswer" ] && (
           <p
-            style={{
+            style={ {
               fontSize: "12px",
               color: "red",
-            }}
+            } }
           >
-            {props.errors["securityAnswer"]}
+            { props.errors[ "securityAnswer" ] }
           </p>
-        )}
+        ) }
       </form>
     </>
   );

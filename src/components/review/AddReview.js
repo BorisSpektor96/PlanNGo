@@ -31,39 +31,9 @@ const AddReview = (props) => {
     const userEmail = props.profileInfo.email
     const current = new Date();
     const reviewDate = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate, userEmail)
+    await props.handleReviewUpdate(name, reviewContent, reviewRate, reviewDate, userEmail)
     props.onClose();
   };
-
-  const postReviewToBusiness = async (reviewer, content, rating, date, userEmail) => {
-    try {
-      const formValues = {
-        email: props.businessDetails.email,
-        reviewer: reviewer,
-        content: content,
-        rating: rating,
-        date: date,
-        userEmail: userEmail
-      };
-      const response = await fetch('http://localhost:3001/business/addReviewToBusiness', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formValues),
-      });
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const data = await response.json();
-      showMessage(data.message, data.type)
-    } catch (error) {
-      console.error('Add review failed:', error);
-    }
-  };
-
 
   return (
     <Modal>
@@ -118,7 +88,8 @@ const AddReview = (props) => {
               type="submit"
               value="Post Review"
               disabled={ hasReviewed }
-            /></div>
+            />
+          </div>
         </div>
       </form>
     </Modal>
