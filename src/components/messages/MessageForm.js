@@ -43,7 +43,9 @@ const MessageForm = ({ to, from, type, onClose }) => {
       );
       const response = await sendMessage(reqEmailBusiness, messageData, true);
       showMessage(response.message, response.type);
-      dispatch(updateMessages(response.messages))
+      if (type === 'business') {
+        dispatch(updateMessages(response.messages));
+      }
 
     } catch (error) {
       console.log("Error:", error);
@@ -67,7 +69,9 @@ const MessageForm = ({ to, from, type, onClose }) => {
       showMessage(response.message, response ? "Success" : "Error");
 
       if (response) {
-        dispatch(updateMessages(response.messages));
+        if (type === 'user') {
+          dispatch(updateMessages(response.messages));
+        }
       }
     } catch (error) {
       console.log("Error:", error);

@@ -21,7 +21,6 @@ const Messages = () => {
     }, [ messagesData ]);
 
     const type = profileInfo.isBusiness ? 'business' : 'user';
-    const api = type === 'business' ? 'http://localhost:3001/business/' : 'http://localhost:3001/users/';
 
     const handleShowReply = (email) => {
         setEmailForReply(email);
@@ -32,7 +31,7 @@ const Messages = () => {
 
     const onChangeRead = async (id, read) => {
         try {
-            const response = await fetch(`${api}markAs`, {
+            const response = await fetch('http://localhost:3001/users/markAs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +61,7 @@ const Messages = () => {
 
     const handleRemoveMessage = async (id) => {
         try {
-            const response = await fetch(`${api}removeMessage`, {
+            const response = await fetch('http://localhost:3001/users/removeMessage', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

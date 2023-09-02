@@ -12,7 +12,6 @@ userRouter.post("/addMessage", async (req, res) => {
       { $push: { "messages": message } },
       { new: true }
     );
-
     if (!user) {
       return res.status(404).json({ message: "User/Business not found", type: "Error" });
     }
@@ -20,21 +19,6 @@ userRouter.post("/addMessage", async (req, res) => {
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Failed to sent message", error });
-  }
-});
-
-userRouter.post("/getMessages", async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await userModel.findOne({ email: email }).select({ messages: 1 });
-
-    if (!user || !user.messages) {
-      return res.status(404).json();
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message, type: "Error" });
   }
 });
 
@@ -156,7 +140,7 @@ userRouter.post("/removeMessage", async (req, res) => {
     user.messages.splice(messagesIndex, 1);
     await user.save();
 
-    res.status(200).json({ message: "Message removed successfully", type: "Success" });
+    res.status(200).json({ message: "Message removed successfully", type: "Info" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message, type: "Error" });
@@ -190,7 +174,9 @@ userRouter.post("/markAs", async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
+    let markedMessage = read ? "Message Marked as Read" : "Message Marked as Unread"
+    res.status(200).json({ message: markedMessage, type: "Info" });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message, type: "Error" });

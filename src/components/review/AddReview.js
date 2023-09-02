@@ -42,7 +42,6 @@ const AddReview = (props) => {
           type="button"
           className="btn-close"
           aria-label="Close"
-          dal
           onClick={ props.onClose }
         ></button>
       </div>

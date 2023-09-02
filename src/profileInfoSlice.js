@@ -40,7 +40,6 @@ const profileInfoSlice = createSlice({
     },
     updateAppointments: (state, action) => {
       if (state.isBusiness) {
-        console.log("dispatch Business")
         state.appointmentsDef.appointments = action.payload;
       } else {
         state.appointments = action.payload;

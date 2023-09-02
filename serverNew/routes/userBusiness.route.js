@@ -57,55 +57,6 @@ userBusinessRouter.post("/newBusinessUser", async (req, res) => {
   }
 });
 
-userBusinessRouter.post("/markAs", async (req, res) => {
-  const { email, id, read } = req.body;
-  try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ messages: 1 });
-
-    if (!user || !user.messages) {
-      return res.status(404).json({
-        message: "User / Messages not found",
-        type: "Error"
-      });
-    }
-
-    const message = user.messages.find((message) =>
-      message.id === id
-    );
-
-    if (!message) {
-      return res.status(404).json({
-        message: "Message not found for the given business and date",
-        type: "Error"
-      });
-    }
-
-    message.read = read;
-
-    await user.save();
-    let markedMessage = read ? "Message read" : "Message unread"
-    res.status(200).json({ message: markedMessage, type: "Info" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message, type: "Error" });
-  }
-});
-
-userBusinessRouter.post("/getMessages", async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ messages: 1 });
-
-    if (!user || !user.messages) {
-      return res.status(404).json();
-    }
-    res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message, type: "Error" });
-  }
-});
-
 userBusinessRouter.post("/incrementProductQuantity", async (req, res) => {
   const { email, increment, productId } = req.body;
   try {
@@ -169,38 +120,6 @@ userBusinessRouter.post("/decrementProductQuantity", async (req, res) => {
     await user.save()
 
     res.status(200).json({ message: "Message marked as read successfully", type: "Success" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message, type: "Error" });
-  }
-});
-
-userBusinessRouter.post("/removeMessage", async (req, res) => {
-  const { email, id } = req.body;
-  try {
-    const user = await userBusinessModel.findOne({ email: email }).select({ messages: 1 });
-
-    if (!user || !user.messages) {
-      return res.status(404).json({
-        message: "User / Messages not found",
-        type: "Error"
-      });
-    }
-
-    const messagesIndex = user.messages.findIndex((message) =>
-      message.id === id
-    );
-    if (messagesIndex === -1) {
-      return res.status(404).json({
-        message: "Message not found for the given business id",
-        type: "Error"
-      });
-    }
-
-    user.messages.splice(messagesIndex, 1);
-    await user.save();
-
-    res.status(200).json({ message: "Message removed successfully", type: "Info" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message, type: "Error" });
