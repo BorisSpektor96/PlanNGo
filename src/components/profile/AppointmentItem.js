@@ -1,14 +1,11 @@
 import { useState, useContext } from "react"
 import './appointmentItem.css'
 import { AuthContext } from '../../AuthContext'
-import { PopupMessageContext } from './../../PopupMessage';
-
 import { useSelector } from "react-redux";
 
 const AppointmentItem = ({ item, removeAppointment }) => {
 
   const profileInfo = useSelector(state => state.profileInfo)
-  const { showMessage } = useContext(PopupMessageContext)
   const { isBusiness } = useContext(AuthContext)
 
   const [ toggle, setToggle ] = useState(item.toggle)

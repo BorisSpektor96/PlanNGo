@@ -25,6 +25,7 @@ const AccountProfile = () => {
   const [ imgUrl, setImgUrl ] = useState("")
 
   const [ showChangePassword, setShowChangePassword ] = useState(false)
+  const [ filteredList, setFilteredList ] = useState([])
 
   const showChangePasswordHandler = () => {
     setShowChangePassword(!showChangePassword);
@@ -132,7 +133,6 @@ const AccountProfile = () => {
     }
   };
 
-  const [ filteredList, setFilteredList ] = useState([])
   let listOfInfoAndInput = [
     {
       id: 'fullname',
