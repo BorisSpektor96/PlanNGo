@@ -7,7 +7,7 @@ import Services from "./Services";
 import Summary from "./Summary";
 import { PopupMessageContext } from "../../PopupMessage";
 import Cart from "./cart/Cart";
-import { sendMessage, createMessage } from '../messages/sendMessage'; // Import the sendMessage function
+import { sendMessage, createMessage } from '../messages/messageService';
 import ButtonSection from "./ButtonSection"
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointments } from "../../profileInfoSlice";

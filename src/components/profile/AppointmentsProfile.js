@@ -9,7 +9,7 @@ import { Label, Row, Col, Button } from "reactstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateAppointmentsDef, updateAppointments } from '../../profileInfoSlice'
-import { sendMessage, createMessage } from "../messages/sendMessage";
+import { sendMessage, createMessage } from "../messages/messageService";
 
 dayjs.extend(customParseFormat);
 

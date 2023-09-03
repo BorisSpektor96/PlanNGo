@@ -4,7 +4,7 @@ import Modal from "../UI/Modal";
 import { PopupMessageContext } from "./../../PopupMessage";
 import { updateMessages } from "../../profileInfoSlice";
 import { useDispatch } from "react-redux";
-import { sendMessage, createMessage } from './sendMessage';
+import { sendMessage, createMessage } from './messageService';
 
 const MessageForm = ({ to, from, type, onClose }) => {
 

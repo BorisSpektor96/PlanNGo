@@ -24,7 +24,6 @@ userRouter.post("/addMessage", async (req, res) => {
 
 userRouter.post('/signup', async (req, res) => {
   const { email, password, fullname, phoneNumber, isBusiness, profileImg, securityQuestion } = req.body;
-
   try {
     const user = await userModel.create({
       email,
@@ -46,7 +45,6 @@ userRouter.post('/signup', async (req, res) => {
     return res.status(400).send(error);
   }
 });
-
 
 userRouter.post("/addAppointmentToUser", async (req, res) => {
   const { email, appointment } = req.body;
