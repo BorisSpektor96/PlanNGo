@@ -9,25 +9,17 @@ const Products = (props) => {
   const [ enteredQuantity, setEnteredQuantity ] = useState(1);
   const [ enteredPrice, setEnteredPrice ] = useState("");
 
-  let [ productId, setProductId ] = useState(1);
-  useEffect(() => { }, [ selectedImage ]);
-
   const addProductHandler = (event) => {
-    event.preventDefault(); // Prevents the page from refreshing
+    event.preventDefault();
 
-    // Check form validation using the every method
     const formIsValid = Object.values(inputs).every(
       (input) => input.errorMessage === ""
     );
 
-    // If the form is not valid, log a message and return
     if (!formIsValid) {
-      console.log("Form has errors. Product not added.");
       return;
     }
-    setProductId(productId + 1);
     props.handleProducts(
-      productId,
       enteredPrice,
       enteredDescription,
       enteredName,
@@ -157,9 +149,7 @@ const Products = (props) => {
           <thead>
             { props.products.length > 0 && (
               <tr className="table-secondary">
-                <th className="text-center" scope="col">
-                  #
-                </th>
+
                 <th className="text-center" scope="col">
                   Product Name
                 </th>
@@ -183,9 +173,8 @@ const Products = (props) => {
             ) }
           </thead>
           <tbody>
-            { props.products.map((product) => (
-              <tr key={ product.productId } className="table-secondary">
-                <td className="text-center">{ product.productId }</td>
+            { props.products.map((product, index) => (
+              <tr key={ index } className="table-secondary">
                 <td className="text-center">{ product.name }</td>
                 <td className="text-center">{ product.price }</td>
                 <td className="text-center">{ product.quantity }</td>
@@ -205,7 +194,7 @@ const Products = (props) => {
                     className="btn"
                     type="button"
                     onClick={ () => {
-                      props.deleteProductHandler(product.productId);
+                      props.deleteProductHandler(product);
                     } }
                   >
                     <lord-icon

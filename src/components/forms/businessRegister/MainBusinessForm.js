@@ -308,7 +308,7 @@ class MainBusinessForm extends Component {
     this.setState({ profileImg: null })
   };
 
-  handleProducts(productId, price, description, name, quantity, lables, photoFile) {
+  handleProducts(price, description, name, quantity, lables, photoFile) {
     price = parseFloat(price)
     quantity = parseInt(quantity)
 
@@ -321,7 +321,6 @@ class MainBusinessForm extends Component {
         const products = [
           ...state.products,
           {
-            productId,
             price,
             description,
             name,
@@ -341,19 +340,19 @@ class MainBusinessForm extends Component {
     }
   }
 
-  deleteProductHandler = (serialID) => {
-    this.setState((state) => {
-      const products = state.products.filter(
-        (product) => product.productId !== serialID
+  deleteProductHandler = (productToDelete) => {
+    this.setState((prevState) => {
+      const updatedProducts = prevState.products.filter(
+        (product) => product !== productToDelete
       );
 
       return {
-        products,
+        products: updatedProducts,
       };
     });
   };
 
-  /***********************AppointmentsDef***********************/
+  /**********************AppointmentsDef**********************/
   handleOpeningStartTimeChange = (value) => {
     this.setState((prevState) => ({
       appointmentsDef: {
@@ -458,7 +457,7 @@ class MainBusinessForm extends Component {
       },
     );
   };
-  /***********************AppointmentsDef***********************/
+  /**********************AppointmentsDef**********************/
 
   handleSubmit = async (e) => {
     e.preventDefault();

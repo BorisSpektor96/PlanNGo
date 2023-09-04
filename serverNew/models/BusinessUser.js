@@ -21,7 +21,6 @@ const businessSchema = new mongoose.Schema(
     ],
     products: [
       {
-        productId: Number,
         price: Number,
         description: String,
         name: String,
