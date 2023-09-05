@@ -161,28 +161,28 @@ const AppointmentCalendar = (props) => {
   const addProduct = (product) => {
     const updatedProducts = [ ...props.cartList ];
     const existingProductIndex = updatedProducts.findIndex(
-      (item) => item.productId === product.productId
+      (item) => item._id === product._id
     );
 
     if (existingProductIndex !== -1) {
       updatedProducts[ existingProductIndex ].amount++;
     } else {
       updatedProducts.push({
-        productId: product.productId,
+        productId: product._id,
         name: product.name,
         price: product.price,
         amount: 1,
         photo: product.photo,
       });
     }
-    handleIncrease(product.productId)
+    handleIncrease(product._id)
     props.setCartList(updatedProducts)
   };
 
   const handleIncrease = async (productId) => {
     props.setCartList((prevProducts) =>
       prevProducts.map((product) =>
-        product.productId === productId
+        product._id === productId
           ? { ...product, amount: product.amount + 1 }
           : product
       )
@@ -194,7 +194,7 @@ const AppointmentCalendar = (props) => {
     props.setCartList((prevProducts) =>
       prevProducts
         .map((product) =>
-          product.productId === productId
+          product._id === productId
             ? { ...product, amount: product.amount - 1 }
             : product
         )
@@ -208,7 +208,7 @@ const AppointmentCalendar = (props) => {
     productQuantityBack.push(product)
     await props.sendCartListToServer(productQuantityBack)
     props.setCartList((prevProducts) =>
-      prevProducts.filter((p) => p.productId !== product.productId)
+      prevProducts.filter((p) => p._id !== product._id)
     );
   };
 

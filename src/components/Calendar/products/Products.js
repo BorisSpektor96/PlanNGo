@@ -16,6 +16,7 @@ const Products = ({ productList, currentStep, addProduct, serviceName }) => {
       // Check if any service word matches any product label
       return serviceWords.some((word) => productLabels.includes(word));
     }
+    return null
   });
 
   if (filteredProducts.length === 0) {
@@ -27,7 +28,7 @@ const Products = ({ productList, currentStep, addProduct, serviceName }) => {
       <p className="text-center display-6">Recommended products</p>
       { filteredProducts.map((product) => (
         <ProductItem
-          key={ product.productId }
+          key={ product._id }
           product={ product }
           addProduct={ addProduct }
         />

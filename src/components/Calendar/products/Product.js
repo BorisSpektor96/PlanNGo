@@ -18,7 +18,7 @@ const ProductItem = ({ product, addProduct }) => {
   return (
     <div
       className="d-flex border  rounded mb-3 shadow-sm p-1 mb-5 bg-white rounded"
-      key={ product.productId }
+      key={ product._id }
     >
       <img
         className={ style[ "imgi" ] }

@@ -340,10 +340,10 @@ class MainBusinessForm extends Component {
     }
   }
 
-  deleteProductHandler = (serialID) => {
+  deleteProductHandler = (p) => {
     this.setState((state) => {
       const products = state.products.filter(
-        (product) => product.productId !== serialID
+        (product) => product.name !== p.name
       );
 
       return {

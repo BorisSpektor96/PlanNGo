@@ -40,17 +40,12 @@ const ServicesProfile = () => {
     }));
   };
 
-  const submitServiceForm = (e) => {
+  const submitServiceForm = async (e) => {
     e.preventDefault()
-    const newServiceId = profileInfo.services.reduce(
-      (maxId, service) => Math.max(maxId, service.serviceId),
-      0
-    ) + 1;
     const newService = {
-      ...service,
-      serviceId: newServiceId
+      ...service
     }
-    addServiceHandler(newService)
+    await addServiceHandler(newService)
   }
 
   const addServiceHandler = async (service) => {
@@ -237,7 +232,7 @@ const ServicesProfile = () => {
                         <td className="text-center">
                           <button className="btn p-0 m-0"
                             onClick={ () => {
-                              deleteServiceHandler(service.serviceId);
+                              deleteServiceHandler(service._id);
                             } }
                           >
                             <lord-icon

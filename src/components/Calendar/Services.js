@@ -8,7 +8,7 @@ const Services = (props) => {
 
       <div className="d-flex flex-wrap gap-2 justify-content-center align-items-center">
         { businessDetails.services.map((service) => (
-          <div className="card" key={ service.id }>
+          <div className="card" key={ service._id }>
             <div className="card-body">
               <h5 className="card-title">{ service.name }</h5>
               <p className="card-text">

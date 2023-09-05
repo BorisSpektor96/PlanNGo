@@ -333,20 +333,28 @@ const ProductsProfile = () => {
                               style={ { width: '30px', height: '30px' } }>
                             </lord-icon>
                           </button>
-                          <button className='btn p-0 m-0'
-                            onClick={ () => {
-                              decrementHandler(
-                                product.productId, 1
-                              )
-                            } }
-                          >
+
+                          { product.quantity > 0 ? (
+                            <button
+                              className='btn p-0 m-0'
+                              onClick={ () => {
+                                decrementHandler(product.productId, 1);
+                              } }
+                            >
+                              <lord-icon
+                                src="https://cdn.lordicon.com/ymerwkwd.json"
+                                trigger="click"
+                                colors="primary:#f24c00,secondary:#ebe6ef"
+                                style={ { width: '30px', height: '30px' } }
+                              ></lord-icon>
+                            </button>
+                          ) : (
                             <lord-icon
                               src="https://cdn.lordicon.com/ymerwkwd.json"
-                              trigger="click"
-                              colors="primary:#f24c00,secondary:#ebe6ef"
-                              style={ { width: '30px', height: '30px' } }>
-                            </lord-icon>
-                          </button>
+                              colors="primary:#000,secondary:#fff"
+                              style={ { width: '30px', height: '30px' } }
+                            ></lord-icon>
+                          ) }
                         </div>
                       </td>
                       <td className="text-center">{ product.description }</td>

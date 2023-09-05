@@ -63,7 +63,7 @@ const profileInfoSlice = createSlice({
     },
     deleteProduct: (state, action) => {
       const productIndex = state.products.findIndex(
-        product => product.id === action.payload
+        product => product._id === action.payload
       )
       if (productIndex !== -1) {
         state.products.splice(productIndex, 1)
@@ -77,7 +77,7 @@ const profileInfoSlice = createSlice({
     },
     deleteService: (state, action) => {
       const serviceIndex = state.services.findIndex(
-        service => service.serviceId === action.payload
+        service => service._id === action.payload
       )
       if (serviceIndex !== -1) {
         state.services.splice(serviceIndex, 1)

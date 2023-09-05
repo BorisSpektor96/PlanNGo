@@ -10,13 +10,13 @@ const CartItem = ({ product, onIncrease, onDecrease, deleteProductHandler }) => 
         <div className="d-flex align-items-center">
           <button
             className="btn btn-white border-secondary bg-white btn-md "
-            onClick={ () => onDecrease(product.productId) }
+            onClick={ () => onDecrease(product._id) }
           >
             -
           </button>
           <button
             className="btn btn-white border-secondary bg-white btn-md "
-            onClick={ () => onIncrease(product.productId) }
+            onClick={ () => onIncrease(product._id) }
           >
             +
           </button>

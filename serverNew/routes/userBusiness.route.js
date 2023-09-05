@@ -207,7 +207,7 @@ userBusinessRouter.post('/deleteService', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found', type: "Error" });
     }
-    const serviceIndex = user.services.findIndex(service => service.serviceId === serviceId);
+    const serviceIndex = user.services.findIndex(service => service.id === serviceId);
     if (serviceIndex === -1) {
       return res.status(404).json({ message: 'Service not found', type: "Error" });
     }

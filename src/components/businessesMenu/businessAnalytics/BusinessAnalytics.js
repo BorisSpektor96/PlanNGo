@@ -40,8 +40,6 @@ const BusinessAnalytics = () => {
 
     const totalPaymentByMonth = calculateTotalPaymentByMonth(appointments);
 
-    const chartExportDimensions = [ 10, 10, 180, 80 ]; // [x, y, width, height]
-
     // Function to handle the PDF export
     const handleExportPDF = () => {
         const chartIds = [ 'bar-chart', 'line-chart', 'pie-chart' ];
