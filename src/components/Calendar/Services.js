@@ -24,7 +24,7 @@ const Services = (props) => {
                 } }
                 className="btn btn-success"
               >
-                Take
+                Choose
               </button>
             </div>
           </div>

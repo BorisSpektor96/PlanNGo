@@ -32,18 +32,6 @@ const VerticalBarChart = ({ totalPaymentByMonth, id }) => {
         return () => clearTimeout(timeoutId); // Clear the timeout on unmount
     }, []);
 
-
-    const handleExportPDF = () => {
-        if (barRef.current && isChartRendered) {
-            const barChartElement = barRef.current.chartInstance.canvas; // Get the canvas element
-            const dataURL = barChartElement.toDataURL('image/png');
-            // Use dataURL for PDF export logic
-            console.log(dataURL);
-        } else {
-            console.log("Chart not rendered yet");
-        }
-    };
-
     const handleAddTotalIncome = (month, amount) => {
         setTotalIncomeData((prevData) => {
             const newData = [ ...prevData ];

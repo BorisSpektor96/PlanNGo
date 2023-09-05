@@ -1,5 +1,5 @@
 import React from "react";
-import style from "./products.module.css";
+import style from "./product.module.css";
 
 // Custom hook to handle expanded state
 const useExpandedState = (initialState = false) => {

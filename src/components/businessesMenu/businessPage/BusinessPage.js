@@ -10,7 +10,7 @@ import Recommendations from "../recommendations/Recomendations"
 import MessageForm from "../../messages/MessageForm";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFavorites } from '../../../profileInfoSlice'
-import CustomAlert from "../../Calendar/CustomAlert ";
+import CustomAlert from "../../UI/CustomAlert ";
 import styles from "./BusinessPage.module.css"
 import { addBusinessToFavorite, deleteBusinessFromFavorites } from '../../favorites/FavoriteService';
 

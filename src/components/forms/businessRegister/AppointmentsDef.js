@@ -6,25 +6,44 @@ import customParseFormat from "dayjs/plugin/customParseFormat"; // Import the cu
 dayjs.extend(customParseFormat); // Extend dayjs with the customParseFormat plugin
 
 const AppointmentsDef = (props) => {
-  const [ startTime, setStartTime ] = useState("");
-  const [ endTime, setEndTime ] = useState("");
+  const [ fixedBreak, setFixedBreak ] = useState({
+    start: "",
+    end: "",
+  });
+  const [ businessHours, setBusinessHours ] = useState({
+    start: "",
+    end: "",
+  });
+
+  const onChangeOpeningStartTime = (start) => {
+    setBusinessHours((prevState) => ({
+      ...prevState,
+      start: start,
+    }));
+    props.handleOpeningStartTimeChange(start);
+  };
+
+  const onChangeOpeningEndTime = (end) => {
+    setBusinessHours((prevState) => ({
+      ...prevState,
+      end: end,
+    }));
+    props.handleOpeningEndTimeChange(end);
+  };
 
   const addBreakHandler = () => {
-    console.log(startTime, endTime);
 
-    if (startTime && endTime) {
-      props.handleAddBreak(startTime, endTime);
-      setStartTime("");
-      setEndTime("");
-    } else {
-      alert("Please provide both start time and end time for the break.");
+    if (fixedBreak.start && fixedBreak.end) {
+      props.handleAddBreak(fixedBreak.start, fixedBreak.end);
+      setFixedBreak({ start: "", end: "" })
     }
   };
 
   if (props.currentStep !== 5) {
     return null;
   }
-  const generateStartTimeOptions = () => {
+
+  const generateTimeOptions = () => {
     const startTimeOptions = [];
     for (let hours = 5; hours <= 21; hours++) {
       for (let minutes = 0; minutes < 60; minutes += 30) {
@@ -35,19 +54,6 @@ const AppointmentsDef = (props) => {
       }
     }
     return startTimeOptions;
-  };
-
-  const generateEndTimeOptions = () => {
-    const endTimeOptions = [];
-    for (let hours = 5; hours <= 21; hours++) {
-      for (let minutes = 0; minutes < 60; minutes += 30) {
-        const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
-          .toString()
-          .padStart(2, "0")}`;
-        endTimeOptions.push(formattedTime);
-      }
-    }
-    return endTimeOptions;
   };
 
   const daysOfWeek = [
@@ -73,10 +79,10 @@ const AppointmentsDef = (props) => {
           <Col md={ 3 }>
             <select
               className="form-control"
-              value={ startTime }
-              onChange={ (e) => setStartTime(e.target.value) }
+              value={ fixedBreak.start }
+              onChange={ (e) => setFixedBreak({ ...fixedBreak, start: e.target.value }) }
             >
-              { generateStartTimeOptions().map((time) => (
+              { generateTimeOptions().map((time) => (
                 <option key={ time } value={ time }>
                   { time }
                 </option>
@@ -86,10 +92,10 @@ const AppointmentsDef = (props) => {
           <Col md={ 3 }>
             <select
               className="form-control"
-              value={ endTime }
-              onChange={ (e) => setEndTime(e.target.value) }
+              value={ fixedBreak.end }
+              onChange={ (e) => setFixedBreak({ ...fixedBreak, end: e.target.value }) }
             >
-              { generateEndTimeOptions().map((time) => (
+              { generateTimeOptions().map((time) => (
                 <option key={ time } value={ time }>
                   { time }
                 </option>
@@ -105,6 +111,16 @@ const AppointmentsDef = (props) => {
               Add break
             </Button>
           </Col>
+          { props.errors[ "break" ] && (
+            <p
+              style={ {
+                fontSize: "12px",
+                color: "red",
+              } }
+            >
+              { props.errors[ "break" ] }
+            </p>
+          ) }
         </Row>
 
         { props.appointmentsDef.fixedBreak.length > 0 && (
@@ -126,16 +142,7 @@ const AppointmentsDef = (props) => {
             </ul>
           </div>
         ) }
-        { props.errors && (
-          <p
-            style={ {
-              fontSize: "12px",
-              color: "red",
-            } }
-          >
-            { props.errors }
-          </p>
-        ) }
+
 
         <div className="mt-2">
           <Label className="mt-4 me-2" for="fixedBreak">
@@ -169,10 +176,10 @@ const AppointmentsDef = (props) => {
               <select
                 id="openingStartTime"
                 className="form-control"
-                value={ props.businessHours.start }
-                onChange={ (e) => props.handleOpeningStartTimeChange(e.target.value) }
+                value={ businessHours.start }
+                onChange={ (e) => onChangeOpeningStartTime(e.target.value) }
               >
-                { generateStartTimeOptions().map((time) => (
+                { generateTimeOptions().map((time) => (
                   <option key={ time } value={ time }>
                     { time }
                   </option>
@@ -183,16 +190,26 @@ const AppointmentsDef = (props) => {
               <select
                 id="openingEndTime"
                 className="form-control"
-                value={ props.businessHours.end }
-                onChange={ (e) => props.handleOpeningEndTimeChange(e.target.value) }
+                value={ businessHours.end }
+                onChange={ (e) => onChangeOpeningEndTime(e.target.value) }
               >
-                { generateEndTimeOptions().map((time) => (
+                { generateTimeOptions().map((time) => (
                   <option key={ time } value={ time }>
                     { time }
                   </option>
                 )) }
               </select>
             </Col>
+            { props.errors[ "businessHours" ] && (
+              <p
+                style={ {
+                  fontSize: "12px",
+                  color: "red",
+                } }
+              >
+                { props.errors[ "businessHours" ] }
+              </p>
+            ) }
           </Row>
         </div>
       </form>

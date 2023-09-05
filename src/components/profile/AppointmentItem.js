@@ -1,5 +1,4 @@
 import { useState, useContext } from "react"
-import './appointmentItem.css'
 import { AuthContext } from '../../AuthContext'
 import { useSelector } from "react-redux";
 

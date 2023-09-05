@@ -340,14 +340,14 @@ class MainBusinessForm extends Component {
     }
   }
 
-  deleteProductHandler = (productToDelete) => {
-    this.setState((prevState) => {
-      const updatedProducts = prevState.products.filter(
-        (product) => product !== productToDelete
+  deleteProductHandler = (serialID) => {
+    this.setState((state) => {
+      const products = state.products.filter(
+        (product) => product.productId !== serialID
       );
 
       return {
-        products: updatedProducts,
+        products,
       };
     });
   };
@@ -378,28 +378,6 @@ class MainBusinessForm extends Component {
     }));
   };
 
-  // Add componentDidUpdate to update the select elements when businessHours changes
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.appointmentsDef.businessHours.start !==
-      this.state.appointmentsDef.businessHours.start ||
-      prevState.appointmentsDef.businessHours.end !==
-      this.state.appointmentsDef.businessHours.end
-    ) {
-      this.updateSelectElements();
-    }
-  }
-
-  // New function to update the select elements
-  updateSelectElements() {
-    const { start, end } = this.state.appointmentsDef.businessHours;
-    const openingStartTimeSelect = document.getElementById("openingStartTime");
-    const openingEndTimeSelect = document.getElementById("openingEndTime");
-
-    openingStartTimeSelect.value = start;
-    openingEndTimeSelect.value = end;
-  }
-
   handleAddBreak = (startTime, endTime) => {
     const formattedStartTime = dayjs(startTime, "HH:mm", true);
     const formattedEndTime = dayjs(endTime, "HH:mm", true);
@@ -409,12 +387,21 @@ class MainBusinessForm extends Component {
         start: formattedStartTime.format("HH:mm"),
         end: formattedEndTime.format("HH:mm"),
       };
-
       this.state.appointmentsDef.fixedBreak.push(breakTimeRange)
 
-
+      this.setState((prevState) => ({
+        errors: {
+          ...prevState.errors,
+          break: "", // Clear any previous fixedBreak error
+        },
+      }));
     } else {
-      alert("Invalid break time range. End time should be after start time.");
+      this.setState((prevState) => ({
+        errors: {
+          ...prevState.errors,
+          break: "Invalid break time range",
+        },
+      }));
     }
   };
 
@@ -462,6 +449,23 @@ class MainBusinessForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const { currentStep, errors, confirmPassword, ...formData } = this.state;
+    if (this.state.appointmentsDef.businessHours.start === "" || this.state.appointmentsDef.businessHours.end === "" || this.state.appointmentsDef.businessHours.end <= this.state.appointmentsDef.businessHours.start) {
+      this.setState((prevState) => ({
+        errors: {
+          ...prevState.errors,
+          businessHours: "Please enter valid business hours",
+        },
+      }));
+      return;
+    } else {
+      this.setState((prevState) => ({
+        errors: {
+          ...prevState.errors,
+          businessHours: "", // Clear business hours error
+        },
+      }));
+    }
+
     try {
       const response = await fetch(
         "http://localhost:3001/business/newBusinessUser",
@@ -627,6 +631,8 @@ class MainBusinessForm extends Component {
                 businessHours={ this.state.appointmentsDef.businessHours } // Pass the businessHours object
                 handleOpeningStartTimeChange={ this.handleOpeningStartTimeChange }
                 handleOpeningEndTimeChange={ this.handleOpeningEndTimeChange }
+                errors={ this.state.errors } // Pass the errors object to the component
+
               />
             </CardBody>
             <CardFooter className="d-flex justify-content-around">
