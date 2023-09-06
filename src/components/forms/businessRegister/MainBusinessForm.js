@@ -273,16 +273,14 @@ class MainBusinessForm extends Component {
       };
     });
   }
+
   deleteServicesHandler = (serviceToDelete) => {
     this.setState((prevState) => {
-      const services = prevState.services.filter(
-        (service) =>
-          service.name !== serviceToDelete.name ||
-          service.price !== serviceToDelete.price ||
-          service.duration !== serviceToDelete.duration
+      const updatedServices = prevState.services.filter(
+        (service) => service !== serviceToDelete
       );
       return {
-        services,
+        services: updatedServices,
       };
     });
   };
@@ -340,19 +338,18 @@ class MainBusinessForm extends Component {
     }
   }
 
-  deleteProductHandler = (p) => {
-    this.setState((state) => {
-      const products = state.products.filter(
-        (product) => product.name !== p.name
+  deleteProductHandler = (productToDelete) => {
+    this.setState((prevState) => {
+      const updatedProducts = prevState.products.filter(
+        (product) => product !== productToDelete
       );
-
       return {
-        products,
+        products: updatedProducts,
       };
     });
   };
 
-  /**********************AppointmentsDef**********************/
+  /*********************AppointmentsDef*********************/
   handleOpeningStartTimeChange = (value) => {
     this.setState((prevState) => ({
       appointmentsDef: {
@@ -444,7 +441,7 @@ class MainBusinessForm extends Component {
       },
     );
   };
-  /**********************AppointmentsDef**********************/
+  /*********************AppointmentsDef*********************/
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -652,5 +649,4 @@ class MainBusinessForm extends Component {
     );
   }
 }
-
 export default MainBusinessForm;

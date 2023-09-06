@@ -26,7 +26,7 @@ const Cart = ({ selectedProducts, onIncrease, onDecrease, deleteProductHandler, 
               <tbody>
                 { selectedProducts.map((product) => (
                   <CartItem
-                    key={ product.productId }
+                    key={ product._id }
                     product={ product }
                     onIncrease={ onIncrease }
                     onDecrease={ onDecrease }
