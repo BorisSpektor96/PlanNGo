@@ -32,6 +32,7 @@ const Products = (props) => {
     setEnteredLables("");
     setEnteredQuantity(1);
     setEnteredName("");
+    setSelectedImage(null)
   };
 
   if (props.currentStep !== 4) {
@@ -181,7 +182,7 @@ const Products = (props) => {
                 <td className="text-center">{ product.lables }</td>
                 <td className="text-center">{ product.description }</td>
                 <td className="text-center">
-                  { selectedImage && (
+                  { product.photo && (
                     <img
                       className="img-thumbnail w-75 h-75"
                       alt="not found"

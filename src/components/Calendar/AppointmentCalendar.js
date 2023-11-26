@@ -30,9 +30,10 @@ const AppointmentCalendar = (props) => {
 
   const appointmentsDef = props.appointmentsDef;
 
-  const handleDateSelect = (date) => {
+  const handleDateSelect = async (date) => {
     if (selectedTime !== null) {
-      handleRemoveLockAppointment()
+      await createDeleteDate()
+      await props.handleRemoveLockAppointment(deleteDate)
     }
     setSelectedTime(null)
     setSelectedDate(new Date(date));
@@ -73,42 +74,10 @@ const AppointmentCalendar = (props) => {
     }
   }
 
-  const handleRemoveLockAppointment = async () => {
-    const deleteDate = {
-      type: "lock",
-      date: new Date(selectedDate),
-      businessEmail: props.businessDetails.email,
-      userEmail: profileInfo.email,
-    }
-
-    if (selectedTime !== null) {
-      deleteDate.date.setHours(parseInt(selectedTime.slice(0, 2)));
-      deleteDate.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
-    }
-    try {
-      const response = await fetch("http://localhost:3001/business/removeAppointment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userEmail: deleteDate.userEmail,
-          date: deleteDate.date,
-          businessEmail: deleteDate.businessEmail,
-          type: 'lock'
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Server request failed");
-      }
-    } catch (error) {
-      console.log("Error:", error.message);
-    }
-  };
-
   const handleTimeSelect = async (time) => {
     if (selectedTime !== null) {
-      await handleRemoveLockAppointment()
+      await createDeleteDate()
+      await props.handleRemoveLockAppointment(deleteDate)
     }
     setSelectedTime(time);
     props.onStepChange(3);
@@ -136,7 +105,8 @@ const AppointmentCalendar = (props) => {
           console.error("Error sending cart list to server:", error);
         }
       }
-      handleRemoveLockAppointment()
+      await createDeleteDate()
+      await props.handleRemoveLockAppointment(deleteDate)
       setSelectedTime(null);
       props.onStepChange(1);
       props.setCartList([])
@@ -144,6 +114,20 @@ const AppointmentCalendar = (props) => {
       props.onStepChange(4);
     }
   };
+  let deleteDate = {
+    type: "",
+    date: null,
+    businessEmail: "",
+    userEmail: "",
+  }
+  const createDeleteDate = async () => {
+    deleteDate.type = "lock"
+    deleteDate.date = new Date(selectedDate)
+    deleteDate.businessEmail = props.businessDetails.email
+    deleteDate.userEmail = profileInfo.email
+    deleteDate.date.setHours(parseInt(selectedTime.slice(0, 2)));
+    deleteDate.date.setMinutes(parseInt(selectedTime.slice(3, 5)));
+  }
 
   const isDayDisabled = (date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
@@ -318,12 +302,13 @@ const AppointmentCalendar = (props) => {
       );
 
       const businessData = await businessResponse.json();
+      // await createDeleteDate()
+      // await props.handleRemoveLockAppointment(deleteDate);
 
       if (businessResponse.ok) {
         await sendMessageToBusiness();
-        showMessage(businessData.message, businessData.type);
-        await handleRemoveLockAppointment();
-        props.onClose();
+        // showMessage(businessData.message, businessData.type);
+        // props.onClose();
 
         const userResponse = await fetch(
           "http://localhost:3001/users/addAppointmentToUser",
@@ -340,12 +325,13 @@ const AppointmentCalendar = (props) => {
         );
 
         const userData = await userResponse.json();
-
+        // await createDeleteDate()
+        // await props.handleRemoveLockAppointment(deleteDate)
         if (userResponse.ok) {
           await sendMessageToUser();
           showMessage(userData.message, userData.type);
           dispatch(updateAppointments(userData.appointments))
-          props.onClose();
+          // props.onClose();
         } else {
           console.log(
             "Failed to add appointment to the user:",
@@ -355,6 +341,11 @@ const AppointmentCalendar = (props) => {
       } else {
         console.log("Failed to add appointment:", businessData.message);
       }
+      console.log("schedule")
+      createDeleteDate()
+      props.handleRemoveLockAppointment(deleteDate)
+      props.onClose();
+
     } catch (error) {
       console.log("Error:", error.message);
     }
@@ -486,15 +477,21 @@ const AppointmentCalendar = (props) => {
     props.onStepChange(1);
   };
 
+  const exitCalendar = () => {
+    createDeleteDate()
+    console.log(deleteDate)
+    props.onClose(deleteDate)
+  }
+
   return (
-    <Modal onClose={ () => props.onClose() }>
+    <Modal onClose={ exitCalendar }>
       <div class="d-flex flex-row justify-content-end p-1 w-100 ">
         <button
           type="button"
           class="btn-close"
           aria-label="Close"
           dal
-          onClick={ () => props.onClose() }
+          onClick={ exitCalendar }
         ></button>
       </div>
 

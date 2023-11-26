@@ -331,6 +331,7 @@ userBusinessRouter.post("/removeAppointment", async (req, res) => {
         appointment.userDetails.email === userEmail
       );
     }
+    console.log(appointmentIndex)
     if (appointmentIndex === -1) {
       return res.status(404).json({
         message: "Appointment not found for the given business and date",

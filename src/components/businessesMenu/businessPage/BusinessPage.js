@@ -39,6 +39,11 @@ const BusinessPage = () => {
   if (profileInfo.isBusiness) {
     type = "business"
   }
+  // **************************************************************************
+  useEffect(() => {
+    console.log(currentStep);
+  }, [ currentStep ])
+  // **************************************************************************
 
   const sendCartListToServer = async (cart) => {
     try {
@@ -109,7 +114,10 @@ const BusinessPage = () => {
     }
   };
 
-  const hideCalendarHandler = async () => {
+  const [ tempDeleteDate, setTempDeleteDate ] = useState({})
+
+  const hideCalendarHandler = async (deleteDate) => {
+    setTempDeleteDate(deleteDate)
     if (currentStep === 5) {
       setCalendarIsShown(false);
       handleStepChange(0)
@@ -123,9 +131,13 @@ const BusinessPage = () => {
     if (currentStep !== 5) {
       setCalendarIsShown(false);
     }
-    handleStepChange(0)
     setShowConfirmation(false);
+    if (currentStep > 2) {
+      handleRemoveLockAppointment(tempDeleteDate)
+    }
     await sendCartListToServer(cartList)
+
+    handleStepChange(0)
     setCartList([])
   };
 
@@ -167,6 +179,29 @@ const BusinessPage = () => {
     await postReviewToBusiness(name, reviewContent, reviewRate, reviewDate, userEmail)
   }
 
+  const handleRemoveLockAppointment = async (deleteDate) => {
+    console.log(deleteDate)
+    try {
+      const response = await fetch("http://localhost:3001/business/removeAppointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail: deleteDate.userEmail,
+          date: deleteDate.date,
+          businessEmail: deleteDate.businessEmail,
+          type: 'lock'
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Server request failed");
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
+
   const pathToBackMenu = "/BusinessesMenu";
 
   return (
@@ -181,6 +216,7 @@ const BusinessPage = () => {
 
       { calendarIsShown &&
         <Calendar
+          handleRemoveLockAppointment={ handleRemoveLockAppointment }
           sendCartListToServer={ sendCartListToServer }
           profileInfo={ profileInfo }
           workingHours={ workingHours }
